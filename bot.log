@@ -1,0 +1,1214 @@
+2025-08-26 15:28:39,990 [INFO] __main__: Bot starting...
+2025-08-26 15:28:39,991 [INFO] aiogram.dispatcher: Start polling
+2025-08-26 15:28:40,483 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-26 15:28:40,595 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:28:40,595 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8224279201)
+2025-08-26 15:28:44,672 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:28:44,672 [WARNING] aiogram.dispatcher: Sleep for 1.341575 seconds and try again... (tryings = 1, bot id = 8224279201)
+2025-08-26 15:28:46,088 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:28:46,089 [WARNING] aiogram.dispatcher: Sleep for 1.564876 seconds and try again... (tryings = 2, bot id = 8224279201)
+2025-08-26 15:28:50,740 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:28:50,741 [WARNING] aiogram.dispatcher: Sleep for 1.990545 seconds and try again... (tryings = 3, bot id = 8224279201)
+2025-08-26 15:28:52,815 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:28:52,815 [WARNING] aiogram.dispatcher: Sleep for 2.521382 seconds and try again... (tryings = 4, bot id = 8224279201)
+2025-08-26 15:28:58,411 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:28:58,411 [WARNING] aiogram.dispatcher: Sleep for 3.534889 seconds and try again... (tryings = 5, bot id = 8224279201)
+2025-08-26 15:29:02,019 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:29:02,020 [WARNING] aiogram.dispatcher: Sleep for 4.699019 seconds and try again... (tryings = 6, bot id = 8224279201)
+2025-08-26 15:29:06,798 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:29:06,799 [WARNING] aiogram.dispatcher: Sleep for 5.207080 seconds and try again... (tryings = 7, bot id = 8224279201)
+2025-08-26 15:29:12,149 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:29:12,150 [WARNING] aiogram.dispatcher: Sleep for 4.852590 seconds and try again... (tryings = 8, bot id = 8224279201)
+2025-08-26 15:29:17,134 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:29:17,135 [WARNING] aiogram.dispatcher: Sleep for 4.730814 seconds and try again... (tryings = 9, bot id = 8224279201)
+2025-08-26 15:29:22,007 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:29:22,009 [WARNING] aiogram.dispatcher: Sleep for 4.928274 seconds and try again... (tryings = 10, bot id = 8224279201)
+2025-08-26 15:29:27,011 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:29:27,012 [WARNING] aiogram.dispatcher: Sleep for 4.845396 seconds and try again... (tryings = 11, bot id = 8224279201)
+2025-08-26 15:29:31,932 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:29:31,933 [WARNING] aiogram.dispatcher: Sleep for 4.963736 seconds and try again... (tryings = 12, bot id = 8224279201)
+2025-08-26 15:29:36,970 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:29:36,971 [WARNING] aiogram.dispatcher: Sleep for 5.154098 seconds and try again... (tryings = 13, bot id = 8224279201)
+2025-08-26 15:29:42,205 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:29:42,205 [WARNING] aiogram.dispatcher: Sleep for 5.105644 seconds and try again... (tryings = 14, bot id = 8224279201)
+2025-08-26 15:29:47,404 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:29:47,406 [WARNING] aiogram.dispatcher: Sleep for 5.005857 seconds and try again... (tryings = 15, bot id = 8224279201)
+2025-08-26 15:29:52,504 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:29:52,505 [WARNING] aiogram.dispatcher: Sleep for 5.174383 seconds and try again... (tryings = 16, bot id = 8224279201)
+2025-08-26 15:29:57,753 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:29:57,754 [WARNING] aiogram.dispatcher: Sleep for 5.101664 seconds and try again... (tryings = 17, bot id = 8224279201)
+2025-08-26 15:30:02,932 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:30:02,933 [WARNING] aiogram.dispatcher: Sleep for 4.954400 seconds and try again... (tryings = 18, bot id = 8224279201)
+2025-08-26 15:30:07,963 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:30:07,964 [WARNING] aiogram.dispatcher: Sleep for 4.723340 seconds and try again... (tryings = 19, bot id = 8224279201)
+2025-08-26 15:30:12,800 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:30:12,802 [WARNING] aiogram.dispatcher: Sleep for 4.880073 seconds and try again... (tryings = 20, bot id = 8224279201)
+2025-08-26 15:30:17,752 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:30:17,752 [WARNING] aiogram.dispatcher: Sleep for 5.095456 seconds and try again... (tryings = 21, bot id = 8224279201)
+2025-08-26 15:30:22,935 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:30:22,936 [WARNING] aiogram.dispatcher: Sleep for 4.967813 seconds and try again... (tryings = 22, bot id = 8224279201)
+2025-08-26 15:30:27,975 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:30:27,976 [WARNING] aiogram.dispatcher: Sleep for 4.809615 seconds and try again... (tryings = 23, bot id = 8224279201)
+2025-08-26 15:30:32,858 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:30:32,859 [WARNING] aiogram.dispatcher: Sleep for 4.948000 seconds and try again... (tryings = 24, bot id = 8224279201)
+2025-08-26 15:30:37,884 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:30:37,886 [WARNING] aiogram.dispatcher: Sleep for 5.023320 seconds and try again... (tryings = 25, bot id = 8224279201)
+2025-08-26 15:30:42,982 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:30:42,982 [WARNING] aiogram.dispatcher: Sleep for 4.885873 seconds and try again... (tryings = 26, bot id = 8224279201)
+2025-08-26 15:30:47,988 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:30:47,988 [WARNING] aiogram.dispatcher: Sleep for 4.949348 seconds and try again... (tryings = 27, bot id = 8224279201)
+2025-08-26 15:30:53,012 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:30:53,013 [WARNING] aiogram.dispatcher: Sleep for 5.017374 seconds and try again... (tryings = 28, bot id = 8224279201)
+2025-08-26 15:30:58,113 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:30:58,113 [WARNING] aiogram.dispatcher: Sleep for 4.948482 seconds and try again... (tryings = 29, bot id = 8224279201)
+2025-08-26 15:31:03,135 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:31:03,135 [WARNING] aiogram.dispatcher: Sleep for 5.047260 seconds and try again... (tryings = 30, bot id = 8224279201)
+2025-08-26 15:31:08,308 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:31:08,309 [WARNING] aiogram.dispatcher: Sleep for 4.831045 seconds and try again... (tryings = 31, bot id = 8224279201)
+2025-08-26 15:31:13,216 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:31:13,216 [WARNING] aiogram.dispatcher: Sleep for 4.904683 seconds and try again... (tryings = 32, bot id = 8224279201)
+2025-08-26 15:31:18,197 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:31:18,198 [WARNING] aiogram.dispatcher: Sleep for 5.118165 seconds and try again... (tryings = 33, bot id = 8224279201)
+2025-08-26 15:31:23,390 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:31:23,391 [WARNING] aiogram.dispatcher: Sleep for 5.025317 seconds and try again... (tryings = 34, bot id = 8224279201)
+2025-08-26 15:31:28,540 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:31:28,540 [WARNING] aiogram.dispatcher: Sleep for 5.080028 seconds and try again... (tryings = 35, bot id = 8224279201)
+2025-08-26 15:31:33,692 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:31:33,693 [WARNING] aiogram.dispatcher: Sleep for 5.092911 seconds and try again... (tryings = 36, bot id = 8224279201)
+2025-08-26 15:31:38,908 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:31:38,908 [WARNING] aiogram.dispatcher: Sleep for 5.190838 seconds and try again... (tryings = 37, bot id = 8224279201)
+2025-08-26 15:31:44,193 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:31:44,193 [WARNING] aiogram.dispatcher: Sleep for 4.995150 seconds and try again... (tryings = 38, bot id = 8224279201)
+2025-08-26 15:31:49,261 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:31:49,262 [WARNING] aiogram.dispatcher: Sleep for 5.125318 seconds and try again... (tryings = 39, bot id = 8224279201)
+2025-08-26 15:31:54,508 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:31:54,509 [WARNING] aiogram.dispatcher: Sleep for 5.112319 seconds and try again... (tryings = 40, bot id = 8224279201)
+2025-08-26 15:31:59,768 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:31:59,769 [WARNING] aiogram.dispatcher: Sleep for 4.750499 seconds and try again... (tryings = 41, bot id = 8224279201)
+2025-08-26 15:32:04,650 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:32:04,651 [WARNING] aiogram.dispatcher: Sleep for 4.830421 seconds and try again... (tryings = 42, bot id = 8224279201)
+2025-08-26 15:32:09,609 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:32:09,611 [WARNING] aiogram.dispatcher: Sleep for 4.881875 seconds and try again... (tryings = 43, bot id = 8224279201)
+2025-08-26 15:32:14,576 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:32:14,577 [WARNING] aiogram.dispatcher: Sleep for 5.180281 seconds and try again... (tryings = 44, bot id = 8224279201)
+2025-08-26 15:32:19,835 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:32:19,835 [WARNING] aiogram.dispatcher: Sleep for 5.012277 seconds and try again... (tryings = 45, bot id = 8224279201)
+2025-08-26 15:32:24,923 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:32:24,923 [WARNING] aiogram.dispatcher: Sleep for 4.970839 seconds and try again... (tryings = 46, bot id = 8224279201)
+2025-08-26 15:32:29,967 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:32:29,968 [WARNING] aiogram.dispatcher: Sleep for 5.000171 seconds and try again... (tryings = 47, bot id = 8224279201)
+2025-08-26 15:32:35,088 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:32:35,088 [WARNING] aiogram.dispatcher: Sleep for 4.974006 seconds and try again... (tryings = 48, bot id = 8224279201)
+2025-08-26 15:32:40,148 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:32:40,152 [WARNING] aiogram.dispatcher: Sleep for 5.164072 seconds and try again... (tryings = 49, bot id = 8224279201)
+2025-08-26 15:32:45,440 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:32:45,441 [WARNING] aiogram.dispatcher: Sleep for 5.052241 seconds and try again... (tryings = 50, bot id = 8224279201)
+2025-08-26 15:32:50,576 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:32:50,578 [WARNING] aiogram.dispatcher: Sleep for 4.973712 seconds and try again... (tryings = 51, bot id = 8224279201)
+2025-08-26 15:32:55,637 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:32:55,637 [WARNING] aiogram.dispatcher: Sleep for 4.979718 seconds and try again... (tryings = 52, bot id = 8224279201)
+2025-08-26 15:33:00,747 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:33:00,747 [WARNING] aiogram.dispatcher: Sleep for 5.034315 seconds and try again... (tryings = 53, bot id = 8224279201)
+2025-08-26 15:33:05,854 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:33:05,855 [WARNING] aiogram.dispatcher: Sleep for 5.067728 seconds and try again... (tryings = 54, bot id = 8224279201)
+2025-08-26 15:33:11,003 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:33:11,004 [WARNING] aiogram.dispatcher: Sleep for 5.046525 seconds and try again... (tryings = 55, bot id = 8224279201)
+2025-08-26 15:33:16,150 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:33:16,150 [WARNING] aiogram.dispatcher: Sleep for 5.150826 seconds and try again... (tryings = 56, bot id = 8224279201)
+2025-08-26 15:33:21,424 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:33:21,425 [WARNING] aiogram.dispatcher: Sleep for 5.047856 seconds and try again... (tryings = 57, bot id = 8224279201)
+2025-08-26 15:33:26,554 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:33:26,555 [WARNING] aiogram.dispatcher: Sleep for 4.958675 seconds and try again... (tryings = 58, bot id = 8224279201)
+2025-08-26 15:33:31,588 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:33:31,589 [WARNING] aiogram.dispatcher: Sleep for 4.992991 seconds and try again... (tryings = 59, bot id = 8224279201)
+2025-08-26 15:33:36,656 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:33:36,657 [WARNING] aiogram.dispatcher: Sleep for 4.967947 seconds and try again... (tryings = 60, bot id = 8224279201)
+2025-08-26 15:33:41,708 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:33:41,709 [WARNING] aiogram.dispatcher: Sleep for 4.953648 seconds and try again... (tryings = 61, bot id = 8224279201)
+2025-08-26 15:33:46,759 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:33:46,759 [WARNING] aiogram.dispatcher: Sleep for 5.125651 seconds and try again... (tryings = 62, bot id = 8224279201)
+2025-08-26 15:33:52,011 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:33:52,011 [WARNING] aiogram.dispatcher: Sleep for 4.953789 seconds and try again... (tryings = 63, bot id = 8224279201)
+2025-08-26 15:33:57,059 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:33:57,060 [WARNING] aiogram.dispatcher: Sleep for 5.160483 seconds and try again... (tryings = 64, bot id = 8224279201)
+2025-08-26 15:34:02,294 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:34:02,295 [WARNING] aiogram.dispatcher: Sleep for 5.050584 seconds and try again... (tryings = 65, bot id = 8224279201)
+2025-08-26 15:34:07,478 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:34:07,478 [WARNING] aiogram.dispatcher: Sleep for 4.936353 seconds and try again... (tryings = 66, bot id = 8224279201)
+2025-08-26 15:34:12,496 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:34:12,497 [WARNING] aiogram.dispatcher: Sleep for 4.953182 seconds and try again... (tryings = 67, bot id = 8224279201)
+2025-08-26 15:34:17,522 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:34:17,523 [WARNING] aiogram.dispatcher: Sleep for 5.199817 seconds and try again... (tryings = 68, bot id = 8224279201)
+2025-08-26 15:34:22,796 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:34:22,797 [WARNING] aiogram.dispatcher: Sleep for 4.961566 seconds and try again... (tryings = 69, bot id = 8224279201)
+2025-08-26 15:34:27,831 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:34:27,832 [WARNING] aiogram.dispatcher: Sleep for 5.017874 seconds and try again... (tryings = 70, bot id = 8224279201)
+2025-08-26 15:34:32,923 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:34:32,924 [WARNING] aiogram.dispatcher: Sleep for 4.966764 seconds and try again... (tryings = 71, bot id = 8224279201)
+2025-08-26 15:34:37,962 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:34:37,963 [WARNING] aiogram.dispatcher: Sleep for 5.067587 seconds and try again... (tryings = 72, bot id = 8224279201)
+2025-08-26 15:34:43,163 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:34:43,165 [WARNING] aiogram.dispatcher: Sleep for 4.941218 seconds and try again... (tryings = 73, bot id = 8224279201)
+2025-08-26 15:34:48,232 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:34:48,233 [WARNING] aiogram.dispatcher: Sleep for 4.967719 seconds and try again... (tryings = 74, bot id = 8224279201)
+2025-08-26 15:34:53,274 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:34:53,276 [WARNING] aiogram.dispatcher: Sleep for 4.986229 seconds and try again... (tryings = 75, bot id = 8224279201)
+2025-08-26 15:34:58,342 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:34:58,343 [WARNING] aiogram.dispatcher: Sleep for 5.095434 seconds and try again... (tryings = 76, bot id = 8224279201)
+2025-08-26 15:35:03,510 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:35:03,510 [WARNING] aiogram.dispatcher: Sleep for 5.049553 seconds and try again... (tryings = 77, bot id = 8224279201)
+2025-08-26 15:35:08,632 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:35:08,633 [WARNING] aiogram.dispatcher: Sleep for 5.009677 seconds and try again... (tryings = 78, bot id = 8224279201)
+2025-08-26 15:35:13,716 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:35:13,716 [WARNING] aiogram.dispatcher: Sleep for 5.232496 seconds and try again... (tryings = 79, bot id = 8224279201)
+2025-08-26 15:35:19,093 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:35:19,094 [WARNING] aiogram.dispatcher: Sleep for 4.866987 seconds and try again... (tryings = 80, bot id = 8224279201)
+2025-08-26 15:35:24,040 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:35:24,040 [WARNING] aiogram.dispatcher: Sleep for 5.140873 seconds and try again... (tryings = 81, bot id = 8224279201)
+2025-08-26 15:35:29,255 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:35:29,255 [WARNING] aiogram.dispatcher: Sleep for 4.913162 seconds and try again... (tryings = 82, bot id = 8224279201)
+2025-08-26 15:35:34,245 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:35:34,246 [WARNING] aiogram.dispatcher: Sleep for 4.923451 seconds and try again... (tryings = 83, bot id = 8224279201)
+2025-08-26 15:35:39,298 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:35:39,298 [WARNING] aiogram.dispatcher: Sleep for 4.963364 seconds and try again... (tryings = 84, bot id = 8224279201)
+2025-08-26 15:35:44,385 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:35:44,385 [WARNING] aiogram.dispatcher: Sleep for 5.060874 seconds and try again... (tryings = 85, bot id = 8224279201)
+2025-08-26 15:35:49,571 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:35:49,572 [WARNING] aiogram.dispatcher: Sleep for 5.019676 seconds and try again... (tryings = 86, bot id = 8224279201)
+2025-08-26 15:35:54,664 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:35:54,665 [WARNING] aiogram.dispatcher: Sleep for 5.083640 seconds and try again... (tryings = 87, bot id = 8224279201)
+2025-08-26 15:35:59,821 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:35:59,821 [WARNING] aiogram.dispatcher: Sleep for 4.783435 seconds and try again... (tryings = 88, bot id = 8224279201)
+2025-08-26 15:36:04,690 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:36:04,691 [WARNING] aiogram.dispatcher: Sleep for 5.056370 seconds and try again... (tryings = 89, bot id = 8224279201)
+2025-08-26 15:36:09,830 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:36:09,830 [WARNING] aiogram.dispatcher: Sleep for 5.051964 seconds and try again... (tryings = 90, bot id = 8224279201)
+2025-08-26 15:36:14,959 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:36:14,960 [WARNING] aiogram.dispatcher: Sleep for 5.132589 seconds and try again... (tryings = 91, bot id = 8224279201)
+2025-08-26 15:36:20,165 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:36:20,166 [WARNING] aiogram.dispatcher: Sleep for 4.858866 seconds and try again... (tryings = 92, bot id = 8224279201)
+2025-08-26 15:36:25,108 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:36:25,109 [WARNING] aiogram.dispatcher: Sleep for 4.867100 seconds and try again... (tryings = 93, bot id = 8224279201)
+2025-08-26 15:36:30,053 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:36:30,054 [WARNING] aiogram.dispatcher: Sleep for 5.211696 seconds and try again... (tryings = 94, bot id = 8224279201)
+2025-08-26 15:36:35,343 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:36:35,343 [WARNING] aiogram.dispatcher: Sleep for 4.897924 seconds and try again... (tryings = 95, bot id = 8224279201)
+2025-08-26 15:36:40,320 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:36:40,320 [WARNING] aiogram.dispatcher: Sleep for 4.982894 seconds and try again... (tryings = 96, bot id = 8224279201)
+2025-08-26 15:36:45,451 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:36:45,455 [WARNING] aiogram.dispatcher: Sleep for 5.040985 seconds and try again... (tryings = 97, bot id = 8224279201)
+2025-08-26 15:36:50,580 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:36:50,581 [WARNING] aiogram.dispatcher: Sleep for 5.004449 seconds and try again... (tryings = 98, bot id = 8224279201)
+2025-08-26 15:36:56,207 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:36:56,207 [WARNING] aiogram.dispatcher: Sleep for 5.065726 seconds and try again... (tryings = 99, bot id = 8224279201)
+2025-08-26 15:37:01,355 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:37:01,355 [WARNING] aiogram.dispatcher: Sleep for 4.895218 seconds and try again... (tryings = 100, bot id = 8224279201)
+2025-08-26 15:37:06,338 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:37:06,339 [WARNING] aiogram.dispatcher: Sleep for 4.858328 seconds and try again... (tryings = 101, bot id = 8224279201)
+2025-08-26 15:37:11,279 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:37:11,279 [WARNING] aiogram.dispatcher: Sleep for 4.990989 seconds and try again... (tryings = 102, bot id = 8224279201)
+2025-08-26 15:37:16,342 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:37:16,343 [WARNING] aiogram.dispatcher: Sleep for 5.159955 seconds and try again... (tryings = 103, bot id = 8224279201)
+2025-08-26 15:37:21,581 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:37:21,581 [WARNING] aiogram.dispatcher: Sleep for 5.034376 seconds and try again... (tryings = 104, bot id = 8224279201)
+2025-08-26 15:37:26,692 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:37:26,692 [WARNING] aiogram.dispatcher: Sleep for 5.030723 seconds and try again... (tryings = 105, bot id = 8224279201)
+2025-08-26 15:37:31,993 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:37:31,994 [WARNING] aiogram.dispatcher: Sleep for 4.986158 seconds and try again... (tryings = 106, bot id = 8224279201)
+2025-08-26 15:37:37,111 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:37:37,112 [WARNING] aiogram.dispatcher: Sleep for 4.923322 seconds and try again... (tryings = 107, bot id = 8224279201)
+2025-08-26 15:37:42,165 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:37:42,167 [WARNING] aiogram.dispatcher: Sleep for 4.953655 seconds and try again... (tryings = 108, bot id = 8224279201)
+2025-08-26 15:37:47,264 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:37:47,264 [WARNING] aiogram.dispatcher: Sleep for 4.983920 seconds and try again... (tryings = 109, bot id = 8224279201)
+2025-08-26 15:37:52,385 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:37:52,386 [WARNING] aiogram.dispatcher: Sleep for 5.160060 seconds and try again... (tryings = 110, bot id = 8224279201)
+2025-08-26 15:37:57,674 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:37:57,675 [WARNING] aiogram.dispatcher: Sleep for 5.117851 seconds and try again... (tryings = 111, bot id = 8224279201)
+2025-08-26 15:38:02,916 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:38:02,918 [WARNING] aiogram.dispatcher: Sleep for 5.083571 seconds and try again... (tryings = 112, bot id = 8224279201)
+2025-08-26 15:38:08,142 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:38:08,142 [WARNING] aiogram.dispatcher: Sleep for 4.952397 seconds and try again... (tryings = 113, bot id = 8224279201)
+2025-08-26 15:38:13,233 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:38:13,311 [WARNING] aiogram.dispatcher: Sleep for 4.882742 seconds and try again... (tryings = 114, bot id = 8224279201)
+2025-08-26 15:38:18,268 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:38:18,268 [WARNING] aiogram.dispatcher: Sleep for 5.100418 seconds and try again... (tryings = 115, bot id = 8224279201)
+2025-08-26 15:38:23,451 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:38:23,453 [WARNING] aiogram.dispatcher: Sleep for 4.936267 seconds and try again... (tryings = 116, bot id = 8224279201)
+2025-08-26 15:38:28,517 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:38:28,517 [WARNING] aiogram.dispatcher: Sleep for 4.927434 seconds and try again... (tryings = 117, bot id = 8224279201)
+2025-08-26 15:38:33,516 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:38:33,517 [WARNING] aiogram.dispatcher: Sleep for 4.996919 seconds and try again... (tryings = 118, bot id = 8224279201)
+2025-08-26 15:38:38,646 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:38:38,646 [WARNING] aiogram.dispatcher: Sleep for 5.043094 seconds and try again... (tryings = 119, bot id = 8224279201)
+2025-08-26 15:38:43,817 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:38:43,817 [WARNING] aiogram.dispatcher: Sleep for 5.092061 seconds and try again... (tryings = 120, bot id = 8224279201)
+2025-08-26 15:38:49,038 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:38:49,038 [WARNING] aiogram.dispatcher: Sleep for 5.158426 seconds and try again... (tryings = 121, bot id = 8224279201)
+2025-08-26 15:38:54,272 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:38:54,275 [WARNING] aiogram.dispatcher: Sleep for 4.924951 seconds and try again... (tryings = 122, bot id = 8224279201)
+2025-08-26 15:38:59,297 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:38:59,297 [WARNING] aiogram.dispatcher: Sleep for 5.050205 seconds and try again... (tryings = 123, bot id = 8224279201)
+2025-08-26 15:39:04,422 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:39:04,424 [WARNING] aiogram.dispatcher: Sleep for 4.966604 seconds and try again... (tryings = 124, bot id = 8224279201)
+2025-08-26 15:39:09,468 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:39:09,468 [WARNING] aiogram.dispatcher: Sleep for 4.857621 seconds and try again... (tryings = 125, bot id = 8224279201)
+2025-08-26 15:39:14,404 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:39:14,405 [WARNING] aiogram.dispatcher: Sleep for 5.070501 seconds and try again... (tryings = 126, bot id = 8224279201)
+2025-08-26 15:39:19,554 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:39:19,555 [WARNING] aiogram.dispatcher: Sleep for 4.979411 seconds and try again... (tryings = 127, bot id = 8224279201)
+2025-08-26 15:39:25,234 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:39:25,236 [WARNING] aiogram.dispatcher: Sleep for 4.820095 seconds and try again... (tryings = 128, bot id = 8224279201)
+2025-08-26 15:39:30,186 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:39:30,188 [WARNING] aiogram.dispatcher: Sleep for 5.044779 seconds and try again... (tryings = 129, bot id = 8224279201)
+2025-08-26 15:39:35,362 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:39:35,363 [WARNING] aiogram.dispatcher: Sleep for 4.918991 seconds and try again... (tryings = 130, bot id = 8224279201)
+2025-08-26 15:39:40,368 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:39:40,369 [WARNING] aiogram.dispatcher: Sleep for 4.975169 seconds and try again... (tryings = 131, bot id = 8224279201)
+2025-08-26 15:39:45,416 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:39:45,417 [WARNING] aiogram.dispatcher: Sleep for 5.010322 seconds and try again... (tryings = 132, bot id = 8224279201)
+2025-08-26 15:39:50,506 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:39:50,507 [WARNING] aiogram.dispatcher: Sleep for 5.025356 seconds and try again... (tryings = 133, bot id = 8224279201)
+2025-08-26 15:39:55,611 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:39:55,612 [WARNING] aiogram.dispatcher: Sleep for 5.018939 seconds and try again... (tryings = 134, bot id = 8224279201)
+2025-08-26 15:40:00,709 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:40:00,710 [WARNING] aiogram.dispatcher: Sleep for 4.845474 seconds and try again... (tryings = 135, bot id = 8224279201)
+2025-08-26 15:40:05,642 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:40:05,643 [WARNING] aiogram.dispatcher: Sleep for 4.854196 seconds and try again... (tryings = 136, bot id = 8224279201)
+2025-08-26 15:40:10,719 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:40:10,720 [WARNING] aiogram.dispatcher: Sleep for 5.178977 seconds and try again... (tryings = 137, bot id = 8224279201)
+2025-08-26 15:40:15,976 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:40:15,976 [WARNING] aiogram.dispatcher: Sleep for 5.115029 seconds and try again... (tryings = 138, bot id = 8224279201)
+2025-08-26 15:40:21,164 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:40:21,165 [WARNING] aiogram.dispatcher: Sleep for 4.929116 seconds and try again... (tryings = 139, bot id = 8224279201)
+2025-08-26 15:40:26,171 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:40:26,171 [WARNING] aiogram.dispatcher: Sleep for 4.775286 seconds and try again... (tryings = 140, bot id = 8224279201)
+2025-08-26 15:40:31,079 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:40:31,080 [WARNING] aiogram.dispatcher: Sleep for 5.066395 seconds and try again... (tryings = 141, bot id = 8224279201)
+2025-08-26 15:40:36,285 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:40:36,285 [WARNING] aiogram.dispatcher: Sleep for 5.047536 seconds and try again... (tryings = 142, bot id = 8224279201)
+2025-08-26 15:40:41,410 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramConflictError: Telegram server says - Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first
+2025-08-26 15:40:41,411 [WARNING] aiogram.dispatcher: Sleep for 4.951097 seconds and try again... (tryings = 143, bot id = 8224279201)
+2025-08-26 15:49:24,062 [INFO] __main__: Bot starting...
+2025-08-26 15:49:24,063 [INFO] aiogram.dispatcher: Start polling
+2025-08-26 15:49:27,339 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-26 15:49:38,842 [INFO] aiogram.event: Update id=590775189 is not handled. Duration 1 ms by bot id=8224279201
+2025-08-26 15:49:38,843 [ERROR] aiogram.event: Cause exception while process update id=590775189 by bot id=8224279201
+AttributeError: 'Message' object has no attribute 'get_args'
+Traceback (most recent call last):
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/middlewares/error.py", line 25, in __call__
+    return await handler(event, data)
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 49, in __call__
+    return await handler(event, data)
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/fsm/middleware.py", line 42, in __call__
+    return await handler(event, data)
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/event/telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/event/handler.py", line 43, in call
+    return await wrapped()
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/router.py", line 142, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/router.py", line 137, in _wrapped
+    return await self._propagate_event(
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/router.py", line 162, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/event/telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/event/handler.py", line 43, in call
+    return await wrapped()
+  File "/Users/waldemar/Documents/tg-id-bot/bot.py", line 128, in start
+    args = message.get_args()
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/pydantic/main.py", line 811, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'Message' object has no attribute 'get_args'
+2025-08-26 15:49:54,188 [INFO] aiogram.event: Update id=590775190 is not handled. Duration 1 ms by bot id=8224279201
+2025-08-26 15:49:54,189 [ERROR] aiogram.event: Cause exception while process update id=590775190 by bot id=8224279201
+AttributeError: 'Message' object has no attribute 'get_args'
+Traceback (most recent call last):
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/middlewares/error.py", line 25, in __call__
+    return await handler(event, data)
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 49, in __call__
+    return await handler(event, data)
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/fsm/middleware.py", line 42, in __call__
+    return await handler(event, data)
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/event/telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/event/handler.py", line 43, in call
+    return await wrapped()
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/router.py", line 142, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/router.py", line 137, in _wrapped
+    return await self._propagate_event(
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/router.py", line 162, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/event/telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/aiogram/dispatcher/event/handler.py", line 43, in call
+    return await wrapped()
+  File "/Users/waldemar/Documents/tg-id-bot/bot.py", line 128, in start
+    args = message.get_args()
+  File "/Users/waldemar/Library/Python/3.9/lib/python/site-packages/pydantic/main.py", line 811, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'Message' object has no attribute 'get_args'
+2025-08-26 15:50:32,473 [INFO] __main__: Bot starting...
+2025-08-26 15:50:32,475 [INFO] aiogram.dispatcher: Start polling
+2025-08-26 15:50:32,913 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-26 15:50:34,134 [INFO] aiogram.event: Update id=590775191 is not handled. Duration 0 ms by bot id=8224279201
+2025-08-26 15:50:34,134 [ERROR] aiogram.event: Cause exception while process update id=590775191 by bot id=8224279201
+AttributeError: 'Message' object has no attribute 'get_args'
+Traceback (most recent call last):
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/middlewares/error.py", line 25, in __call__
+    return await handler(event, data)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 49, in __call__
+    return await handler(event, data)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/fsm/middleware.py", line 42, in __call__
+    return await handler(event, data)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/event/telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/event/handler.py", line 43, in call
+    return await wrapped()
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/router.py", line 142, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/router.py", line 137, in _wrapped
+    return await self._propagate_event(
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/router.py", line 162, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/event/telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/event/handler.py", line 43, in call
+    return await wrapped()
+  File "/Users/waldemar/Documents/tg-id-bot/bot.py", line 128, in start
+    args = message.get_args()
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/pydantic/main.py", line 811, in __getattr__
+    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+AttributeError: 'Message' object has no attribute 'get_args'
+2025-08-26 16:01:00,212 [INFO] __main__: Bot starting...
+2025-08-26 16:01:00,778 [INFO] aiogram.dispatcher: Start polling
+2025-08-26 16:01:00,877 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-26 16:01:07,047 [INFO] aiogram.event: Update id=590775192 is handled. Duration 716 ms by bot id=8224279201
+2025-08-26 16:01:16,483 [INFO] aiogram.event: Update id=590775193 is handled. Duration 128 ms by bot id=8224279201
+2025-08-26 16:01:20,208 [INFO] aiogram.event: Update id=590775194 is handled. Duration 153 ms by bot id=8224279201
+2025-08-26 16:01:22,332 [INFO] __main__: Generated auth secret for user 156414561
+2025-08-26 16:01:22,450 [INFO] aiogram.event: Update id=590775195 is handled. Duration 121 ms by bot id=8224279201
+2025-08-26 16:01:35,515 [INFO] aiogram.event: Update id=590775196 is handled. Duration 253 ms by bot id=8224279201
+2025-08-26 16:01:49,202 [INFO] aiogram.event: Update id=590775197 is handled. Duration 11 ms by bot id=8224279201
+2025-08-26 16:01:57,663 [INFO] aiogram.event: Update id=590775198 is handled. Duration 630 ms by bot id=8224279201
+2025-08-26 16:02:01,054 [INFO] aiogram.event: Update id=590775199 is handled. Duration 164 ms by bot id=8224279201
+2025-08-26 16:02:03,581 [INFO] aiogram.event: Update id=590775200 is handled. Duration 483 ms by bot id=8224279201
+2025-08-26 16:02:18,263 [INFO] aiogram.event: Update id=590775201 is handled. Duration 476 ms by bot id=8224279201
+2025-08-26 16:02:30,207 [INFO] aiogram.event: Update id=590775202 is handled. Duration 164 ms by bot id=8224279201
+2025-08-26 16:02:40,573 [INFO] aiogram.event: Update id=590775203 is handled. Duration 252 ms by bot id=8224279201
+2025-08-26 16:02:43,610 [INFO] aiogram.event: Update id=590775204 is not handled. Duration 6 ms by bot id=8224279201
+2025-08-26 16:04:01,912 [INFO] aiogram.event: Update id=590775205 is handled. Duration 520 ms by bot id=8224279201
+2025-08-26 16:04:17,412 [INFO] aiogram.event: Update id=590775206 is handled. Duration 399 ms by bot id=8224279201
+2025-08-26 16:04:20,530 [INFO] aiogram.event: Update id=590775207 is handled. Duration 150 ms by bot id=8224279201
+2025-08-26 16:04:24,747 [INFO] aiogram.event: Update id=590775208 is handled. Duration 169 ms by bot id=8224279201
+2025-08-26 16:04:30,061 [INFO] aiogram.event: Update id=590775209 is handled. Duration 107 ms by bot id=8224279201
+2025-08-26 16:04:34,006 [INFO] aiogram.event: Update id=590775210 is handled. Duration 131 ms by bot id=8224279201
+2025-08-26 16:04:38,238 [INFO] aiogram.event: Update id=590775211 is handled. Duration 173 ms by bot id=8224279201
+2025-08-26 16:04:44,783 [INFO] aiogram.event: Update id=590775212 is handled. Duration 116 ms by bot id=8224279201
+2025-08-26 16:04:51,006 [INFO] aiogram.event: Update id=590775213 is handled. Duration 182 ms by bot id=8224279201
+2025-08-26 16:04:52,822 [INFO] aiogram.event: Update id=590775214 is handled. Duration 110 ms by bot id=8224279201
+2025-08-26 16:04:58,115 [INFO] aiogram.event: Update id=590775215 is handled. Duration 102 ms by bot id=8224279201
+2025-08-26 16:04:59,816 [INFO] aiogram.event: Update id=590775216 is not handled. Duration 7 ms by bot id=8224279201
+2025-08-26 16:05:53,425 [INFO] aiogram.event: Update id=590775217 is handled. Duration 662 ms by bot id=8224279201
+2025-08-26 16:06:15,863 [INFO] aiogram.event: Update id=590775218 is handled. Duration 454 ms by bot id=8224279201
+2025-08-26 16:06:18,316 [INFO] aiogram.event: Update id=590775219 is handled. Duration 222 ms by bot id=8224279201
+2025-08-26 16:06:59,725 [INFO] aiogram.event: Update id=590775220 is handled. Duration 835 ms by bot id=8224279201
+2025-08-26 16:07:04,582 [INFO] aiogram.event: Update id=590775221 is handled. Duration 320 ms by bot id=8224279201
+2025-08-26 16:07:13,718 [INFO] aiogram.event: Update id=590775222 is handled. Duration 216 ms by bot id=8224279201
+2025-08-26 16:07:21,693 [INFO] aiogram.event: Update id=590775223 is handled. Duration 148 ms by bot id=8224279201
+2025-08-26 16:07:45,876 [INFO] aiogram.event: Update id=590775224 is handled. Duration 455 ms by bot id=8224279201
+2025-08-26 16:07:48,439 [INFO] aiogram.event: Update id=590775225 is handled. Duration 127 ms by bot id=8224279201
+2025-08-26 16:07:58,570 [INFO] aiogram.event: Update id=590775226 is handled. Duration 153 ms by bot id=8224279201
+2025-08-26 16:08:03,590 [INFO] aiogram.event: Update id=590775227 is handled. Duration 140 ms by bot id=8224279201
+2025-08-26 16:08:05,931 [INFO] aiogram.event: Update id=590775228 is handled. Duration 134 ms by bot id=8224279201
+2025-08-26 16:08:07,944 [INFO] aiogram.event: Update id=590775229 is handled. Duration 100 ms by bot id=8224279201
+2025-08-26 16:08:22,310 [INFO] aiogram.event: Update id=590775230 is handled. Duration 212 ms by bot id=8224279201
+2025-08-26 16:08:32,215 [INFO] aiogram.event: Update id=590775231 is handled. Duration 204 ms by bot id=8224279201
+2025-08-26 16:08:41,054 [INFO] aiogram.event: Update id=590775232 is handled. Duration 133 ms by bot id=8224279201
+2025-08-26 16:08:42,923 [INFO] aiogram.event: Update id=590775233 is handled. Duration 158 ms by bot id=8224279201
+2025-08-26 16:08:58,687 [INFO] aiogram.event: Update id=590775234 is handled. Duration 637 ms by bot id=8224279201
+2025-08-26 16:09:27,436 [INFO] aiogram.event: Update id=590775235 is handled. Duration 518 ms by bot id=8224279201
+2025-08-26 16:28:38,005 [INFO] aiogram.event: Update id=590775236 is handled. Duration 698 ms by bot id=8224279201
+2025-08-26 16:28:39,395 [INFO] aiogram.event: Update id=590775237 is handled. Duration 243 ms by bot id=8224279201
+2025-08-26 16:28:44,730 [INFO] aiogram.event: Update id=590775238 is handled. Duration 161 ms by bot id=8224279201
+2025-08-26 16:28:48,218 [INFO] aiogram.event: Update id=590775239 is handled. Duration 282 ms by bot id=8224279201
+2025-08-26 16:28:51,453 [INFO] aiogram.event: Update id=590775240 is not handled. Duration 5 ms by bot id=8224279201
+2025-08-26 16:28:56,574 [INFO] aiogram.event: Update id=590775241 is handled. Duration 205 ms by bot id=8224279201
+2025-08-26 16:28:58,600 [INFO] aiogram.event: Update id=590775242 is handled. Duration 159 ms by bot id=8224279201
+2025-08-26 16:29:12,872 [INFO] aiogram.event: Update id=590775243 is handled. Duration 172 ms by bot id=8224279201
+2025-08-26 16:31:27,705 [INFO] aiogram.event: Update id=590775244 is handled. Duration 537 ms by bot id=8224279201
+2025-08-26 16:31:30,327 [INFO] aiogram.event: Update id=590775245 is handled. Duration 335 ms by bot id=8224279201
+2025-08-26 16:31:32,563 [INFO] aiogram.event: Update id=590775246 is handled. Duration 223 ms by bot id=8224279201
+2025-08-26 16:31:38,325 [INFO] aiogram.event: Update id=590775247 is handled. Duration 129 ms by bot id=8224279201
+2025-08-26 16:46:48,346 [INFO] __main__: Bot starting...
+2025-08-26 16:46:49,841 [INFO] aiogram.dispatcher: Start polling
+2025-08-26 16:46:50,578 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-26 16:46:56,146 [INFO] aiogram.event: Update id=590775248 is handled. Duration 599 ms by bot id=8224279201
+2025-08-26 16:46:59,729 [INFO] aiogram.event: Update id=590775249 is handled. Duration 204 ms by bot id=8224279201
+2025-08-26 16:47:06,063 [INFO] aiogram.event: Update id=590775250 is handled. Duration 149 ms by bot id=8224279201
+2025-08-26 16:47:19,507 [INFO] aiogram.event: Update id=590775251 is handled. Duration 230 ms by bot id=8224279201
+2025-08-26 16:47:24,402 [INFO] aiogram.event: Update id=590775252 is handled. Duration 220 ms by bot id=8224279201
+2025-08-26 16:47:30,069 [INFO] aiogram.event: Update id=590775253 is handled. Duration 125 ms by bot id=8224279201
+2025-08-26 16:47:32,512 [INFO] aiogram.event: Update id=590775254 is handled. Duration 219 ms by bot id=8224279201
+2025-08-26 16:47:35,332 [INFO] aiogram.event: Update id=590775255 is handled. Duration 127 ms by bot id=8224279201
+2025-08-26 16:47:38,864 [INFO] aiogram.event: Update id=590775256 is handled. Duration 188 ms by bot id=8224279201
+2025-08-26 16:47:40,177 [INFO] aiogram.event: Update id=590775257 is handled. Duration 305 ms by bot id=8224279201
+2025-08-26 16:47:43,571 [INFO] aiogram.event: Update id=590775258 is handled. Duration 134 ms by bot id=8224279201
+2025-08-26 16:47:51,361 [INFO] aiogram.event: Update id=590775259 is handled. Duration 185 ms by bot id=8224279201
+2025-08-26 16:47:55,249 [INFO] aiogram.event: Update id=590775260 is handled. Duration 128 ms by bot id=8224279201
+2025-08-26 16:48:19,995 [INFO] aiogram.event: Update id=590775261 is handled. Duration 730 ms by bot id=8224279201
+2025-08-26 16:48:25,574 [INFO] aiogram.event: Update id=590775262 is handled. Duration 258 ms by bot id=8224279201
+2025-08-26 16:48:42,798 [INFO] aiogram.event: Update id=590775263 is handled. Duration 541 ms by bot id=8224279201
+2025-08-26 16:48:48,842 [INFO] aiogram.event: Update id=590775264 is handled. Duration 318 ms by bot id=8224279201
+2025-08-26 16:49:51,989 [INFO] aiogram.event: Update id=590775265 is handled. Duration 748 ms by bot id=8224279201
+2025-08-26 16:52:01,945 [INFO] aiogram.event: Update id=590775266 is handled. Duration 541 ms by bot id=8224279201
+2025-08-26 16:52:08,122 [INFO] aiogram.event: Update id=590775267 is handled. Duration 237 ms by bot id=8224279201
+2025-08-26 16:52:15,255 [INFO] aiogram.event: Update id=590775268 is handled. Duration 179 ms by bot id=8224279201
+2025-08-26 16:52:19,942 [INFO] aiogram.event: Update id=590775269 is handled. Duration 129 ms by bot id=8224279201
+2025-08-26 16:52:22,997 [INFO] aiogram.event: Update id=590775270 is handled. Duration 237 ms by bot id=8224279201
+2025-08-26 16:53:36,666 [INFO] aiogram.event: Update id=590775271 is handled. Duration 589 ms by bot id=8224279201
+2025-08-26 16:53:48,150 [INFO] aiogram.event: Update id=590775272 is handled. Duration 98 ms by bot id=8224279201
+2025-08-26 16:53:58,116 [INFO] aiogram.event: Update id=590775273 is handled. Duration 174 ms by bot id=8224279201
+2025-08-26 16:54:06,959 [INFO] aiogram.event: Update id=590775274 is handled. Duration 180 ms by bot id=8224279201
+2025-08-26 16:54:18,432 [INFO] __main__: Generated auth secret for user 5012358536
+2025-08-26 16:54:18,543 [INFO] aiogram.event: Update id=590775275 is handled. Duration 121 ms by bot id=8224279201
+2025-08-26 16:54:40,522 [INFO] aiogram.event: Update id=590775276 is handled. Duration 709 ms by bot id=8224279201
+2025-08-26 16:56:25,829 [INFO] aiogram.event: Update id=590775277 is handled. Duration 589 ms by bot id=8224279201
+2025-08-26 16:56:36,119 [INFO] __main__: Generated auth secret for user 5012358536
+2025-08-26 16:56:36,538 [INFO] aiogram.event: Update id=590775278 is handled. Duration 442 ms by bot id=8224279201
+2025-08-26 16:56:42,777 [INFO] aiogram.event: Update id=590775279 is handled. Duration 276 ms by bot id=8224279201
+2025-08-26 16:57:04,623 [INFO] aiogram.event: Update id=590775280 is handled. Duration 22 ms by bot id=8224279201
+2025-08-26 16:57:17,751 [INFO] aiogram.event: Update id=590775281 is handled. Duration 2621 ms by bot id=8224279201
+2025-08-26 16:57:18,743 [INFO] aiogram.event: Update id=590775282 is handled. Duration 598 ms by bot id=8224279201
+2025-08-26 16:57:34,966 [INFO] aiogram.event: Update id=590775283 is handled. Duration 819 ms by bot id=8224279201
+2025-08-26 16:57:37,557 [INFO] aiogram.event: Update id=590775284 is handled. Duration 355 ms by bot id=8224279201
+2025-08-26 16:57:43,536 [INFO] aiogram.event: Update id=590775285 is handled. Duration 198 ms by bot id=8224279201
+2025-08-26 16:57:51,957 [INFO] aiogram.event: Update id=590775286 is handled. Duration 140 ms by bot id=8224279201
+2025-08-26 16:58:06,940 [INFO] aiogram.event: Update id=590775287 is handled. Duration 108 ms by bot id=8224279201
+2025-08-26 16:58:11,744 [INFO] aiogram.event: Update id=590775288 is handled. Duration 154 ms by bot id=8224279201
+2025-08-26 16:58:14,001 [INFO] aiogram.event: Update id=590775289 is handled. Duration 150 ms by bot id=8224279201
+2025-08-26 16:58:24,360 [INFO] aiogram.event: Update id=590775290 is handled. Duration 252 ms by bot id=8224279201
+2025-08-26 16:58:26,289 [INFO] aiogram.event: Update id=590775291 is handled. Duration 206 ms by bot id=8224279201
+2025-08-26 16:58:39,241 [INFO] aiogram.event: Update id=590775292 is handled. Duration 190 ms by bot id=8224279201
+2025-08-26 16:58:41,347 [INFO] aiogram.event: Update id=590775293 is handled. Duration 365 ms by bot id=8224279201
+2025-08-26 16:58:42,761 [INFO] aiogram.event: Update id=590775294 is handled. Duration 136 ms by bot id=8224279201
+2025-08-26 16:58:56,955 [INFO] aiogram.event: Update id=590775295 is handled. Duration 606 ms by bot id=8224279201
+2025-08-26 16:59:05,110 [INFO] aiogram.event: Update id=590775296 is handled. Duration 195 ms by bot id=8224279201
+2025-08-26 16:59:12,981 [INFO] aiogram.event: Update id=590775297 is handled. Duration 133 ms by bot id=8224279201
+2025-08-26 16:59:19,599 [INFO] aiogram.event: Update id=590775298 is handled. Duration 146 ms by bot id=8224279201
+2025-08-26 16:59:22,609 [INFO] aiogram.event: Update id=590775299 is handled. Duration 126 ms by bot id=8224279201
+2025-08-26 16:59:42,348 [INFO] aiogram.event: Update id=590775300 is handled. Duration 653 ms by bot id=8224279201
+2025-08-26 16:59:50,087 [INFO] aiogram.event: Update id=590775301 is handled. Duration 116 ms by bot id=8224279201
+2025-08-26 17:00:12,759 [INFO] aiogram.event: Update id=590775302 is handled. Duration 535 ms by bot id=8224279201
+2025-08-26 17:00:13,862 [INFO] aiogram.event: Update id=590775303 is handled. Duration 195 ms by bot id=8224279201
+2025-08-26 17:00:23,564 [INFO] aiogram.event: Update id=590775304 is handled. Duration 467 ms by bot id=8224279201
+2025-08-26 17:00:25,458 [INFO] aiogram.event: Update id=590775305 is handled. Duration 114 ms by bot id=8224279201
+2025-08-26 17:00:28,534 [INFO] aiogram.event: Update id=590775306 is handled. Duration 407 ms by bot id=8224279201
+2025-08-26 17:00:29,358 [INFO] aiogram.event: Update id=590775307 is handled. Duration 101 ms by bot id=8224279201
+2025-08-26 17:00:33,140 [INFO] aiogram.event: Update id=590775308 is handled. Duration 357 ms by bot id=8224279201
+2025-08-26 17:00:52,107 [INFO] aiogram.event: Update id=590775309 is handled. Duration 10 ms by bot id=8224279201
+2025-08-26 17:00:58,060 [INFO] aiogram.event: Update id=590775310 is handled. Duration 461 ms by bot id=8224279201
+2025-08-26 17:01:22,365 [INFO] aiogram.event: Update id=590775311 is handled. Duration 13 ms by bot id=8224279201
+2025-08-26 17:01:27,770 [INFO] aiogram.event: Update id=590775312 is handled. Duration 480 ms by bot id=8224279201
+2025-08-26 17:01:40,102 [INFO] aiogram.event: Update id=590775313 is handled. Duration 148 ms by bot id=8224279201
+2025-08-26 17:01:41,764 [INFO] aiogram.event: Update id=590775314 is handled. Duration 302 ms by bot id=8224279201
+2025-08-26 17:01:55,008 [INFO] aiogram.event: Update id=590775315 is handled. Duration 404 ms by bot id=8224279201
+2025-08-26 17:27:28,559 [INFO] aiogram.event: Update id=590775316 is handled. Duration 535 ms by bot id=8224279201
+2025-08-26 17:27:34,692 [INFO] aiogram.event: Update id=590775317 is handled. Duration 158 ms by bot id=8224279201
+2025-08-26 17:30:15,355 [INFO] __main__: Bot starting...
+2025-08-26 17:30:15,843 [INFO] aiogram.dispatcher: Start polling
+2025-08-26 17:30:15,917 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-26 17:30:19,531 [INFO] aiogram.event: Update id=590775318 is handled. Duration 635 ms by bot id=8224279201
+2025-08-26 17:30:22,450 [INFO] aiogram.event: Update id=590775319 is handled. Duration 160 ms by bot id=8224279201
+2025-08-26 17:30:55,517 [INFO] aiogram.event: Update id=590775320 is handled. Duration 692 ms by bot id=8224279201
+2025-08-26 17:31:01,748 [INFO] aiogram.event: Update id=590775321 is handled. Duration 213 ms by bot id=8224279201
+2025-08-26 17:31:04,398 [INFO] aiogram.event: Update id=590775322 is handled. Duration 166 ms by bot id=8224279201
+2025-08-26 17:31:13,244 [INFO] aiogram.event: Update id=590775323 is handled. Duration 431 ms by bot id=8224279201
+2025-08-26 17:31:15,067 [INFO] aiogram.event: Update id=590775324 is handled. Duration 165 ms by bot id=8224279201
+2025-08-26 17:31:17,783 [INFO] aiogram.event: Update id=590775325 is handled. Duration 310 ms by bot id=8224279201
+2025-08-26 17:31:19,250 [INFO] aiogram.event: Update id=590775326 is handled. Duration 303 ms by bot id=8224279201
+2025-08-26 17:31:32,455 [INFO] aiogram.event: Update id=590775327 is handled. Duration 18 ms by bot id=8224279201
+2025-08-26 17:31:39,942 [INFO] aiogram.event: Update id=590775328 is handled. Duration 477 ms by bot id=8224279201
+2025-08-26 17:31:41,413 [INFO] aiogram.event: Update id=590775329 is handled. Duration 173 ms by bot id=8224279201
+2025-08-26 17:31:43,631 [INFO] aiogram.event: Update id=590775330 is handled. Duration 542 ms by bot id=8224279201
+2025-08-26 17:31:44,618 [INFO] aiogram.event: Update id=590775331 is handled. Duration 118 ms by bot id=8224279201
+2025-08-26 17:31:48,756 [INFO] aiogram.event: Update id=590775332 is handled. Duration 119 ms by bot id=8224279201
+2025-08-26 17:31:57,304 [INFO] aiogram.event: Update id=590775333 is handled. Duration 11 ms by bot id=8224279201
+2025-08-26 17:32:01,379 [INFO] aiogram.event: Update id=590775334 is handled. Duration 193 ms by bot id=8224279201
+2025-08-26 17:32:09,525 [INFO] aiogram.event: Update id=590775335 is handled. Duration 163 ms by bot id=8224279201
+2025-08-26 17:32:26,682 [INFO] aiogram.event: Update id=590775336 is handled. Duration 591 ms by bot id=8224279201
+2025-08-26 17:32:40,013 [INFO] aiogram.event: Update id=590775337 is handled. Duration 371 ms by bot id=8224279201
+2025-08-26 17:34:07,072 [INFO] aiogram.event: Update id=590775338 is handled. Duration 560 ms by bot id=8224279201
+2025-08-26 18:00:12,329 [INFO] aiogram.event: Update id=590775339 is handled. Duration 13 ms by bot id=8224279201
+2025-08-26 18:00:16,977 [INFO] aiogram.event: Update id=590775340 is handled. Duration 8 ms by bot id=8224279201
+2025-08-26 18:00:18,363 [INFO] aiogram.event: Update id=590775341 is handled. Duration 8 ms by bot id=8224279201
+2025-08-26 18:00:19,537 [INFO] aiogram.event: Update id=590775342 is handled. Duration 7 ms by bot id=8224279201
+2025-08-26 18:00:20,825 [INFO] aiogram.event: Update id=590775343 is handled. Duration 4 ms by bot id=8224279201
+2025-08-26 18:00:22,090 [INFO] aiogram.event: Update id=590775344 is handled. Duration 9 ms by bot id=8224279201
+2025-08-26 18:00:30,440 [INFO] aiogram.event: Update id=590775345 is handled. Duration 7 ms by bot id=8224279201
+2025-08-26 18:00:31,097 [INFO] aiogram.event: Update id=590775346 is handled. Duration 5 ms by bot id=8224279201
+2025-08-26 18:00:31,769 [INFO] aiogram.event: Update id=590775347 is handled. Duration 29 ms by bot id=8224279201
+2025-08-26 18:00:53,743 [INFO] aiogram.event: Update id=590775348 is handled. Duration 579 ms by bot id=8224279201
+2025-08-26 18:00:57,040 [INFO] aiogram.event: Update id=590775349 is handled. Duration 1197 ms by bot id=8224279201
+2025-08-26 18:01:31,592 [INFO] aiogram.event: Update id=590775350 is handled. Duration 1590 ms by bot id=8224279201
+2025-08-26 18:05:10,400 [INFO] aiogram.event: Update id=590775351 is handled. Duration 575 ms by bot id=8224279201
+2025-08-26 18:05:54,970 [INFO] aiogram.event: Update id=590775352 is handled. Duration 797 ms by bot id=8224279201
+2025-08-26 18:28:18,203 [INFO] aiogram.event: Update id=590775353 is handled. Duration 878 ms by bot id=8224279201
+2025-08-26 18:29:13,299 [INFO] aiogram.event: Update id=590775354 is handled. Duration 91 ms by bot id=8224279201
+2025-08-26 18:29:35,504 [INFO] aiogram.event: Update id=590775355 is handled. Duration 566 ms by bot id=8224279201
+2025-08-26 18:29:37,828 [INFO] aiogram.event: Update id=590775356 is handled. Duration 232 ms by bot id=8224279201
+2025-08-26 19:38:30,995 [INFO] __main__: Bot starting...
+2025-08-26 19:38:31,948 [INFO] aiogram.dispatcher: Start polling
+2025-08-26 19:38:32,054 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-26 19:38:53,040 [INFO] aiogram.event: Update id=590775358 is handled. Duration 2034 ms by bot id=8224279201
+2025-08-26 19:38:57,355 [INFO] aiogram.event: Update id=590775359 is handled. Duration 200 ms by bot id=8224279201
+2025-08-26 19:45:24,403 [INFO] __main__: Bot starting...
+2025-08-26 19:45:25,161 [INFO] aiogram.dispatcher: Start polling
+2025-08-26 19:45:25,274 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-26 19:45:37,288 [INFO] aiogram.event: Update id=590775361 is handled. Duration 761 ms by bot id=8224279201
+2025-08-26 19:45:41,491 [INFO] aiogram.event: Update id=590775362 is handled. Duration 168 ms by bot id=8224279201
+2025-08-26 19:45:52,554 [INFO] aiogram.event: Update id=590775363 is handled. Duration 352 ms by bot id=8224279201
+2025-08-26 19:46:04,073 [INFO] aiogram.event: Update id=590775364 is handled. Duration 952 ms by bot id=8224279201
+2025-08-26 19:46:07,702 [INFO] aiogram.event: Update id=590775365 is handled. Duration 1243 ms by bot id=8224279201
+2025-08-26 19:46:22,117 [INFO] aiogram.event: Update id=590775366 is handled. Duration 405 ms by bot id=8224279201
+2025-08-27 13:27:07,748 [INFO] __main__: Bot starting...
+2025-08-27 13:27:07,986 [INFO] aiogram.dispatcher: Start polling
+2025-08-27 13:27:08,041 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-27 13:32:55,748 [INFO] aiogram.event: Update id=590775367 is handled. Duration 383 ms by bot id=8224279201
+2025-08-27 13:57:01,483 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2025-08-27 13:57:01,490 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8224279201)
+2025-08-27 13:57:12,758 [INFO] aiogram.dispatcher: Connection established (tryings = 1, bot id = 8224279201)
+2025-08-27 14:45:53,820 [INFO] __main__: Bot starting...
+2025-08-27 14:45:54,101 [INFO] aiogram.dispatcher: Start polling
+2025-08-27 14:45:54,160 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-27 14:46:05,704 [INFO] aiogram.event: Update id=590775368 is handled. Duration 249 ms by bot id=8224279201
+2025-08-27 14:46:07,663 [INFO] aiogram.event: Update id=590775369 is handled. Duration 73 ms by bot id=8224279201
+2025-08-27 14:46:14,593 [INFO] aiogram.event: Update id=590775370 is handled. Duration 162 ms by bot id=8224279201
+2025-08-27 15:08:07,888 [INFO] __main__: Bot starting...
+2025-08-27 15:08:08,237 [INFO] aiogram.dispatcher: Start polling
+2025-08-27 15:08:08,297 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-27 15:08:13,159 [INFO] aiogram.event: Update id=590775371 is handled. Duration 300 ms by bot id=8224279201
+2025-08-27 15:08:15,187 [INFO] aiogram.event: Update id=590775372 is handled. Duration 167 ms by bot id=8224279201
+2025-08-27 15:08:18,481 [INFO] aiogram.event: Update id=590775373 is handled. Duration 475 ms by bot id=8224279201
+2025-08-27 15:28:58,871 [INFO] __main__: Bot starting...
+2025-08-27 15:28:59,100 [INFO] aiogram.dispatcher: Start polling
+2025-08-27 15:28:59,154 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-27 15:29:02,701 [INFO] aiogram.event: Update id=590775374 is handled. Duration 350 ms by bot id=8224279201
+2025-08-27 15:29:04,905 [INFO] aiogram.event: Update id=590775375 is handled. Duration 79 ms by bot id=8224279201
+2025-08-27 15:29:14,716 [INFO] aiogram.event: Update id=590775376 is handled. Duration 219 ms by bot id=8224279201
+2025-08-27 16:24:05,338 [INFO] __main__: Bot starting...
+2025-08-27 16:24:05,554 [INFO] aiogram.dispatcher: Start polling
+2025-08-27 16:24:05,609 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-27 16:24:09,391 [INFO] aiogram.event: Update id=590775378 is handled. Duration 288 ms by bot id=8224279201
+2025-08-27 16:24:14,879 [INFO] aiogram.event: Update id=590775379 is handled. Duration 420 ms by bot id=8224279201
+2025-08-27 16:24:30,618 [INFO] __main__: Generated auth secret for user 156414561
+2025-08-27 16:24:30,839 [INFO] aiogram.event: Update id=590775380 is handled. Duration 227 ms by bot id=8224279201
+2025-08-27 19:49:35,257 [INFO] __main__: Bot starting...
+2025-08-27 19:49:36,265 [INFO] aiogram.dispatcher: Start polling
+2025-08-27 19:49:37,390 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-27 19:49:44,366 [INFO] aiogram.event: Update id=590775381 is handled. Duration 564 ms by bot id=8224279201
+2025-08-27 19:49:52,638 [INFO] aiogram.event: Update id=590775382 is handled. Duration 145 ms by bot id=8224279201
+2025-08-27 19:50:01,910 [INFO] aiogram.event: Update id=590775383 is handled. Duration 191 ms by bot id=8224279201
+2025-08-27 19:50:04,574 [INFO] aiogram.event: Update id=590775384 is handled. Duration 331 ms by bot id=8224279201
+2025-08-27 19:50:14,696 [INFO] aiogram.event: Update id=590775385 is handled. Duration 237 ms by bot id=8224279201
+2025-08-27 19:50:19,845 [INFO] aiogram.event: Update id=590775386 is handled. Duration 194 ms by bot id=8224279201
+2025-08-27 19:50:27,513 [INFO] aiogram.event: Update id=590775387 is handled. Duration 180 ms by bot id=8224279201
+2025-08-27 19:50:31,349 [INFO] aiogram.event: Update id=590775388 is handled. Duration 197 ms by bot id=8224279201
+2025-08-27 19:50:34,654 [INFO] aiogram.event: Update id=590775389 is handled. Duration 240 ms by bot id=8224279201
+2025-08-27 19:50:44,464 [INFO] aiogram.event: Update id=590775390 is handled. Duration 271 ms by bot id=8224279201
+2025-08-27 19:51:00,053 [INFO] aiogram.event: Update id=590775391 is handled. Duration 493 ms by bot id=8224279201
+2025-08-27 19:51:03,405 [INFO] aiogram.event: Update id=590775392 is handled. Duration 155 ms by bot id=8224279201
+2025-08-27 19:51:06,224 [INFO] aiogram.event: Update id=590775393 is handled. Duration 103 ms by bot id=8224279201
+2025-08-27 19:51:09,070 [INFO] aiogram.event: Update id=590775394 is handled. Duration 154 ms by bot id=8224279201
+2025-08-27 19:51:21,598 [INFO] aiogram.event: Update id=590775395 is handled. Duration 152 ms by bot id=8224279201
+2025-08-27 19:51:27,727 [INFO] aiogram.event: Update id=590775396 is handled. Duration 152 ms by bot id=8224279201
+2025-08-27 19:51:28,970 [INFO] aiogram.event: Update id=590775397 is handled. Duration 143 ms by bot id=8224279201
+2025-08-27 19:51:44,786 [INFO] aiogram.event: Update id=590775398 is handled. Duration 7 ms by bot id=8224279201
+2025-08-27 19:51:52,639 [INFO] aiogram.event: Update id=590775399 is handled. Duration 545 ms by bot id=8224279201
+2025-08-27 19:52:01,407 [INFO] aiogram.event: Update id=590775400 is handled. Duration 181 ms by bot id=8224279201
+2025-08-27 19:52:25,850 [INFO] aiogram.event: Update id=590775401 is handled. Duration 520 ms by bot id=8224279201
+2025-08-27 19:52:29,088 [INFO] aiogram.event: Update id=590775402 is handled. Duration 198 ms by bot id=8224279201
+2025-08-27 19:52:30,786 [INFO] __main__: Generated auth secret for user 156414561
+2025-08-27 19:52:30,919 [INFO] aiogram.event: Update id=590775403 is handled. Duration 137 ms by bot id=8224279201
+2025-08-27 19:52:37,196 [INFO] aiogram.event: Update id=590775404 is handled. Duration 202 ms by bot id=8224279201
+2025-08-27 19:52:48,921 [INFO] aiogram.event: Update id=590775405 is handled. Duration 229 ms by bot id=8224279201
+2025-08-27 19:52:54,672 [INFO] aiogram.event: Update id=590775406 is handled. Duration 105 ms by bot id=8224279201
+2025-08-27 19:52:56,369 [INFO] aiogram.event: Update id=590775407 is handled. Duration 118 ms by bot id=8224279201
+2025-08-27 19:53:02,761 [INFO] aiogram.event: Update id=590775408 is handled. Duration 299 ms by bot id=8224279201
+2025-08-27 19:57:16,370 [INFO] aiogram.event: Update id=590775409 is handled. Duration 579 ms by bot id=8224279201
+2025-08-27 19:57:30,351 [INFO] aiogram.event: Update id=590775410 is handled. Duration 149 ms by bot id=8224279201
+2025-08-27 19:58:34,467 [INFO] aiogram.event: Update id=590775411 is handled. Duration 545 ms by bot id=8224279201
+2025-08-27 19:58:35,863 [INFO] aiogram.event: Update id=590775412 is handled. Duration 158 ms by bot id=8224279201
+2025-08-27 19:58:38,946 [INFO] aiogram.event: Update id=590775413 is handled. Duration 141 ms by bot id=8224279201
+2025-08-27 19:58:41,925 [INFO] aiogram.event: Update id=590775414 is handled. Duration 137 ms by bot id=8224279201
+2025-08-27 20:06:24,758 [INFO] __main__: Bot starting...
+2025-08-27 20:06:25,320 [INFO] aiogram.dispatcher: Start polling
+2025-08-27 20:06:25,401 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-27 20:06:30,335 [INFO] aiogram.event: Update id=590775416 is handled. Duration 748 ms by bot id=8224279201
+2025-08-27 20:06:34,320 [INFO] aiogram.event: Update id=590775417 is handled. Duration 195 ms by bot id=8224279201
+2025-08-27 20:06:37,666 [INFO] aiogram.event: Update id=590775418 is handled. Duration 286 ms by bot id=8224279201
+2025-08-27 20:06:39,241 [INFO] aiogram.event: Update id=590775419 is handled. Duration 141 ms by bot id=8224279201
+2025-08-27 20:06:50,057 [INFO] aiogram.event: Update id=590775420 is handled. Duration 133 ms by bot id=8224279201
+2025-08-27 20:07:04,676 [INFO] aiogram.event: Update id=590775421 is handled. Duration 172 ms by bot id=8224279201
+2025-08-27 20:07:11,797 [INFO] aiogram.event: Update id=590775422 is handled. Duration 165 ms by bot id=8224279201
+2025-08-27 20:07:14,305 [INFO] aiogram.event: Update id=590775423 is handled. Duration 154 ms by bot id=8224279201
+2025-08-27 20:07:21,113 [INFO] aiogram.event: Update id=590775424 is handled. Duration 192 ms by bot id=8224279201
+2025-08-27 20:07:23,381 [INFO] aiogram.event: Update id=590775425 is handled. Duration 212 ms by bot id=8224279201
+2025-08-27 20:08:15,675 [INFO] aiogram.event: Update id=590775426 is handled. Duration 469 ms by bot id=8224279201
+2025-08-27 20:10:40,876 [INFO] aiogram.event: Update id=590775427 is handled. Duration 537 ms by bot id=8224279201
+2025-08-27 20:10:41,833 [INFO] aiogram.event: Update id=590775428 is handled. Duration 119 ms by bot id=8224279201
+2025-08-27 20:12:14,382 [INFO] aiogram.event: Update id=590775429 is handled. Duration 534 ms by bot id=8224279201
+2025-08-27 20:12:16,349 [INFO] aiogram.event: Update id=590775430 is handled. Duration 163 ms by bot id=8224279201
+2025-08-27 20:12:18,238 [INFO] aiogram.event: Update id=590775431 is handled. Duration 160 ms by bot id=8224279201
+2025-08-27 20:12:39,434 [INFO] aiogram.event: Update id=590775432 is handled. Duration 376 ms by bot id=8224279201
+2025-08-27 20:12:46,793 [INFO] aiogram.event: Update id=590775433 is handled. Duration 6 ms by bot id=8224279201
+2025-08-27 20:13:08,759 [INFO] aiogram.event: Update id=590775434 is handled. Duration 471 ms by bot id=8224279201
+2025-08-27 20:13:11,163 [INFO] aiogram.event: Update id=590775435 is handled. Duration 145 ms by bot id=8224279201
+2025-08-27 20:13:14,634 [INFO] aiogram.event: Update id=590775436 is handled. Duration 7 ms by bot id=8224279201
+2025-08-27 20:13:30,478 [INFO] aiogram.event: Update id=590775437 is handled. Duration 500 ms by bot id=8224279201
+2025-08-27 20:13:31,938 [INFO] aiogram.event: Update id=590775438 is handled. Duration 7 ms by bot id=8224279201
+2025-08-27 20:17:15,097 [INFO] aiogram.event: Update id=590775439 is handled. Duration 599 ms by bot id=8224279201
+2025-08-27 20:17:15,824 [INFO] aiogram.event: Update id=590775440 is handled. Duration 105 ms by bot id=8224279201
+2025-08-27 20:17:30,273 [INFO] aiogram.event: Update id=590775441 is handled. Duration 7 ms by bot id=8224279201
+2025-08-27 20:17:44,828 [INFO] aiogram.event: Update id=590775442 is handled. Duration 498 ms by bot id=8224279201
+2025-08-27 20:17:47,010 [INFO] aiogram.event: Update id=590775443 is handled. Duration 4 ms by bot id=8224279201
+2025-08-27 20:33:39,144 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2025-08-27 20:33:39,147 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8224279201)
+2025-08-27 20:33:50,836 [INFO] aiogram.dispatcher: Connection established (tryings = 1, bot id = 8224279201)
+2025-08-27 22:51:06,927 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2025-08-27 22:51:06,931 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8224279201)
+2025-08-27 22:51:18,535 [INFO] aiogram.dispatcher: Connection established (tryings = 1, bot id = 8224279201)
+2025-08-27 23:18:06,633 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2025-08-27 23:18:06,633 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8224279201)
+2025-08-27 23:18:18,152 [INFO] aiogram.dispatcher: Connection established (tryings = 1, bot id = 8224279201)
+2025-08-27 23:36:07,428 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2025-08-27 23:36:07,429 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8224279201)
+2025-08-27 23:36:18,930 [INFO] aiogram.dispatcher: Connection established (tryings = 1, bot id = 8224279201)
+2025-08-28 02:01:07,566 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2025-08-28 02:01:07,570 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8224279201)
+2025-08-28 02:01:19,169 [INFO] aiogram.dispatcher: Connection established (tryings = 1, bot id = 8224279201)
+2025-08-28 04:17:58,596 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - ClientOSError: [Errno 60] Operation timed out
+2025-08-28 04:17:58,597 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8224279201)
+2025-08-28 04:18:20,879 [INFO] aiogram.dispatcher: Connection established (tryings = 1, bot id = 8224279201)
+2025-08-28 04:46:17,961 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - ClientOSError: [Errno 60] Operation timed out
+2025-08-28 04:46:17,963 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8224279201)
+2025-08-28 04:46:39,408 [INFO] aiogram.dispatcher: Connection established (tryings = 1, bot id = 8224279201)
+2025-08-28 06:37:56,944 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - ClientOSError: [Errno 60] Operation timed out
+2025-08-28 06:37:56,946 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8224279201)
+2025-08-28 06:38:21,084 [INFO] aiogram.dispatcher: Connection established (tryings = 1, bot id = 8224279201)
+2025-08-28 07:01:28,564 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2025-08-28 07:01:28,566 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8224279201)
+2025-08-28 07:01:40,147 [INFO] aiogram.dispatcher: Connection established (tryings = 1, bot id = 8224279201)
+2025-08-28 07:13:33,556 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - ClientOSError: [Errno 60] Operation timed out
+2025-08-28 07:13:33,559 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8224279201)
+2025-08-28 07:13:54,737 [INFO] aiogram.dispatcher: Connection established (tryings = 1, bot id = 8224279201)
+2025-08-28 09:18:27,410 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2025-08-28 09:18:27,412 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8224279201)
+2025-08-28 09:18:39,148 [INFO] aiogram.dispatcher: Connection established (tryings = 1, bot id = 8224279201)
+2025-08-28 11:38:37,229 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2025-08-28 11:38:37,232 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8224279201)
+2025-08-28 12:01:33,070 [INFO] aiogram.dispatcher: Connection established (tryings = 1, bot id = 8224279201)
+2025-08-28 13:21:03,622 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2025-08-28 13:21:03,623 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8224279201)
+2025-08-28 13:37:43,463 [INFO] aiogram.dispatcher: Connection established (tryings = 1, bot id = 8224279201)
+2025-08-28 20:58:26,811 [INFO] aiogram.event: Update id=590775444 is handled. Duration 562 ms by bot id=8224279201
+2025-08-28 20:58:29,184 [INFO] aiogram.event: Update id=590775445 is handled. Duration 155 ms by bot id=8224279201
+2025-08-28 20:58:31,644 [INFO] aiogram.event: Update id=590775446 is not handled. Duration 385 ms by bot id=8224279201
+2025-08-28 20:58:31,646 [ERROR] aiogram.event: Cause exception while process update id=590775446 by bot id=8224279201
+TelegramBadRequest: Telegram server says - Bad Request: text must be non-empty
+Traceback (most recent call last):
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/middlewares/error.py", line 25, in __call__
+    return await handler(event, data)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 49, in __call__
+    return await handler(event, data)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/fsm/middleware.py", line 42, in __call__
+    return await handler(event, data)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/event/telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/event/handler.py", line 43, in call
+    return await wrapped()
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/router.py", line 142, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/router.py", line 137, in _wrapped
+    return await self._propagate_event(
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/router.py", line 162, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/event/telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/event/handler.py", line 43, in call
+    return await wrapped()
+  File "/Users/waldemar/Documents/tg-id-bot/bot.py", line 311, in admin_exports_menu
+    await show_menu(message, "admin.exports")
+  File "/Users/waldemar/Documents/tg-id-bot/bot.py", line 188, in show_menu
+    await message.answer(" ", reply_markup=kb_back_only())
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/methods/base.py", line 84, in emit
+    return await bot(self)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/client/bot.py", line 509, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/client/session/base.py", line 254, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/client/session/aiohttp.py", line 178, in make_request
+    response = self.check_response(
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/client/session/base.py", line 120, in check_response
+    raise TelegramBadRequest(method=method, message=description)
+aiogram.exceptions.TelegramBadRequest: Telegram server says - Bad Request: text must be non-empty
+2025-08-28 20:58:39,787 [INFO] aiogram.event: Update id=590775447 is handled. Duration 402 ms by bot id=8224279201
+2025-08-28 20:58:48,036 [INFO] aiogram.event: Update id=590775448 is handled. Duration 117 ms by bot id=8224279201
+2025-08-28 20:58:49,541 [INFO] aiogram.event: Update id=590775449 is handled. Duration 283 ms by bot id=8224279201
+2025-08-28 20:58:53,748 [INFO] aiogram.event: Update id=590775450 is handled. Duration 183 ms by bot id=8224279201
+2025-08-28 21:04:48,285 [INFO] __main__: Bot starting...
+2025-08-28 21:04:48,773 [INFO] aiogram.dispatcher: Start polling
+2025-08-28 21:04:48,853 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-28 21:04:58,141 [INFO] aiogram.event: Update id=590775451 is handled. Duration 598 ms by bot id=8224279201
+2025-08-28 21:05:03,862 [INFO] aiogram.event: Update id=590775452 is handled. Duration 333 ms by bot id=8224279201
+2025-08-28 21:05:08,602 [INFO] aiogram.event: Update id=590775453 is handled. Duration 145 ms by bot id=8224279201
+2025-08-28 21:05:22,042 [INFO] aiogram.event: Update id=590775454 is handled. Duration 209 ms by bot id=8224279201
+2025-08-28 21:05:25,461 [INFO] aiogram.event: Update id=590775455 is handled. Duration 1010 ms by bot id=8224279201
+2025-08-28 21:06:19,498 [INFO] aiogram.event: Update id=590775456 is handled. Duration 468 ms by bot id=8224279201
+2025-08-28 21:06:25,735 [INFO] aiogram.event: Update id=590775457 is handled. Duration 178 ms by bot id=8224279201
+2025-08-28 21:06:31,967 [INFO] aiogram.event: Update id=590775458 is handled. Duration 109 ms by bot id=8224279201
+2025-08-28 21:07:02,638 [INFO] aiogram.event: Update id=590775459 is handled. Duration 408 ms by bot id=8224279201
+2025-08-28 21:07:05,185 [INFO] aiogram.event: Update id=590775460 is handled. Duration 148 ms by bot id=8224279201
+2025-08-28 21:07:07,187 [INFO] aiogram.event: Update id=590775461 is handled. Duration 171 ms by bot id=8224279201
+2025-08-28 21:08:16,330 [INFO] aiogram.event: Update id=590775462 is handled. Duration 578 ms by bot id=8224279201
+2025-08-28 21:08:31,072 [INFO] aiogram.event: Update id=590775463 is handled. Duration 130 ms by bot id=8224279201
+2025-08-28 21:08:36,051 [INFO] aiogram.event: Update id=590775464 is handled. Duration 109 ms by bot id=8224279201
+2025-08-28 21:08:49,501 [INFO] aiogram.event: Update id=590775465 is handled. Duration 115 ms by bot id=8224279201
+2025-08-28 21:09:15,039 [INFO] aiogram.event: Update id=590775466 is handled. Duration 435 ms by bot id=8224279201
+2025-08-28 21:09:19,695 [INFO] aiogram.event: Update id=590775467 is handled. Duration 126 ms by bot id=8224279201
+2025-08-28 21:09:21,158 [INFO] aiogram.event: Update id=590775468 is handled. Duration 263 ms by bot id=8224279201
+2025-08-28 21:09:26,652 [INFO] aiogram.event: Update id=590775469 is handled. Duration 150 ms by bot id=8224279201
+2025-08-28 21:09:40,825 [INFO] aiogram.event: Update id=590775470 is handled. Duration 149 ms by bot id=8224279201
+2025-08-28 21:09:43,987 [INFO] aiogram.event: Update id=590775471 is handled. Duration 175 ms by bot id=8224279201
+2025-08-28 21:09:49,517 [INFO] aiogram.event: Update id=590775472 is handled. Duration 155 ms by bot id=8224279201
+2025-08-28 21:09:55,131 [INFO] aiogram.event: Update id=590775473 is handled. Duration 178 ms by bot id=8224279201
+2025-08-28 21:09:58,894 [INFO] aiogram.event: Update id=590775474 is handled. Duration 180 ms by bot id=8224279201
+2025-08-28 21:10:56,918 [INFO] aiogram.event: Update id=590775475 is handled. Duration 722 ms by bot id=8224279201
+2025-08-28 21:11:02,377 [INFO] aiogram.event: Update id=590775476 is handled. Duration 276 ms by bot id=8224279201
+2025-08-28 21:11:11,333 [INFO] aiogram.event: Update id=590775477 is handled. Duration 127 ms by bot id=8224279201
+2025-08-28 21:11:27,194 [INFO] aiogram.event: Update id=590775478 is handled. Duration 698 ms by bot id=8224279201
+2025-08-28 21:11:37,018 [INFO] aiogram.event: Update id=590775479 is handled. Duration 227 ms by bot id=8224279201
+2025-08-28 21:11:57,425 [INFO] aiogram.event: Update id=590775480 is handled. Duration 578 ms by bot id=8224279201
+2025-08-28 21:12:02,652 [INFO] aiogram.event: Update id=590775481 is handled. Duration 134 ms by bot id=8224279201
+2025-08-28 21:12:06,532 [INFO] aiogram.event: Update id=590775482 is handled. Duration 258 ms by bot id=8224279201
+2025-08-28 21:12:14,696 [INFO] aiogram.event: Update id=590775483 is handled. Duration 294 ms by bot id=8224279201
+2025-08-28 21:12:18,002 [INFO] aiogram.event: Update id=590775484 is handled. Duration 135 ms by bot id=8224279201
+2025-08-28 21:13:07,900 [INFO] aiogram.event: Update id=590775485 is handled. Duration 459 ms by bot id=8224279201
+2025-08-28 21:13:09,257 [INFO] aiogram.event: Update id=590775486 is handled. Duration 166 ms by bot id=8224279201
+2025-08-28 21:13:16,495 [INFO] aiogram.event: Update id=590775487 is handled. Duration 205 ms by bot id=8224279201
+2025-08-28 21:13:18,825 [INFO] aiogram.event: Update id=590775488 is handled. Duration 117 ms by bot id=8224279201
+2025-08-28 21:13:25,379 [INFO] aiogram.event: Update id=590775489 is handled. Duration 160 ms by bot id=8224279201
+2025-08-28 21:13:26,703 [INFO] __main__: Generated auth secret for user 156414561
+2025-08-28 21:13:26,834 [INFO] aiogram.event: Update id=590775490 is handled. Duration 136 ms by bot id=8224279201
+2025-08-28 21:13:33,565 [INFO] aiogram.event: Update id=590775491 is handled. Duration 350 ms by bot id=8224279201
+2025-08-28 21:13:37,429 [INFO] aiogram.event: Update id=590775492 is not handled. Duration 93 ms by bot id=8224279201
+2025-08-28 21:13:37,430 [ERROR] aiogram.event: Cause exception while process update id=590775492 by bot id=8224279201
+TelegramBadRequest: Telegram server says - Bad Request: can't parse entities: Unsupported start tag "пароль" at byte offset 61
+Traceback (most recent call last):
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/middlewares/error.py", line 25, in __call__
+    return await handler(event, data)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/middlewares/user_context.py", line 49, in __call__
+    return await handler(event, data)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/fsm/middleware.py", line 42, in __call__
+    return await handler(event, data)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/event/telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/event/handler.py", line 43, in call
+    return await wrapped()
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/router.py", line 142, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/router.py", line 137, in _wrapped
+    return await self._propagate_event(
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/router.py", line 162, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/event/telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/dispatcher/event/handler.py", line 43, in call
+    return await wrapped()
+  File "/Users/waldemar/Documents/tg-id-bot/bot.py", line 436, in authorize_group
+    await message.reply(t(lang, "authorize_need_token"))
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/methods/base.py", line 84, in emit
+    return await bot(self)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/client/bot.py", line 509, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/client/session/base.py", line 254, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/client/session/aiohttp.py", line 178, in make_request
+    response = self.check_response(
+  File "/Users/waldemar/Documents/tg-id-bot/.venv/lib/python3.9/site-packages/aiogram/client/session/base.py", line 120, in check_response
+    raise TelegramBadRequest(method=method, message=description)
+aiogram.exceptions.TelegramBadRequest: Telegram server says - Bad Request: can't parse entities: Unsupported start tag "пароль" at byte offset 61
+2025-08-28 21:13:52,498 [INFO] aiogram.event: Update id=590775493 is not handled. Duration 11 ms by bot id=8224279201
+2025-08-28 21:13:58,014 [INFO] aiogram.event: Update id=590775494 is handled. Duration 535 ms by bot id=8224279201
+2025-08-28 21:14:02,926 [INFO] aiogram.event: Update id=590775495 is not handled. Duration 6 ms by bot id=8224279201
+2025-08-28 21:14:08,019 [INFO] aiogram.event: Update id=590775496 is handled. Duration 155 ms by bot id=8224279201
+2025-08-28 21:14:20,825 [INFO] aiogram.event: Update id=590775497 is handled. Duration 853 ms by bot id=8224279201
+2025-08-28 21:14:41,810 [INFO] aiogram.event: Update id=590775498 is handled. Duration 494 ms by bot id=8224279201
+2025-08-28 21:14:43,634 [INFO] aiogram.event: Update id=590775499 is handled. Duration 185 ms by bot id=8224279201
+2025-08-28 21:17:59,250 [INFO] aiogram.event: Update id=590775500 is handled. Duration 556 ms by bot id=8224279201
+2025-08-28 21:18:13,856 [INFO] aiogram.event: Update id=590775501 is handled. Duration 294 ms by bot id=8224279201
+2025-08-28 21:18:17,655 [INFO] aiogram.event: Update id=590775502 is handled. Duration 177 ms by bot id=8224279201
+2025-08-28 21:20:00,708 [INFO] aiogram.event: Update id=590775503 is handled. Duration 847 ms by bot id=8224279201
+2025-08-28 21:22:37,510 [INFO] aiogram.event: Update id=590775504 is handled. Duration 518 ms by bot id=8224279201
+2025-08-28 21:22:39,209 [INFO] aiogram.event: Update id=590775505 is handled. Duration 347 ms by bot id=8224279201
+2025-08-28 21:22:47,971 [INFO] aiogram.event: Update id=590775506 is handled. Duration 111 ms by bot id=8224279201
+2025-08-28 21:22:59,799 [INFO] aiogram.event: Update id=590775507 is handled. Duration 201 ms by bot id=8224279201
+2025-08-28 21:23:00,916 [INFO] aiogram.event: Update id=590775508 is handled. Duration 104 ms by bot id=8224279201
+2025-08-28 21:23:02,785 [INFO] aiogram.event: Update id=590775509 is handled. Duration 123 ms by bot id=8224279201
+2025-08-28 21:23:10,165 [INFO] aiogram.event: Update id=590775510 is handled. Duration 123 ms by bot id=8224279201
+2025-08-28 21:23:29,799 [INFO] aiogram.event: Update id=590775511 is handled. Duration 536 ms by bot id=8224279201
+2025-08-28 21:23:32,385 [INFO] aiogram.event: Update id=590775512 is handled. Duration 331 ms by bot id=8224279201
+2025-08-28 21:23:35,029 [INFO] aiogram.event: Update id=590775513 is handled. Duration 245 ms by bot id=8224279201
+2025-08-28 21:24:14,064 [INFO] aiogram.event: Update id=590775514 is handled. Duration 14 ms by bot id=8224279201
+2025-08-28 21:24:20,180 [INFO] aiogram.event: Update id=590775515 is handled. Duration 562 ms by bot id=8224279201
+2025-08-28 22:05:56,290 [INFO] __main__: Bot starting...
+2025-08-28 22:05:57,323 [INFO] aiogram.dispatcher: Start polling
+2025-08-28 22:05:57,441 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-28 22:06:02,565 [INFO] aiogram.event: Update id=590775516 is handled. Duration 1495 ms by bot id=8224279201
+2025-08-28 22:06:12,951 [INFO] aiogram.event: Update id=590775517 is handled. Duration 172 ms by bot id=8224279201
+2025-08-28 22:06:16,590 [INFO] aiogram.event: Update id=590775518 is handled. Duration 1871 ms by bot id=8224279201
+2025-08-28 22:06:21,745 [INFO] aiogram.event: Update id=590775519 is handled. Duration 2638 ms by bot id=8224279201
+2025-08-28 22:06:26,668 [INFO] aiogram.event: Update id=590775520 is handled. Duration 228 ms by bot id=8224279201
+2025-08-28 22:06:31,446 [INFO] aiogram.event: Update id=590775521 is handled. Duration 154 ms by bot id=8224279201
+2025-08-28 22:06:33,623 [INFO] aiogram.event: Update id=590775522 is handled. Duration 194 ms by bot id=8224279201
+2025-08-28 22:07:01,731 [INFO] aiogram.event: Update id=590775523 is handled. Duration 5 ms by bot id=8224279201
+2025-08-28 22:07:13,274 [INFO] aiogram.event: Update id=590775524 is handled. Duration 628 ms by bot id=8224279201
+2025-08-28 22:07:15,130 [INFO] aiogram.event: Update id=590775525 is handled. Duration 161 ms by bot id=8224279201
+2025-08-28 22:07:18,603 [INFO] aiogram.event: Update id=590775526 is handled. Duration 116 ms by bot id=8224279201
+2025-08-28 22:07:21,245 [INFO] aiogram.event: Update id=590775527 is handled. Duration 194 ms by bot id=8224279201
+2025-08-28 22:07:31,874 [INFO] aiogram.event: Update id=590775528 is handled. Duration 120 ms by bot id=8224279201
+2025-08-28 22:07:40,151 [INFO] aiogram.event: Update id=590775529 is handled. Duration 577 ms by bot id=8224279201
+2025-08-28 22:07:52,672 [INFO] aiogram.event: Update id=590775530 is handled. Duration 156 ms by bot id=8224279201
+2025-08-28 22:07:55,766 [INFO] aiogram.event: Update id=590775531 is handled. Duration 321 ms by bot id=8224279201
+2025-08-28 22:08:05,939 [INFO] aiogram.event: Update id=590775532 is handled. Duration 112 ms by bot id=8224279201
+2025-08-28 22:08:28,540 [INFO] aiogram.event: Update id=590775533 is handled. Duration 589 ms by bot id=8224279201
+2025-08-28 22:08:31,221 [INFO] aiogram.event: Update id=590775534 is handled. Duration 237 ms by bot id=8224279201
+2025-08-28 22:08:34,432 [INFO] aiogram.event: Update id=590775535 is handled. Duration 124 ms by bot id=8224279201
+2025-08-28 22:08:42,048 [INFO] aiogram.event: Update id=590775536 is handled. Duration 157 ms by bot id=8224279201
+2025-08-28 22:08:44,225 [INFO] aiogram.event: Update id=590775537 is handled. Duration 291 ms by bot id=8224279201
+2025-08-28 22:09:14,165 [INFO] aiogram.event: Update id=590775538 is handled. Duration 563 ms by bot id=8224279201
+2025-08-28 22:09:21,434 [INFO] aiogram.event: Update id=590775539 is handled. Duration 10 ms by bot id=8224279201
+2025-08-28 22:09:35,832 [INFO] aiogram.event: Update id=590775540 is handled. Duration 404 ms by bot id=8224279201
+2025-08-28 22:09:37,705 [INFO] aiogram.event: Update id=590775541 is handled. Duration 168 ms by bot id=8224279201
+2025-08-28 22:09:47,403 [INFO] aiogram.event: Update id=590775542 is handled. Duration 109 ms by bot id=8224279201
+2025-08-28 22:09:54,397 [INFO] aiogram.event: Update id=590775543 is handled. Duration 132 ms by bot id=8224279201
+2025-08-28 22:10:06,562 [INFO] aiogram.event: Update id=590775544 is handled. Duration 190 ms by bot id=8224279201
+2025-08-28 22:10:08,474 [INFO] __main__: Generated auth secret for user 156414561
+2025-08-28 22:10:08,648 [INFO] aiogram.event: Update id=590775545 is handled. Duration 186 ms by bot id=8224279201
+2025-08-28 22:10:15,350 [INFO] aiogram.event: Update id=590775546 is handled. Duration 859 ms by bot id=8224279201
+2025-08-28 22:10:20,760 [INFO] aiogram.event: Update id=590775547 is handled. Duration 215 ms by bot id=8224279201
+2025-08-28 22:10:22,608 [INFO] aiogram.event: Update id=590775548 is handled. Duration 122 ms by bot id=8224279201
+2025-08-28 22:18:53,338 [INFO] __main__: Bot starting...
+2025-08-28 22:18:54,875 [INFO] aiogram.dispatcher: Start polling
+2025-08-28 22:18:54,977 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-28 22:19:00,586 [INFO] aiogram.event: Update id=590775550 is handled. Duration 1263 ms by bot id=8224279201
+2025-08-28 22:19:06,618 [INFO] aiogram.event: Update id=590775551 is handled. Duration 250 ms by bot id=8224279201
+2025-08-28 22:19:09,914 [INFO] aiogram.event: Update id=590775552 is handled. Duration 216 ms by bot id=8224279201
+2025-08-28 22:23:21,393 [INFO] aiogram.event: Update id=590775553 is not handled. Duration 75 ms by bot id=8224279201
+2025-08-28 22:50:06,614 [INFO] __main__: Bot starting...
+2025-08-28 22:50:07,355 [INFO] aiogram.dispatcher: Start polling
+2025-08-28 22:50:07,471 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-28 22:50:41,710 [INFO] aiogram.event: Update id=590775554 is handled. Duration 775 ms by bot id=8224279201
+2025-08-28 22:50:45,150 [INFO] aiogram.event: Update id=590775555 is handled. Duration 138 ms by bot id=8224279201
+2025-08-28 22:50:49,663 [INFO] aiogram.event: Update id=590775556 is handled. Duration 167 ms by bot id=8224279201
+2025-08-28 22:51:06,164 [INFO] aiogram.event: Update id=590775557 is handled. Duration 1690 ms by bot id=8224279201
+2025-08-28 22:51:09,428 [INFO] aiogram.event: Update id=590775558 is handled. Duration 225 ms by bot id=8224279201
+2025-08-28 22:51:14,253 [INFO] aiogram.event: Update id=590775559 is handled. Duration 192 ms by bot id=8224279201
+2025-08-28 22:51:25,745 [INFO] aiogram.event: Update id=590775560 is handled. Duration 1851 ms by bot id=8224279201
+2025-08-28 22:51:30,318 [INFO] aiogram.event: Update id=590775561 is handled. Duration 165 ms by bot id=8224279201
+2025-08-28 22:51:34,707 [INFO] aiogram.event: Update id=590775562 is handled. Duration 178 ms by bot id=8224279201
+2025-08-28 22:51:37,678 [INFO] __main__: Generated auth secret for user 156414561
+2025-08-28 22:51:37,845 [INFO] aiogram.event: Update id=590775563 is handled. Duration 198 ms by bot id=8224279201
+2025-08-28 22:51:41,181 [INFO] aiogram.event: Update id=590775564 is handled. Duration 150 ms by bot id=8224279201
+2025-08-28 22:51:44,169 [INFO] aiogram.event: Update id=590775565 is handled. Duration 142 ms by bot id=8224279201
+2025-08-28 22:52:05,452 [INFO] aiogram.event: Update id=590775566 is handled. Duration 552 ms by bot id=8224279201
+2025-08-28 22:53:33,419 [INFO] aiogram.event: Update id=590775567 is handled. Duration 506 ms by bot id=8224279201
+2025-08-28 22:53:35,742 [INFO] aiogram.event: Update id=590775568 is handled. Duration 885 ms by bot id=8224279201
+2025-08-28 22:58:44,561 [INFO] __main__: Bot starting...
+2025-08-28 22:58:45,128 [INFO] aiogram.dispatcher: Start polling
+2025-08-28 22:58:45,233 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-28 22:58:53,667 [INFO] aiogram.event: Update id=590775569 is handled. Duration 572 ms by bot id=8224279201
+2025-08-28 22:58:56,869 [INFO] aiogram.event: Update id=590775570 is handled. Duration 147 ms by bot id=8224279201
+2025-08-28 22:59:00,285 [INFO] aiogram.event: Update id=590775571 is handled. Duration 192 ms by bot id=8224279201
+2025-08-28 22:59:08,543 [INFO] aiogram.event: Update id=590775572 is handled. Duration 179 ms by bot id=8224279201
+2025-08-28 22:59:12,123 [INFO] aiogram.event: Update id=590775573 is handled. Duration 131 ms by bot id=8224279201
+2025-08-28 22:59:18,735 [INFO] aiogram.event: Update id=590775574 is handled. Duration 142 ms by bot id=8224279201
+2025-08-28 22:59:20,945 [INFO] aiogram.event: Update id=590775575 is handled. Duration 209 ms by bot id=8224279201
+2025-08-28 22:59:24,697 [INFO] aiogram.event: Update id=590775576 is handled. Duration 213 ms by bot id=8224279201
+2025-08-28 22:59:26,129 [INFO] aiogram.event: Update id=590775577 is handled. Duration 215 ms by bot id=8224279201
+2025-08-28 22:59:27,746 [INFO] aiogram.event: Update id=590775578 is handled. Duration 154 ms by bot id=8224279201
+2025-08-28 22:59:28,982 [INFO] aiogram.event: Update id=590775579 is handled. Duration 115 ms by bot id=8224279201
+2025-08-28 22:59:30,461 [INFO] aiogram.event: Update id=590775580 is handled. Duration 518 ms by bot id=8224279201
+2025-08-28 22:59:36,501 [INFO] aiogram.event: Update id=590775581 is handled. Duration 141 ms by bot id=8224279201
+2025-08-28 22:59:38,677 [INFO] aiogram.event: Update id=590775582 is handled. Duration 190 ms by bot id=8224279201
+2025-08-30 14:33:59,323 [INFO] __main__: Bot starting...
+2025-08-30 14:33:59,862 [INFO] aiogram.dispatcher: Start polling
+2025-08-30 14:33:59,961 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-30 14:34:11,789 [INFO] aiogram.event: Update id=590775583 is handled. Duration 479 ms by bot id=8224279201
+2025-08-30 14:34:12,950 [INFO] aiogram.event: Update id=590775584 is handled. Duration 104 ms by bot id=8224279201
+2025-08-30 14:34:38,484 [INFO] aiogram.event: Update id=590775585 is handled. Duration 621 ms by bot id=8224279201
+2025-08-30 14:34:42,069 [INFO] aiogram.event: Update id=590775586 is handled. Duration 153 ms by bot id=8224279201
+2025-08-30 14:34:43,586 [INFO] aiogram.event: Update id=590775587 is handled. Duration 158 ms by bot id=8224279201
+2025-08-30 14:34:45,722 [INFO] aiogram.event: Update id=590775588 is handled. Duration 102 ms by bot id=8224279201
+2025-08-30 14:34:47,601 [INFO] aiogram.event: Update id=590775589 is handled. Duration 109 ms by bot id=8224279201
+2025-08-30 14:35:00,496 [INFO] aiogram.event: Update id=590775590 is handled. Duration 166 ms by bot id=8224279201
+2025-08-30 14:35:01,845 [INFO] aiogram.event: Update id=590775591 is handled. Duration 153 ms by bot id=8224279201
+2025-08-30 14:35:03,372 [INFO] aiogram.event: Update id=590775592 is handled. Duration 102 ms by bot id=8224279201
+2025-08-30 14:35:04,528 [INFO] aiogram.event: Update id=590775593 is handled. Duration 168 ms by bot id=8224279201
+2025-08-30 14:35:07,423 [INFO] aiogram.event: Update id=590775594 is handled. Duration 97 ms by bot id=8224279201
+2025-08-30 14:35:10,253 [INFO] aiogram.event: Update id=590775595 is handled. Duration 168 ms by bot id=8224279201
+2025-08-30 14:35:27,635 [INFO] aiogram.event: Update id=590775596 is handled. Duration 11 ms by bot id=8224279201
+2025-08-30 14:35:51,681 [INFO] aiogram.event: Update id=590775597 is handled. Duration 562 ms by bot id=8224279201
+2025-08-30 14:35:52,887 [INFO] aiogram.event: Update id=590775598 is handled. Duration 123 ms by bot id=8224279201
+2025-08-30 14:35:54,340 [INFO] aiogram.event: Update id=590775599 is handled. Duration 247 ms by bot id=8224279201
+2025-08-30 14:36:12,740 [INFO] aiogram.event: Update id=590775600 is handled. Duration 17 ms by bot id=8224279201
+2025-08-30 14:36:17,250 [INFO] aiogram.event: Update id=590775601 is handled. Duration 401 ms by bot id=8224279201
+2025-08-30 14:36:23,209 [INFO] aiogram.event: Update id=590775602 is handled. Duration 215 ms by bot id=8224279201
+2025-08-30 14:36:37,284 [INFO] aiogram.event: Update id=590775603 is handled. Duration 274 ms by bot id=8224279201
+2025-08-30 14:36:38,950 [INFO] aiogram.event: Update id=590775604 is handled. Duration 98 ms by bot id=8224279201
+2025-08-30 14:36:43,538 [INFO] aiogram.event: Update id=590775605 is handled. Duration 203 ms by bot id=8224279201
+2025-08-30 14:36:56,567 [INFO] aiogram.event: Update id=590775606 is handled. Duration 100 ms by bot id=8224279201
+2025-08-30 14:36:57,987 [INFO] aiogram.event: Update id=590775607 is handled. Duration 109 ms by bot id=8224279201
+2025-08-30 14:36:59,997 [INFO] aiogram.event: Update id=590775608 is handled. Duration 423 ms by bot id=8224279201
+2025-08-30 14:37:29,939 [INFO] aiogram.event: Update id=590775609 is handled. Duration 564 ms by bot id=8224279201
+2025-08-30 14:37:48,454 [INFO] aiogram.event: Update id=590775610 is handled. Duration 544 ms by bot id=8224279201
+2025-08-30 14:38:06,212 [INFO] aiogram.event: Update id=590775611 is handled. Duration 650 ms by bot id=8224279201
+2025-08-30 14:38:17,188 [INFO] aiogram.event: Update id=590775612 is handled. Duration 108 ms by bot id=8224279201
+2025-08-30 14:38:18,204 [INFO] aiogram.event: Update id=590775613 is handled. Duration 100 ms by bot id=8224279201
+2025-08-30 14:38:20,793 [INFO] aiogram.event: Update id=590775614 is handled. Duration 94 ms by bot id=8224279201
+2025-08-30 14:38:32,017 [INFO] aiogram.event: Update id=590775615 is handled. Duration 145 ms by bot id=8224279201
+2025-08-30 14:38:43,785 [INFO] aiogram.event: Update id=590775616 is handled. Duration 120 ms by bot id=8224279201
+2025-08-30 14:38:48,319 [INFO] aiogram.event: Update id=590775617 is handled. Duration 182 ms by bot id=8224279201
+2025-08-30 14:38:50,673 [INFO] aiogram.event: Update id=590775618 is handled. Duration 130 ms by bot id=8224279201
+2025-08-30 14:38:56,571 [INFO] aiogram.event: Update id=590775619 is handled. Duration 92 ms by bot id=8224279201
+2025-08-30 14:38:58,196 [INFO] __main__: Generated auth secret for user 5012358536
+2025-08-30 14:38:58,318 [INFO] aiogram.event: Update id=590775620 is handled. Duration 128 ms by bot id=8224279201
+2025-08-30 14:39:08,195 [INFO] aiogram.event: Update id=590775621 is handled. Duration 223 ms by bot id=8224279201
+2025-08-30 14:39:19,332 [INFO] aiogram.event: Update id=590775622 is handled. Duration 119 ms by bot id=8224279201
+2025-08-30 14:39:31,898 [INFO] aiogram.event: Update id=590775623 is handled. Duration 291 ms by bot id=8224279201
+2025-08-30 14:39:35,426 [INFO] aiogram.event: Update id=590775624 is handled. Duration 150 ms by bot id=8224279201
+2025-08-30 14:39:52,477 [INFO] aiogram.event: Update id=590775625 is handled. Duration 706 ms by bot id=8224279201
+2025-08-30 14:40:11,395 [INFO] aiogram.event: Update id=590775626 is handled. Duration 368 ms by bot id=8224279201
+2025-08-30 14:40:15,803 [INFO] aiogram.event: Update id=590775627 is handled. Duration 101 ms by bot id=8224279201
+2025-08-30 14:40:31,971 [INFO] aiogram.event: Update id=590775628 is handled. Duration 8 ms by bot id=8224279201
+2025-08-30 14:40:42,259 [INFO] aiogram.event: Update id=590775629 is handled. Duration 524 ms by bot id=8224279201
+2025-08-30 14:40:45,685 [INFO] aiogram.event: Update id=590775630 is handled. Duration 3 ms by bot id=8224279201
+2025-08-30 14:40:48,312 [INFO] aiogram.event: Update id=590775631 is handled. Duration 149 ms by bot id=8224279201
+2025-08-30 14:40:58,871 [INFO] aiogram.event: Update id=590775632 is handled. Duration 130 ms by bot id=8224279201
+2025-08-30 14:41:02,692 [INFO] aiogram.event: Update id=590775633 is handled. Duration 200 ms by bot id=8224279201
+2025-08-30 14:41:17,952 [INFO] aiogram.event: Update id=590775634 is handled. Duration 5 ms by bot id=8224279201
+2025-08-30 14:41:22,249 [INFO] aiogram.event: Update id=590775635 is handled. Duration 413 ms by bot id=8224279201
+2025-08-30 16:40:18,887 [INFO] __main__: Bot starting...
+2025-08-30 16:40:19,405 [INFO] aiogram.dispatcher: Start polling
+2025-08-30 16:40:19,479 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-30 16:40:47,063 [INFO] aiogram.event: Update id=590775636 is handled. Duration 608 ms by bot id=8224279201
+2025-08-30 16:40:47,303 [INFO] aiogram.event: Update id=590775637 is handled. Duration 144 ms by bot id=8224279201
+2025-08-30 16:40:49,460 [INFO] aiogram.event: Update id=590775638 is handled. Duration 114 ms by bot id=8224279201
+2025-08-30 16:40:50,882 [INFO] aiogram.event: Update id=590775639 is handled. Duration 148 ms by bot id=8224279201
+2025-08-30 16:40:52,336 [INFO] aiogram.event: Update id=590775640 is handled. Duration 315 ms by bot id=8224279201
+2025-08-30 16:40:55,100 [INFO] aiogram.event: Update id=590775641 is handled. Duration 211 ms by bot id=8224279201
+2025-08-30 16:41:10,439 [INFO] aiogram.event: Update id=590775642 is handled. Duration 6 ms by bot id=8224279201
+2025-08-30 16:41:22,033 [INFO] aiogram.event: Update id=590775643 is handled. Duration 9 ms by bot id=8224279201
+2025-08-30 16:55:10,396 [INFO] aiogram.event: Update id=590775644 is handled. Duration 14 ms by bot id=8224279201
+2025-08-30 16:55:25,602 [INFO] aiogram.event: Update id=590775645 is handled. Duration 495 ms by bot id=8224279201
+2025-08-30 16:55:39,416 [INFO] aiogram.event: Update id=590775646 is handled. Duration 423 ms by bot id=8224279201
+2025-08-30 16:55:47,597 [INFO] aiogram.event: Update id=590775647 is handled. Duration 557 ms by bot id=8224279201
+2025-08-30 16:57:03,368 [INFO] aiogram.event: Update id=590775648 is handled. Duration 14 ms by bot id=8224279201
+2025-08-30 16:57:11,200 [INFO] aiogram.event: Update id=590775649 is handled. Duration 475 ms by bot id=8224279201
+2025-08-30 16:57:13,949 [INFO] aiogram.event: Update id=590775650 is handled. Duration 210 ms by bot id=8224279201
+2025-08-30 16:57:45,325 [INFO] aiogram.event: Update id=590775651 is handled. Duration 505 ms by bot id=8224279201
+2025-08-30 16:57:58,441 [INFO] aiogram.event: Update id=590775652 is handled. Duration 224 ms by bot id=8224279201
+2025-08-30 16:58:00,422 [INFO] aiogram.event: Update id=590775653 is handled. Duration 206 ms by bot id=8224279201
+2025-08-30 18:33:09,012 [INFO] __main__: Bot starting...
+2025-08-30 18:33:09,549 [INFO] aiogram.dispatcher: Start polling
+2025-08-30 18:33:09,628 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-30 18:33:37,894 [INFO] aiogram.event: Update id=590775654 is handled. Duration 3 ms by bot id=8224279201
+2025-08-30 18:33:53,713 [INFO] aiogram.event: Update id=590775655 is handled. Duration 705 ms by bot id=8224279201
+2025-08-30 18:34:05,699 [INFO] aiogram.event: Update id=590775656 is handled. Duration 2 ms by bot id=8224279201
+2025-08-30 18:34:21,016 [INFO] aiogram.event: Update id=590775657 is handled. Duration 669 ms by bot id=8224279201
+2025-08-30 18:34:23,559 [INFO] aiogram.event: Update id=590775658 is handled. Duration 1 ms by bot id=8224279201
+2025-08-30 18:34:43,212 [INFO] aiogram.event: Update id=590775659 is handled. Duration 2 ms by bot id=8224279201
+2025-08-30 18:34:56,853 [INFO] aiogram.event: Update id=590775660 is handled. Duration 2 ms by bot id=8224279201
+2025-08-30 18:34:59,514 [INFO] aiogram.event: Update id=590775661 is handled. Duration 1036 ms by bot id=8224279201
+2025-08-30 18:35:10,514 [INFO] aiogram.event: Update id=590775662 is handled. Duration 130 ms by bot id=8224279201
+2025-08-30 18:35:22,728 [INFO] aiogram.event: Update id=590775663 is handled. Duration 128 ms by bot id=8224279201
+2025-08-30 18:35:29,320 [INFO] aiogram.event: Update id=590775664 is handled. Duration 208 ms by bot id=8224279201
+2025-08-30 18:35:46,610 [INFO] aiogram.event: Update id=590775665 is handled. Duration 528 ms by bot id=8224279201
+2025-08-30 18:35:50,300 [INFO] aiogram.event: Update id=590775666 is handled. Duration 1 ms by bot id=8224279201
+2025-08-30 18:36:20,615 [INFO] aiogram.event: Update id=590775667 is handled. Duration 5 ms by bot id=8224279201
+2025-08-30 18:36:28,256 [INFO] aiogram.event: Update id=590775668 is handled. Duration 2 ms by bot id=8224279201
+2025-08-30 18:36:38,315 [INFO] aiogram.event: Update id=590775669 is handled. Duration 421 ms by bot id=8224279201
+2025-08-30 18:36:42,605 [INFO] aiogram.event: Update id=590775670 is handled. Duration 3 ms by bot id=8224279201
+2025-08-30 18:36:55,788 [INFO] aiogram.event: Update id=590775671 is handled. Duration 2 ms by bot id=8224279201
+2025-08-30 18:37:04,672 [INFO] aiogram.event: Update id=590775672 is handled. Duration 589 ms by bot id=8224279201
+2025-08-30 18:37:16,181 [INFO] aiogram.event: Update id=590775673 is handled. Duration 254 ms by bot id=8224279201
+2025-08-30 18:37:18,098 [INFO] aiogram.event: Update id=590775674 is handled. Duration 149 ms by bot id=8224279201
+2025-08-30 18:37:21,907 [INFO] aiogram.event: Update id=590775675 is handled. Duration 142 ms by bot id=8224279201
+2025-08-30 18:37:29,125 [INFO] aiogram.event: Update id=590775676 is handled. Duration 198 ms by bot id=8224279201
+2025-08-30 18:37:36,582 [INFO] aiogram.event: Update id=590775677 is handled. Duration 3 ms by bot id=8224279201
+2025-08-30 18:37:37,765 [INFO] aiogram.event: Update id=590775678 is handled. Duration 185 ms by bot id=8224279201
+2025-08-30 18:37:42,968 [INFO] aiogram.event: Update id=590775679 is handled. Duration 1 ms by bot id=8224279201
+2025-08-30 18:37:55,097 [INFO] aiogram.event: Update id=590775680 is handled. Duration 483 ms by bot id=8224279201
+2025-08-30 18:38:05,634 [INFO] aiogram.event: Update id=590775681 is handled. Duration 212 ms by bot id=8224279201
+2025-08-30 18:38:12,169 [INFO] aiogram.event: Update id=590775682 is handled. Duration 3 ms by bot id=8224279201
+2025-08-30 18:40:45,158 [INFO] aiogram.event: Update id=590775683 is handled. Duration 548 ms by bot id=8224279201
+2025-08-30 18:40:47,139 [INFO] aiogram.event: Update id=590775684 is handled. Duration 2 ms by bot id=8224279201
+2025-08-30 19:03:45,840 [INFO] __main__: Bot starting...
+2025-08-30 19:03:46,463 [INFO] aiogram.dispatcher: Start polling
+2025-08-30 19:03:46,564 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-30 19:12:09,102 [INFO] aiogram.event: Update id=590775685 is handled. Duration 715 ms by bot id=8224279201
+2025-08-30 19:12:25,292 [INFO] aiogram.event: Update id=590775686 is handled. Duration 5 ms by bot id=8224279201
+2025-08-30 19:12:32,388 [INFO] aiogram.event: Update id=590775687 is handled. Duration 506 ms by bot id=8224279201
+2025-08-30 19:12:51,655 [INFO] aiogram.event: Update id=590775688 is handled. Duration 13 ms by bot id=8224279201
+2025-08-30 19:12:55,894 [INFO] aiogram.event: Update id=590775689 is handled. Duration 549 ms by bot id=8224279201
+2025-08-30 19:13:09,635 [INFO] aiogram.event: Update id=590775690 is handled. Duration 5 ms by bot id=8224279201
+2025-08-30 19:13:11,975 [INFO] aiogram.event: Update id=590775691 is handled. Duration 429 ms by bot id=8224279201
+2025-08-30 19:14:29,407 [INFO] aiogram.event: Update id=590775692 is handled. Duration 514 ms by bot id=8224279201
+2025-08-30 19:14:33,865 [INFO] aiogram.event: Update id=590775693 is handled. Duration 293 ms by bot id=8224279201
+2025-08-30 19:14:37,952 [INFO] aiogram.event: Update id=590775694 is handled. Duration 292 ms by bot id=8224279201
+2025-08-30 19:14:41,143 [INFO] aiogram.event: Update id=590775695 is handled. Duration 4 ms by bot id=8224279201
+2025-08-30 19:14:45,109 [INFO] aiogram.event: Update id=590775696 is handled. Duration 202 ms by bot id=8224279201
+2025-08-30 20:00:54,811 [INFO] __main__: Bot starting...
+2025-08-30 20:00:55,329 [INFO] aiogram.dispatcher: Start polling
+2025-08-30 20:00:55,413 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-30 20:01:09,468 [INFO] aiogram.event: Update id=590775697 is handled. Duration 540 ms by bot id=8224279201
+2025-08-30 20:01:19,962 [INFO] aiogram.event: Update id=590775698 is handled. Duration 115 ms by bot id=8224279201
+2025-08-30 20:01:22,077 [INFO] aiogram.event: Update id=590775699 is handled. Duration 2 ms by bot id=8224279201
+2025-08-30 20:01:59,179 [INFO] aiogram.event: Update id=590775700 is handled. Duration 460 ms by bot id=8224279201
+2025-08-30 20:02:00,406 [INFO] aiogram.event: Update id=590775701 is handled. Duration 3 ms by bot id=8224279201
+2025-08-30 20:02:08,869 [INFO] aiogram.event: Update id=590775702 is handled. Duration 141 ms by bot id=8224279201
+2025-08-30 20:02:13,674 [INFO] aiogram.event: Update id=590775703 is handled. Duration 98 ms by bot id=8224279201
+2025-08-30 20:02:41,119 [INFO] aiogram.event: Update id=590775704 is handled. Duration 618 ms by bot id=8224279201
+2025-08-30 20:02:52,192 [INFO] aiogram.event: Update id=590775705 is handled. Duration 187 ms by bot id=8224279201
+2025-08-30 20:02:53,665 [INFO] aiogram.event: Update id=590775706 is handled. Duration 2 ms by bot id=8224279201
+2025-08-30 20:03:02,282 [INFO] aiogram.event: Update id=590775707 is handled. Duration 127 ms by bot id=8224279201
+2025-08-30 20:03:05,520 [INFO] aiogram.event: Update id=590775708 is handled. Duration 1 ms by bot id=8224279201
+2025-08-30 20:03:10,372 [INFO] aiogram.event: Update id=590775709 is handled. Duration 1 ms by bot id=8224279201
+2025-08-30 20:03:13,141 [INFO] aiogram.event: Update id=590775710 is handled. Duration 2 ms by bot id=8224279201
+2025-08-30 20:03:15,001 [INFO] aiogram.event: Update id=590775711 is handled. Duration 2 ms by bot id=8224279201
+2025-08-30 20:03:17,713 [INFO] aiogram.event: Update id=590775712 is handled. Duration 2 ms by bot id=8224279201
+2025-08-30 20:28:00,827 [INFO] __main__: Bot starting...
+2025-08-30 20:28:01,312 [INFO] aiogram.dispatcher: Start polling
+2025-08-30 20:28:01,390 [INFO] aiogram.dispatcher: Run polling for bot @the_blabber_bot id=8224279201 - 'blabber'
+2025-08-30 20:28:16,667 [INFO] aiogram.event: Update id=590775713 is handled. Duration 386 ms by bot id=8224279201
+2025-08-30 20:28:18,697 [INFO] aiogram.event: Update id=590775714 is handled. Duration 96 ms by bot id=8224279201
+2025-08-30 20:28:20,031 [INFO] aiogram.event: Update id=590775715 is handled. Duration 208 ms by bot id=8224279201
+2025-08-30 20:28:23,403 [INFO] aiogram.event: Update id=590775716 is handled. Duration 193 ms by bot id=8224279201
+2025-08-30 20:28:25,196 [INFO] aiogram.event: Update id=590775717 is handled. Duration 103 ms by bot id=8224279201
+2025-08-30 20:28:29,349 [INFO] aiogram.event: Update id=590775718 is handled. Duration 356 ms by bot id=8224279201
+2025-08-30 20:28:29,938 [INFO] aiogram.event: Update id=590775719 is handled. Duration 138 ms by bot id=8224279201
+2025-08-30 20:28:35,151 [INFO] aiogram.event: Update id=590775720 is handled. Duration 93 ms by bot id=8224279201
+2025-08-30 20:28:36,385 [INFO] aiogram.event: Update id=590775721 is handled. Duration 239 ms by bot id=8224279201
+2025-08-30 20:28:38,091 [INFO] aiogram.event: Update id=590775722 is handled. Duration 190 ms by bot id=8224279201
+2025-08-30 20:28:39,666 [INFO] aiogram.event: Update id=590775723 is handled. Duration 121 ms by bot id=8224279201
+2025-08-30 20:28:41,339 [INFO] aiogram.event: Update id=590775724 is handled. Duration 130 ms by bot id=8224279201
+2025-08-30 20:28:42,600 [INFO] aiogram.event: Update id=590775725 is handled. Duration 138 ms by bot id=8224279201
+2025-08-30 20:28:44,197 [INFO] aiogram.event: Update id=590775726 is handled. Duration 232 ms by bot id=8224279201
+2025-08-30 20:28:46,077 [INFO] aiogram.event: Update id=590775727 is handled. Duration 180 ms by bot id=8224279201
+2025-08-30 20:28:48,609 [INFO] __main__: Generated auth secret for user 156414561
+2025-08-30 20:28:48,735 [INFO] aiogram.event: Update id=590775728 is handled. Duration 130 ms by bot id=8224279201
+2025-08-30 20:28:51,808 [INFO] aiogram.event: Update id=590775729 is handled. Duration 129 ms by bot id=8224279201
+2025-08-30 20:29:57,172 [INFO] aiogram.event: Update id=590775730 is handled. Duration 485 ms by bot id=8224279201
+2025-08-30 20:29:58,539 [INFO] aiogram.event: Update id=590775731 is handled. Duration 231 ms by bot id=8224279201
+2025-08-30 20:30:03,791 [INFO] aiogram.event: Update id=590775732 is handled. Duration 195 ms by bot id=8224279201
+2025-08-30 20:30:08,240 [INFO] aiogram.event: Update id=590775733 is handled. Duration 297 ms by bot id=8224279201
+2025-08-30 20:30:17,510 [INFO] aiogram.event: Update id=590775734 is handled. Duration 503 ms by bot id=8224279201
+2025-08-30 20:30:19,537 [INFO] aiogram.event: Update id=590775735 is handled. Duration 226 ms by bot id=8224279201
+2025-08-30 20:30:44,468 [INFO] aiogram.event: Update id=590775736 is handled. Duration 8 ms by bot id=8224279201
+2025-08-30 20:31:06,214 [INFO] aiogram.event: Update id=590775737 is handled. Duration 564 ms by bot id=8224279201
+2025-08-30 20:31:07,786 [INFO] aiogram.event: Update id=590775738 is handled. Duration 110 ms by bot id=8224279201
+2025-08-30 20:31:22,666 [INFO] aiogram.event: Update id=590775739 is handled. Duration 259 ms by bot id=8224279201
+2025-08-30 20:31:27,889 [INFO] aiogram.event: Update id=590775740 is handled. Duration 257 ms by bot id=8224279201
+2025-08-30 20:31:46,121 [INFO] aiogram.event: Update id=590775741 is handled. Duration 467 ms by bot id=8224279201
+2025-08-30 20:31:47,953 [INFO] aiogram.event: Update id=590775742 is handled. Duration 116 ms by bot id=8224279201
+2025-08-30 20:31:49,132 [INFO] aiogram.event: Update id=590775743 is handled. Duration 108 ms by bot id=8224279201
+2025-08-30 20:31:51,833 [INFO] aiogram.event: Update id=590775744 is handled. Duration 137 ms by bot id=8224279201
+2025-08-30 20:32:02,055 [INFO] aiogram.event: Update id=590775745 is handled. Duration 147 ms by bot id=8224279201
+2025-08-30 20:32:05,639 [INFO] aiogram.event: Update id=590775746 is handled. Duration 90 ms by bot id=8224279201
+2025-08-30 20:32:09,789 [INFO] aiogram.event: Update id=590775747 is handled. Duration 143 ms by bot id=8224279201
+2025-08-30 20:32:15,304 [INFO] aiogram.event: Update id=590775748 is handled. Duration 260 ms by bot id=8224279201
+2025-08-30 20:32:50,415 [INFO] aiogram.event: Update id=590775749 is handled. Duration 646 ms by bot id=8224279201
+2025-08-30 20:32:54,353 [INFO] aiogram.event: Update id=590775750 is handled. Duration 220 ms by bot id=8224279201
+2025-08-30 20:33:05,812 [INFO] aiogram.event: Update id=590775751 is handled. Duration 172 ms by bot id=8224279201
+2025-08-30 20:33:10,223 [INFO] aiogram.event: Update id=590775752 is handled. Duration 106 ms by bot id=8224279201
+2025-08-30 20:33:12,529 [INFO] aiogram.event: Update id=590775753 is handled. Duration 268 ms by bot id=8224279201
+2025-08-30 20:33:15,551 [INFO] aiogram.event: Update id=590775754 is handled. Duration 144 ms by bot id=8224279201
+2025-08-30 20:33:21,351 [INFO] aiogram.event: Update id=590775755 is handled. Duration 93 ms by bot id=8224279201
+2025-08-30 20:33:35,477 [INFO] aiogram.event: Update id=590775756 is handled. Duration 301 ms by bot id=8224279201
+2025-08-30 20:33:53,646 [INFO] aiogram.event: Update id=590775757 is handled. Duration 679 ms by bot id=8224279201
+2025-08-30 20:33:55,095 [INFO] aiogram.event: Update id=590775758 is handled. Duration 221 ms by bot id=8224279201
+2025-08-30 20:34:04,502 [INFO] aiogram.event: Update id=590775759 is handled. Duration 227 ms by bot id=8224279201
+2025-08-30 20:34:05,908 [INFO] aiogram.event: Update id=590775760 is handled. Duration 151 ms by bot id=8224279201
+2025-08-30 20:34:07,124 [INFO] aiogram.event: Update id=590775761 is handled. Duration 116 ms by bot id=8224279201
+2025-08-30 20:34:09,078 [INFO] aiogram.event: Update id=590775762 is handled. Duration 358 ms by bot id=8224279201
+2025-08-30 20:34:15,395 [INFO] aiogram.event: Update id=590775763 is handled. Duration 124 ms by bot id=8224279201
+2025-08-30 20:34:18,043 [INFO] aiogram.event: Update id=590775764 is handled. Duration 321 ms by bot id=8224279201
+2025-08-30 20:34:19,134 [INFO] aiogram.event: Update id=590775765 is handled. Duration 139 ms by bot id=8224279201
+2025-08-30 20:34:38,480 [INFO] aiogram.event: Update id=590775766 is handled. Duration 530 ms by bot id=8224279201
+2025-08-30 20:34:41,185 [INFO] aiogram.event: Update id=590775767 is handled. Duration 210 ms by bot id=8224279201
+2025-08-30 20:34:43,569 [INFO] aiogram.event: Update id=590775768 is handled. Duration 206 ms by bot id=8224279201
+2025-08-30 20:34:55,207 [INFO] aiogram.event: Update id=590775769 is handled. Duration 162 ms by bot id=8224279201
+2025-08-30 20:34:57,020 [INFO] aiogram.event: Update id=590775770 is handled. Duration 224 ms by bot id=8224279201
+2025-08-30 20:35:00,839 [INFO] aiogram.event: Update id=590775771 is handled. Duration 203 ms by bot id=8224279201
+2025-08-30 20:35:08,200 [INFO] aiogram.event: Update id=590775772 is handled. Duration 220 ms by bot id=8224279201
+2025-08-30 20:35:19,420 [INFO] aiogram.event: Update id=590775773 is handled. Duration 269 ms by bot id=8224279201
+2025-08-30 20:35:20,408 [INFO] aiogram.event: Update id=590775774 is handled. Duration 158 ms by bot id=8224279201
+2025-08-30 20:35:21,788 [INFO] __main__: Generated auth secret for user 5012358536
+2025-08-30 20:35:22,118 [INFO] aiogram.event: Update id=590775775 is handled. Duration 337 ms by bot id=8224279201
+2025-08-30 20:35:53,639 [INFO] aiogram.event: Update id=590775776 is handled. Duration 781 ms by bot id=8224279201
+2025-08-30 20:36:39,736 [INFO] aiogram.event: Update id=590775777 is handled. Duration 465 ms by bot id=8224279201
+2025-08-30 20:36:46,558 [INFO] __main__: Generated auth secret for user 5012358536
+2025-08-30 20:36:46,676 [INFO] aiogram.event: Update id=590775778 is handled. Duration 123 ms by bot id=8224279201
+2025-08-30 20:36:52,407 [INFO] aiogram.event: Update id=590775779 is handled. Duration 217 ms by bot id=8224279201
+2025-08-30 20:37:25,347 [INFO] aiogram.event: Update id=590775780 is handled. Duration 547 ms by bot id=8224279201
+2025-08-30 20:37:26,273 [INFO] aiogram.event: Update id=590775781 is handled. Duration 184 ms by bot id=8224279201
+2025-08-30 20:37:27,842 [INFO] aiogram.event: Update id=590775782 is handled. Duration 222 ms by bot id=8224279201
+2025-08-30 20:37:29,912 [INFO] aiogram.event: Update id=590775783 is handled. Duration 121 ms by bot id=8224279201
+2025-08-30 20:37:37,968 [INFO] aiogram.event: Update id=590775784 is handled. Duration 242 ms by bot id=8224279201
+2025-08-30 20:37:40,748 [INFO] aiogram.event: Update id=590775785 is handled. Duration 2 ms by bot id=8224279201
+2025-08-30 20:37:43,063 [INFO] aiogram.event: Update id=590775786 is handled. Duration 167 ms by bot id=8224279201
+2025-08-30 20:37:47,175 [INFO] aiogram.event: Update id=590775787 is handled. Duration 247 ms by bot id=8224279201
+2025-08-30 20:37:51,118 [INFO] aiogram.event: Update id=590775788 is handled. Duration 152 ms by bot id=8224279201
+2025-08-30 20:37:58,972 [INFO] aiogram.event: Update id=590775789 is handled. Duration 360 ms by bot id=8224279201
+2025-08-30 20:38:07,951 [INFO] aiogram.event: Update id=590775790 is handled. Duration 203 ms by bot id=8224279201
+2025-08-30 20:38:10,051 [INFO] aiogram.event: Update id=590775791 is handled. Duration 418 ms by bot id=8224279201
+2025-08-30 20:38:20,552 [INFO] aiogram.event: Update id=590775792 is handled. Duration 236 ms by bot id=8224279201
+2025-08-30 20:38:22,470 [INFO] aiogram.event: Update id=590775793 is handled. Duration 234 ms by bot id=8224279201
+2025-08-30 20:38:24,812 [INFO] aiogram.event: Update id=590775794 is handled. Duration 565 ms by bot id=8224279201
+2025-08-30 21:38:22,710 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2025-08-30 21:38:22,715 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8224279201)
+2025-08-30 21:38:33,969 [INFO] aiogram.dispatcher: Connection established (tryings = 1, bot id = 8224279201)
+2025-08-30 21:43:46,264 [INFO] aiogram.event: Update id=590775795 is handled. Duration 447 ms by bot id=8224279201
+2025-08-30 21:43:49,403 [INFO] aiogram.event: Update id=590775796 is handled. Duration 85 ms by bot id=8224279201
