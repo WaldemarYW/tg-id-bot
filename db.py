@@ -278,6 +278,12 @@ class DB:
     def list_allowed_chats(self) -> List[sqlite3.Row]:
         return self.conn.execute("SELECT * FROM allowed_chats ORDER BY added_at DESC").fetchall()
 
+    def list_chats_by_admin(self, admin_id: int) -> List[sqlite3.Row]:
+        return self.conn.execute(
+            "SELECT * FROM allowed_chats WHERE added_by=? ORDER BY added_at DESC",
+            (admin_id,)
+        ).fetchall()
+
     def get_female_id_from_title(self, title: str) -> Optional[str]:
         if not title:
             return None
@@ -329,6 +335,24 @@ class DB:
         chats = self.conn.execute("SELECT COUNT(*) AS c FROM allowed_chats").fetchone()["c"]
         females = self.conn.execute("SELECT COUNT(DISTINCT female_id) AS c FROM allowed_chats").fetchone()["c"]
         return (men, msgs, chats, females)
+
+    def list_admins(self) -> List[sqlite3.Row]:
+        return self.conn.execute(
+            "SELECT a.user_id, u.username, u.first_name, u.last_name FROM admins a LEFT JOIN users u ON u.user_id=a.user_id ORDER BY a.user_id"
+        ).fetchall()
+
+    def list_users_by_admin(self, admin_id: int) -> List[sqlite3.Row]:
+        return self.conn.execute(
+            """
+            SELECT au.user_id, au.username_lc, au.credits, au.added_at,
+                   u.username, u.first_name, u.last_name
+            FROM allowed_users au
+            LEFT JOIN users u ON u.user_id = au.user_id
+            WHERE au.added_by=?
+            ORDER BY au.added_at DESC
+            """,
+            (admin_id,)
+        ).fetchall()
 
     def top_males(self, limit: int = 10) -> List[Tuple[str, int]]:
         return self.conn.execute(

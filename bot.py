@@ -16,7 +16,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ChatType
 from aiogram.filters import Command, CommandStart
 from aiogram.filters.command import CommandObject
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, ChatMemberUpdated
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 from db import DB
@@ -163,13 +163,26 @@ def kb_admin_chats(uid: int):
 def kb_admin_exports(uid: int):
     lang = lang_for(uid)
     kb = ReplyKeyboardBuilder()
-    kb.button(text=t(lang, "export_male"))
-    kb.button(text=t(lang, "export_female"))
+    # Только суперадмину: экспорт по женскому ID и полный экспорт
     if is_superadmin(uid):
+        kb.button(text=t(lang, "export_male"))
+        kb.button(text=t(lang, "export_female"))
         kb.button(text=t(lang, "export_all"))
     kb.button(text=t(lang, "export_stats"))
     kb.button(text="⬅️ Назад")
     kb.adjust(2, 2)
+    return kb.as_markup(resize_keyboard=True)
+
+def kb_admin_stats(uid: int):
+    lang = lang_for(uid)
+    kb = ReplyKeyboardBuilder()
+    kb.button(text=t(lang, "stats_my_chats"))
+    kb.button(text=t(lang, "stats_my_users"))
+    if is_superadmin(uid):
+        kb.button(text=t(lang, "stats_all_chats"))
+        kb.button(text=t(lang, "stats_all_users"))
+    kb.button(text="⬅️ Назад")
+    kb.adjust(2, 2, 1)
     return kb.as_markup(resize_keyboard=True)
 
 async def show_menu(message: Message, state: str):
@@ -384,9 +397,12 @@ async def admin_chats_menu(message: Message):
 @dp.message(F.text == "📊 Статистика")
 async def admin_stats_menu(message: Message):
     uid = message.from_user.id
-    if not is_admin(uid): return
+    if not is_admin(uid):
+        return
+    nav_push(uid, "admin.stats")
     men, msgs, chats, females = db.count_stats()
     await message.answer(t(lang_for(uid), "stats", men=men, msgs=msgs, chats=chats, females=females))
+    await message.answer(t(lang_for(uid), "stats_menu"), reply_markup=kb_admin_stats(uid))
 
 @dp.message(F.text == "💾 Экспорт")
 async def admin_exports_menu(message: Message):
@@ -394,6 +410,113 @@ async def admin_exports_menu(message: Message):
     if not is_admin(uid): return
     nav_push(uid, "admin.exports")
     await show_menu(message, "admin.exports")
+
+# Guards: restrict certain exports to superadmin only
+@dp.message(F.text.in_({t("ru", "export_all"), t("uk", "export_all")}))
+async def guard_export_all(message: Message):
+    uid = message.from_user.id
+    if not is_superadmin(uid):
+        await message.answer(t(lang_for(uid), "superadmin_only"))
+        return
+
+@dp.message(F.text.in_({t("ru", "export_female"), t("uk", "export_female")}))
+async def guard_export_female(message: Message):
+    uid = message.from_user.id
+    if not is_superadmin(uid):
+        await message.answer(t(lang_for(uid), "superadmin_only"))
+        return
+
+@dp.message(F.text.in_({t("ru", "export_male"), t("uk", "export_male")}))
+async def guard_export_male(message: Message):
+    uid = message.from_user.id
+    if not is_superadmin(uid):
+        await message.answer(t(lang_for(uid), "superadmin_only"))
+        return
+
+# ======== STATS SUBACTIONS ========
+@dp.message(F.text.in_({t("ru", "stats_my_chats"), t("uk", "stats_my_chats")}))
+async def stats_my_chats(message: Message):
+    uid = message.from_user.id
+    if not is_admin(uid):
+        return
+    rows = db.list_chats_by_admin(uid)
+    lang = lang_for(uid)
+    header = t(lang, "stats_my_chats_header", count=len(rows))
+    if not rows:
+        await message.answer(header)
+        return
+    lines = [header]
+    for r in rows[:50]:
+        title = r["title"] or "(no title)"
+        fid = r["female_id"] or "?"
+        lines.append(f"• {title} (fid:{fid}) — {r['chat_id']}")
+    await message.answer("\n".join(lines))
+
+@dp.message(F.text.in_({t("ru", "stats_my_users"), t("uk", "stats_my_users")}))
+async def stats_my_users(message: Message):
+    uid = message.from_user.id
+    if not is_admin(uid):
+        return
+    rows = db.list_users_by_admin(uid)
+    lang = lang_for(uid)
+    header = t(lang, "stats_my_users_header", count=len(rows))
+    if not rows:
+        await message.answer(header)
+        return
+    lines = [header]
+    for r in rows[:100]:
+        uname = r["username"] or r["username_lc"] or ""
+        disp = f"@{uname}" if uname else f"id:{r['user_id']}"
+        lines.append(f"• {disp} (credits:{r['credits']})")
+    await message.answer("\n".join(lines))
+
+@dp.message(F.text.in_({t("ru", "stats_all_chats"), t("uk", "stats_all_chats")}))
+async def stats_all_chats(message: Message):
+    uid = message.from_user.id
+    if not is_superadmin(uid):
+        await message.answer(t(lang_for(uid), "superadmin_only"))
+        return
+    admins = db.list_admins()
+    if not admins:
+        await message.answer("—")
+        return
+    chunks = []
+    for a in admins:
+        aid = a["user_id"]
+        aname = (f"@{a['username']}" if a["username"] else (a["first_name"] or "")) or str(aid)
+        block_head = t(lang_for(uid), "stats_admin_block", admin=aname, id=aid)
+        rows = db.list_chats_by_admin(aid)
+        lines = [block_head, f"Всего: {len(rows)}"]
+        for r in rows[:30]:
+            title = r["title"] or "(no title)"
+            fid = r["female_id"] or "?"
+            lines.append(f"• {title} (fid:{fid}) — {r['chat_id']}")
+        chunks.append("\n".join(lines))
+    await message.answer("\n\n".join(chunks))
+
+@dp.message(F.text.in_({t("ru", "stats_all_users"), t("uk", "stats_all_users")}))
+async def stats_all_users(message: Message):
+    uid = message.from_user.id
+    if not is_superadmin(uid):
+        await message.answer(t(lang_for(uid), "superadmin_only"))
+        return
+    admins = db.list_admins()
+    if not admins:
+        await message.answer("—")
+        return
+    chunks = []
+    for a in admins:
+        aid = a["user_id"]
+        aname = (f"@{a['username']}" if a["username"] else (a["first_name"] or "")) or str(aid)
+        block_head = t(lang_for(uid), "stats_admin_block", admin=aname, id=aid)
+        rows = db.list_users_by_admin(aid)
+        lines = [block_head, f"Всего: {len(rows)}"]
+        for r in rows[:60]:
+            uname = r["username"] or r["username_lc"] or ""
+            disp = f"@{uname}" if uname else f"id:{r['user_id']}"
+            lines.append(f"• {disp} (credits:{r['credits']})")
+        chunks.append("\n".join(lines))
+    await message.answer("\n\n".join(chunks))
 
 
 # ========= ADMIN ACTIONS =========
@@ -651,6 +774,30 @@ async def cb_more(call: CallbackQuery):
 
 
 # ========= GROUP LISTENERS =========
+@dp.my_chat_member()
+async def on_bot_added(event: ChatMemberUpdated):
+    # Auto-authorize chat when the bot is added to a group
+    try:
+        if event.chat.type not in (ChatType.GROUP, ChatType.SUPERGROUP):
+            return
+        old_status = getattr(event.old_chat_member, "status", None)
+        new_status = getattr(event.new_chat_member, "status", None)
+        # Added if transitioned from left/kicked to member/administrator
+        if old_status in {"left", "kicked", None} and new_status in {"member", "administrator"}:
+            inviter_id = event.from_user.id if event.from_user else 0
+            title = event.chat.title or ""
+            female_id = db.get_female_id_from_title(title) or "НЕИЗВЕСТНО"
+            db.add_allowed_chat(event.chat.id, title, female_id, inviter_id)
+            db.log_audit(inviter_id, "auto_authorize_chat_on_add", target=str(event.chat.id), details=f"female_id={female_id}")
+            # Notify the chat
+            lang = lang_for(inviter_id)
+            try:
+                await bot.send_message(event.chat.id, t(lang, "authorize_ok", fid=female_id))
+            except Exception:
+                pass
+    except Exception as e:
+        logger.exception(f"Failed to auto-authorize chat on add: {e}")
+
 @dp.message(F.chat.type.in_({ChatType.GROUP, ChatType.SUPERGROUP}))
 async def on_group_message(message: Message):
     if db.get_allowed_chat(message.chat.id) is None:
