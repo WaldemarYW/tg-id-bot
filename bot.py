@@ -37,6 +37,9 @@ LOG_LEVEL        = os.getenv("LOG_LEVEL", "INFO").upper()
 LOG_MAX_BYTES    = int(os.getenv("LOG_MAX_BYTES", "5242880"))
 LOG_BACKUP_COUNT = int(os.getenv("LOG_BACKUP_COUNT", "5"))
 
+# PUBLIC_OPEN flag
+PUBLIC_OPEN  = os.getenv("PUBLIC_OPEN", "0") == "1"
+
 logging.basicConfig(
     level=getattr(logging, LOG_LEVEL, logging.INFO),
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
@@ -66,6 +69,8 @@ def is_admin(user_id: int) -> bool:
     return is_superadmin(user_id) or db.is_admin(user_id)
 
 def is_allowed_user(user_id: int) -> bool:
+    if PUBLIC_OPEN:
+        return True
     return is_admin(user_id) or db.is_allowed_user(user_id)
 
 def lang_for(user_id: int) -> str:
@@ -121,7 +126,8 @@ def kb_main(uid: int):
 def kb_admin(uid: int):
     # как в core-2: «👤 Админы» видно всем админам
     kb = ReplyKeyboardBuilder()
-    kb.button(text="👥 Пользователи")
+    if not PUBLIC_OPEN:
+        kb.button(text="👥 Пользователи")
     kb.button(text="👤 Админы")
     kb.button(text="💬 Чаты")
     kb.button(text="📊 Статистика")
@@ -272,8 +278,9 @@ async def my_queries(message: Message):
 async def report_start(message: Message):
     uid = message.from_user.id
     if not is_allowed_user(uid):
-        await message.answer(t(lang_for(uid), "not_authorized"))
-        return
+        if not PUBLIC_OPEN:
+            await message.answer(t(lang_for(uid), "not_authorized"))
+            return
     REPORT_STATE[uid] = {"stage": "wait_female"}
     await message.answer("Введите 10-значный идентификатор девушки (из названия группы).")
 
@@ -580,14 +587,16 @@ async def handle_male_search(message: Message):
         await message.answer(t(lang, "rate_limited"))
         return
     if not is_allowed_user(uid):
-        await message.answer(t(lang, "not_authorized"))
-        return
-    if not is_admin(uid):
-        credits = db.get_user_credits(uid)
-        if credits <= 0:
-            await message.answer(t(lang, "no_credits"))
+        if not PUBLIC_OPEN:
+            await message.answer(t(lang, "not_authorized"))
             return
-        db.reduce_credits(uid, 1)
+    if not is_admin(uid):
+        if not PUBLIC_OPEN:
+            credits = db.get_user_credits(uid)
+            if credits <= 0:
+                await message.answer(t(lang, "no_credits"))
+                return
+            db.reduce_credits(uid, 1)
 
     male = message.text.strip()
     db.log_search(uid, "male", male)
