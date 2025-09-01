@@ -148,14 +148,18 @@ def kb_admin_admins(uid: int):
     kb = ReplyKeyboardBuilder()
     kb.button(text="➕ Добавить админа")
     kb.button(text="➖ Удалить админа")
+    if is_superadmin(uid):
+        kb.button(text="📋 Все админы")
     kb.button(text="⬅️ Назад")
-    kb.adjust(2, 1)
+    kb.adjust(2, 1, 1)
     return kb.as_markup(resize_keyboard=True)
 
 def kb_admin_chats(uid: int):
     # Только добавить чат + назад
     kb = ReplyKeyboardBuilder()
     kb.button(text=t(lang_for(uid), "admin_add_chat"))
+    if is_superadmin(uid):
+        kb.button(text="🗑 Удалить чат")
     kb.button(text="⬅️ Назад")
     kb.adjust(1, 1)
     return kb.as_markup(resize_keyboard=True)
@@ -386,6 +390,28 @@ async def admin_admins_menu(message: Message):
     if not is_admin(uid): return  # открыть могут все админы
     nav_push(uid, "admin.admins")
     await show_menu(message, "admin.admins")
+    if not is_superadmin(uid):
+        await message.answer("Только суперадмин может управлять администраторами.")
+
+@dp.message(F.text == "📋 Все админы")
+async def list_all_admins(message: Message):
+    uid = message.from_user.id
+    if not is_superadmin(uid):
+        await message.answer("Только суперадмин может управлять администраторами.")
+        return
+    admins = db.list_admins()
+    if not admins:
+        await message.answer("—")
+        return
+    lines = ["Список админов:"]
+    for a in admins:
+        aid = a["user_id"]
+        uname = a["username"]
+        name = (f"@{uname}" if uname else (a["first_name"] or "")) or str(aid)
+        chats_cnt = db.count_chats_by_admin(aid)
+        users_cnt = db.count_users_by_admin(aid)
+        lines.append(f"• {name} (id:{aid}) — чатов: {chats_cnt}, пользователей: {users_cnt}")
+    await message.answer("\n".join(lines))
 
 @dp.message(F.text == "💬 Чаты")
 async def admin_chats_menu(message: Message):
@@ -688,6 +714,35 @@ async def unauthorize_group(message: Message):
     db.log_audit(uid, "unauthorize_chat", target=str(message.chat.id), details="")
     await message.reply(t(lang, "unauthorize_ok"))
 
+# === Superadmin: delete chat by id from admin menu ===
+@dp.message(F.text == "🗑 Удалить чат")
+async def ask_del_chat(message: Message):
+    uid = message.from_user.id
+    if not is_superadmin(uid):
+        await message.answer(t(lang_for(uid), "unauthorize_only_superadmin"))
+        return
+    ADM_PENDING[uid] = "del_chat"
+    await message.answer("Отправьте chat_id в формате chat:-1001234567890")
+
+@dp.message(F.text.regexp(r"^chat:(-?\d{6,20})$"))
+async def handle_del_chat(message: Message):
+    uid = message.from_user.id
+    action = ADM_PENDING.pop(uid, None)
+    if action != "del_chat":
+        return
+    if not is_superadmin(uid):
+        await message.answer(t(lang_for(uid), "unauthorize_only_superadmin"))
+        return
+    chat_id_str = message.text.split(":", 1)[1]
+    try:
+        chat_id = int(chat_id_str)
+    except ValueError:
+        await message.answer("Неверный chat_id")
+        return
+    db.remove_allowed_chat(chat_id)
+    db.log_audit(uid, "unauthorize_chat_by_id", target=str(chat_id), details="from_admin_menu")
+    await message.answer(t(lang_for(uid), "unauthorize_ok"))
+
 
 # ========= SEARCH (10 цифр) =========
 @dp.message(F.text.regexp(r"^\d{10}$"))
@@ -785,6 +840,14 @@ async def on_bot_added(event: ChatMemberUpdated):
         # Added if transitioned from left/kicked to member/administrator
         if old_status in {"left", "kicked", None} and new_status in {"member", "administrator"}:
             inviter_id = event.from_user.id if event.from_user else 0
+            # Only bot admins may authorize chats automatically
+            if not is_admin(inviter_id):
+                try:
+                    await bot.send_message(event.chat.id, t(lang_for(inviter_id or OWNER_ID), "chat_not_authorized"))
+                except Exception:
+                    pass
+                db.log_audit(inviter_id, "auto_authorize_denied_non_admin", target=str(event.chat.id), details="")
+                return
             title = event.chat.title or ""
             female_id = db.get_female_id_from_title(title) or "НЕИЗВЕСТНО"
             db.add_allowed_chat(event.chat.id, title, female_id, inviter_id)

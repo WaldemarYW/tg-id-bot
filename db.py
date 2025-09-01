@@ -284,6 +284,13 @@ class DB:
             (admin_id,)
         ).fetchall()
 
+    def count_chats_by_admin(self, admin_id: int) -> int:
+        row = self.conn.execute(
+            "SELECT COUNT(*) AS c FROM allowed_chats WHERE added_by=?",
+            (admin_id,)
+        ).fetchone()
+        return row["c"] if row else 0
+
     def get_female_id_from_title(self, title: str) -> Optional[str]:
         if not title:
             return None
@@ -353,6 +360,13 @@ class DB:
             """,
             (admin_id,)
         ).fetchall()
+
+    def count_users_by_admin(self, admin_id: int) -> int:
+        row = self.conn.execute(
+            "SELECT COUNT(*) AS c FROM allowed_users WHERE added_by=?",
+            (admin_id,)
+        ).fetchone()
+        return row["c"] if row else 0
 
     def top_males(self, limit: int = 10) -> List[Tuple[str, int]]:
         return self.conn.execute(
