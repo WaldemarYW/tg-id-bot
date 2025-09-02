@@ -819,6 +819,23 @@ async def send_results(message: Message, male_id: str, offset: int):
     else:
         await message.answer(f"{total}/{total}")
 
+# ========= COUNT-ONLY QUICK CHECK =========
+# Triggers on: /count 1234567890, "count 1234567890", "проверить 1234567890", "перевірити 1234567890"
+@dp.message(F.text.regexp(r"^(?:/count|count|проверить|перевірити)\s+(\d{10})$", flags=re.IGNORECASE))
+async def handle_count_only(message: Message):
+    uid = message.from_user.id
+    lang = lang_for(uid)
+    m = re.match(r"^(?:/count|count|проверить|перевірити)\s+(\d{10})$", message.text.strip(), flags=re.IGNORECASE)
+    male_id = m.group(1) if m else None
+    if not male_id:
+        await message.answer("Bad ID")
+        return
+    total = db.count_by_male(male_id)
+    if lang == "uk":
+        await message.answer(f"Повідомлень з ID {male_id}: {total}")
+    else:
+        await message.answer(f"Сообщений с ID {male_id}: {total}")
+
 @dp.callback_query(F.data.startswith("more:"))
 async def cb_more(call: CallbackQuery):
     try:
