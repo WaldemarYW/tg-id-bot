@@ -20,7 +20,7 @@ from aiogram.types import Message, CallbackQuery, ChatMemberUpdated
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 from db import DB
-from utils import extract_text_and_media, extract_male_ids
+from utils import extract_text_and_media, extract_male_ids, highlight_id
 from i18n import t
 
 
@@ -803,14 +803,27 @@ async def send_results(message: Message, male_id: str, offset: int):
         await message.answer(t(lang, "search_not_found"))
         return
     for row in rows:
+        text = row["text"] or ""
+        media_type = row["media_type"] or None
+        file_id = row["file_id"] or None
+        formatted = highlight_id(text, male_id)
         try:
-            await bot.copy_message(
-                chat_id=uid,
-                from_chat_id=row["chat_id"],
-                message_id=row["message_id"]
-            )
+            if media_type == "photo" and file_id:
+                await bot.send_photo(chat_id=uid, photo=file_id, caption=formatted or None)
+            elif media_type == "video" and file_id:
+                await bot.send_video(chat_id=uid, video=file_id, caption=formatted or None)
+            elif media_type == "audio" and file_id:
+                await bot.send_audio(chat_id=uid, audio=file_id, caption=formatted or None)
+            elif media_type == "voice" and file_id:
+                await bot.send_voice(chat_id=uid, voice=file_id, caption=formatted or None)
+            elif media_type == "document" and file_id:
+                await bot.send_document(chat_id=uid, document=file_id, caption=formatted or None)
+            else:
+                # text-only or unknown media: send as plain message
+                await bot.send_message(chat_id=uid, text=formatted or (text or "(no text)"))
         except Exception:
-            await message.answer(row["text"] or "(no text)")
+            # Fallback to text only
+            await message.answer(formatted or (text or "(no text)"))
     new_offset = offset + 5
     if new_offset < total:
         kb = InlineKeyboardBuilder()

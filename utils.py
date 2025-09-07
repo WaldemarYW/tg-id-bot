@@ -1,5 +1,6 @@
 import re
 from typing import Tuple, Optional
+import html
 
 
 def extract_text_and_media(message) -> Tuple[str, Optional[str], Optional[str], int]:
@@ -53,3 +54,13 @@ def extract_male_ids(text: str) -> list:
 
 def valid_id(val: str) -> bool:
     return bool(re.fullmatch(r"\d{10}", val))
+
+
+def highlight_id(text: str, male_id: str) -> str:
+    """Return HTML-safe text where every occurrence of `male_id` is wrapped in <b>..</b>.
+    Only the exact 10-digit `male_id` is highlighted; other numbers remain unchanged.
+    """
+    if not text:
+        return ""
+    escaped = html.escape(text)
+    return escaped.replace(male_id, f"<code>{male_id}</code>")
