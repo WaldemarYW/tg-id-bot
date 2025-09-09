@@ -316,7 +316,6 @@ class DB:
             """
             SELECT m.*, mm.male_id FROM messages m
             JOIN message_male_ids mm ON mm.message_id_ref = m.id
-            JOIN allowed_chats ac ON ac.chat_id = m.chat_id
             WHERE mm.male_id = ?
             ORDER BY m.date DESC
             LIMIT ? OFFSET ?
@@ -361,6 +360,28 @@ class DB:
             (admin_id,)
         ).fetchall()
 
+    def count_messages_by_user(self, user_id: int) -> int:
+        row = self.conn.execute(
+            "SELECT COUNT(*) AS c FROM messages WHERE sender_id=?",
+            (user_id,)
+        ).fetchone()
+        return row["c"] if row else 0
+
+    def list_user_chats(self, user_id: int) -> List[sqlite3.Row]:
+        """Return distinct chats where the user has sent messages, with titles if known."""
+        return self.conn.execute(
+            """
+            SELECT DISTINCT m.chat_id,
+                            COALESCE(ac.title, '') AS title,
+                            COALESCE(ac.female_id, '') AS female_id
+            FROM messages m
+            LEFT JOIN allowed_chats ac ON ac.chat_id = m.chat_id
+            WHERE m.sender_id=?
+            ORDER BY m.chat_id
+            """,
+            (user_id,)
+        ).fetchall()
+
     def count_users_by_admin(self, admin_id: int) -> int:
         row = self.conn.execute(
             "SELECT COUNT(*) AS c FROM allowed_users WHERE added_by=?",
@@ -385,6 +406,27 @@ class DB:
             "SELECT chat_id, COUNT(*) AS cnt FROM messages GROUP BY chat_id ORDER BY cnt DESC LIMIT ?",
             (limit,)
         ).fetchall()
+
+    def count_messages_in_chat(self, chat_id: int) -> int:
+        row = self.conn.execute(
+            "SELECT COUNT(*) AS c FROM messages WHERE chat_id=?",
+            (chat_id,)
+        ).fetchone()
+        return row["c"] if row else 0
+
+    def count_unique_males_in_chat(self, chat_id: int) -> int:
+        row = self.conn.execute(
+            """
+            SELECT COUNT(DISTINCT mm.male_id) AS c
+            FROM message_male_ids mm
+            JOIN messages m ON m.id = mm.message_id_ref
+            WHERE m.chat_id = ?
+            """,
+            (chat_id,)
+        ).fetchone()
+        return row["c"] if row else 0
+
+    
 
     # --- Rate limiting
     def rate_limit_allowed(self, user_id: int, now_ts: int, min_interval: int = 2) -> bool:

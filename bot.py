@@ -117,51 +117,60 @@ def kb_main(uid: int):
     kb.button(text=t(lang, "menu_search"))
     kb.button(text="➕ Добавить отчёт")
     if is_admin(uid):
-        kb.button(text=t(lang, "menu_admin"))
-    kb.button(text=t(lang, "menu_mine"))
-    kb.button(text=t(lang, "menu_lang"))
+        kb.button(text=t(lang, "menu_admin_panel"))
+    kb.button(text=t(lang, "menu_extra"))
+    # Кнопка поддержки видна только ограниченным пользователям
+    if not is_admin(uid) and not db.is_allowed_user(uid):
+        kb.button(text=t(lang, "menu_support"))
     kb.adjust(2, 2, 1)
+    return kb.as_markup(resize_keyboard=True)
+
+def kb_extra(uid: int):
+    lang = lang_for(uid)
+    kb = ReplyKeyboardBuilder()
+    kb.button(text=t(lang, "menu_lang"))
+    kb.button(text="⬅️ Назад")
+    kb.adjust(1, 1)
     return kb.as_markup(resize_keyboard=True)
 
 def kb_admin(uid: int):
     # как в core-2: «👤 Админы» видно всем админам
     kb = ReplyKeyboardBuilder()
-    if not PUBLIC_OPEN:
-        kb.button(text="👥 Пользователи")
-    kb.button(text="👤 Админы")
+    # Кнопка пользователей всегда доступна в панели админа
+    kb.button(text="👥 Пользователи")
+    if is_superadmin(uid):
+        kb.button(text=t(lang_for(uid), "menu_superadmin_panel"))
     kb.button(text="💬 Чаты")
-    kb.button(text="📊 Статистика")
-    kb.button(text="💾 Экспорт")
+    # Убрали «Статистика» и «Дополнительно»
     kb.button(text="⬅️ Назад")
-    kb.adjust(2, 2, 2)
+    kb.adjust(2, 1)
     return kb.as_markup(resize_keyboard=True)
 
 def kb_admin_users(uid: int):
     kb = ReplyKeyboardBuilder()
     kb.button(text="➕ Добавить пользователя")
-    kb.button(text="➖ Удалить пользователя")
+    kb.button(text="📂 Мои пользователи")
     kb.button(text="⬅️ Назад")
-    kb.adjust(2, 1)
+    kb.adjust(1, 1, 1)
     return kb.as_markup(resize_keyboard=True)
 
 def kb_admin_admins(uid: int):
     kb = ReplyKeyboardBuilder()
     kb.button(text="➕ Добавить админа")
-    kb.button(text="➖ Удалить админа")
     if is_superadmin(uid):
-        kb.button(text="📋 Все админы")
+        kb.button(text="Все админы")
+        kb.button(text="Все пользователи")
     kb.button(text="⬅️ Назад")
-    kb.adjust(2, 1, 1)
+    kb.adjust(2, 1)
     return kb.as_markup(resize_keyboard=True)
 
 def kb_admin_chats(uid: int):
     # Только добавить чат + назад
     kb = ReplyKeyboardBuilder()
     kb.button(text=t(lang_for(uid), "admin_add_chat"))
-    if is_superadmin(uid):
-        kb.button(text="🗑 Удалить чат")
+    kb.button(text="📂 Мои чаты")
     kb.button(text="⬅️ Назад")
-    kb.adjust(1, 1)
+    kb.adjust(1, 1, 1)
     return kb.as_markup(resize_keyboard=True)
 
 def kb_admin_exports(uid: int):
@@ -205,6 +214,58 @@ async def show_menu(message: Message, state: str):
         await message.answer("Управление чатами", reply_markup=kb_admin_chats(uid))
     elif state == "admin.exports":
         await message.answer(t(lang_for(uid), "export_menu"), reply_markup=kb_admin_exports(uid))
+    elif state == "extra":
+        # Build and show user status inside the extra menu
+        lang = lang_for(uid)
+        is_admin_flag = is_admin(uid)
+        is_allowed_flag = db.is_allowed_user(uid)
+        role = ""
+        access = ""
+        if is_superadmin(uid):
+            role = "Суперадмин" if lang == "ru" else "Суперадмін"
+            access = "есть" if lang == "ru" else "є"
+        elif is_admin_flag:
+            role = "Админ" if lang == "ru" else "Адмін"
+            access = "есть" if lang == "ru" else "є"
+        elif not is_allowed_flag:
+            role = t(lang, "limited_status")
+            access = t(lang, "limited_access")
+        else:
+            role = "Пользователь" if lang == "ru" else "Користувач"
+            access = "есть" if lang == "ru" else "є"
+        credits_line = ""
+        banned_line = ""
+        banned_until = db.get_user_ban(uid)
+        if banned_until:
+            until_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(banned_until))
+            banned_line = ("\nБлокировка до: " if lang == "ru" else "\nБлокування до: ") + until_str
+        status_title = t(lang, "extra_title")
+        # Show used/left quotas (for ограниченных — 50/5 с остатком; для остальных — used и ∞)
+        now_ts = int(time.time())
+        cutoff = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 24*3600))
+        row_s = db.conn.execute(
+            "SELECT COUNT(*) AS c FROM searches WHERE user_id=? AND query_type='male' AND created_at > ?",
+            (uid, cutoff)
+        ).fetchone()
+        used_search = (row_s["c"] if row_s and row_s["c"] is not None else 0)
+        row_r = db.conn.execute(
+            "SELECT COUNT(*) AS c FROM audit_log WHERE actor_id=? AND action='report_send' AND ts > ?",
+            (uid, cutoff)
+        ).fetchone()
+        used_reports = (row_r["c"] if row_r and row_r["c"] is not None else 0)
+        if not is_admin_flag and not is_allowed_flag:
+            limit_s, limit_r = 50, 5
+            left_s, left_r = max(0, limit_s - used_search), max(0, limit_r - used_reports)
+        else:
+            limit_s = limit_r = "∞"
+            left_s = left_r = "∞"
+        quota_lines = (
+            "\n" + t(lang, "limited_search_used", used=used_search, limit=limit_s)
+            + "\n" + t(lang, "limited_report_used", used=used_reports, limit=limit_r)
+        )
+        id_line = "\n" + t(lang, "extra_your_id", id=uid)
+        status = f"{status_title}\nСтатус: {role}\nДоступ: {access}{banned_line}{quota_lines}{id_line}"
+        await message.answer(status, reply_markup=kb_extra(uid))
     else:
         await message.answer(t(lang_for(uid), "start"), reply_markup=kb_main(uid))
 
@@ -244,7 +305,7 @@ async def start(message: Message, command: CommandObject):
     nav_set(uid, "root")
     await message.answer(t(lang_for(uid), "start"), reply_markup=kb_main(uid))
 
-@dp.message(F.text.in_({"⚙️ Админ", "⚙️ Адмін"}))
+@dp.message(F.text.in_({t("ru", "menu_admin_panel"), t("uk", "menu_admin_panel")}))
 @dp.message(Command("admin"))
 async def admin_entry(message: Message):
     uid = message.from_user.id
@@ -253,6 +314,8 @@ async def admin_entry(message: Message):
         return
     nav_push(uid, "admin")
     await show_menu(message, "admin")
+
+## (removed) separate superadmin panel entry via main menu button
 
 @dp.message(F.text.func(lambda s: isinstance(s, str) and ("Язык" in s or "Мова" in s)))
 async def switch_lang(message: Message):
@@ -273,31 +336,32 @@ async def switch_lang(message: Message):
 # ========= MAIN MENU ACTIONS =========
 @dp.message(F.text.func(lambda s: isinstance(s, str) and ("Поиск по ID" in s or "Пошук за ID" in s)))
 async def action_search_prompt(message: Message):
-    await message.answer(t(lang_for(message.from_user.id), "search_enter_id"))
-
-@dp.message(F.text.func(lambda s: isinstance(s, str) and ("Мои запросы" in s or "Мої запити" in s)))
-async def my_queries(message: Message):
     uid = message.from_user.id
-    logs = db.get_user_searches(uid, 10)
-    lines = [f"{r['created_at']} • {r['query_type']} • {r['query_value']}" for r in logs]
-    if not lines:
-        await message.answer("—")
-    else:
-        credits_msg = ""
-        if not is_admin(uid):
-            credits = db.get_user_credits(uid)
-            credits_msg = "\n" + t(lang_for(uid), "credits_left", credits=credits)
-        await message.answer("\n".join(lines) + credits_msg)
+    # Прерываем режим отчёта, если он был активен
+    if REPORT_STATE.get(uid):
+        REPORT_STATE.pop(uid, None)
+    await message.answer(t(lang_for(uid), "search_enter_id"))
+
+@dp.message(F.text.in_({t("ru", "menu_support"), t("uk", "menu_support")}))
+async def support_info(message: Message):
+    await message.answer(t(lang_for(message.from_user.id), "support_text"))
+
+@dp.message(F.text.in_({t("ru", "menu_extra"), t("uk", "menu_extra")}))
+async def extra_menu(message: Message):
+    uid = message.from_user.id
+    nav_push(uid, "extra")
+    await show_menu(message, "extra")
+
+## Removed: "Мои запросы" feature and handler
+
+## Removed: отдельная кнопка показа Telegram ID (ID теперь в блоке Информация)
 
 
 # ========= REPORT: UI =========
 @dp.message(F.text == "➕ Добавить отчёт")
 async def report_start(message: Message):
     uid = message.from_user.id
-    if not is_allowed_user(uid):
-        if not PUBLIC_OPEN:
-            await message.answer(t(lang_for(uid), "not_authorized"))
-            return
+    # Разрешаем запуск отчёта всем: для ограниченных лимит проверяется в следующем шаге
     REPORT_STATE[uid] = {"stage": "wait_female"}
     await message.answer("Введите 10-значный идентификатор девушки (из названия группы).")
 
@@ -351,6 +415,19 @@ async def report_wait_text(message: Message):
         await message.answer("Пустой отчёт не принимаю. Напишите текст отчёта.")
         return
 
+    # Restricted guests: daily limit 5 reports
+    if not is_admin(uid) and not db.is_allowed_user(uid):
+        now_ts = int(time.time())
+        ts_ago_24h = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 24*3600))
+        row_q = db.conn.execute(
+            "SELECT COUNT(*) AS c FROM audit_log WHERE actor_id=? AND action='report_send' AND ts > ?",
+            (uid, ts_ago_24h)
+        ).fetchone()
+        if row_q and row_q["c"] is not None and row_q["c"] >= 5:
+            await message.answer(t(lang_for(uid), "limited_report_quota"))
+            REPORT_STATE.pop(uid, None)
+            return
+
     signer = f"@{message.from_user.username}" if message.from_user.username else f"id:{uid}"
     out_text = f"Отчёт от {signer}:\n\n{text}"
 
@@ -370,7 +447,7 @@ async def report_wait_text(message: Message):
         is_forward=0,
     )
     db.link_male_ids(msg_db_id, male_ids)
-    db.add_credits(uid, 1)
+    # credits removed
     db.log_audit(uid, "report_send", target=female_id, details=f"chat_id={chat_id}")
 
     REPORT_STATE.pop(uid, None)
@@ -383,35 +460,30 @@ async def admin_users_menu(message: Message):
     if not is_admin(uid): return
     nav_push(uid, "admin.users")
     await show_menu(message, "admin.users")
+    # Also show quick entry to "Мои пользователи"
+    await message.answer("Выберите действие или откройте 📂 Мои пользователи.")
 
-@dp.message(F.text == "👤 Админы")
+@dp.message(F.text == "📂 Мои пользователи")
+async def show_my_users(message: Message):
+    uid = message.from_user.id
+    if not is_admin(uid):
+        return
+    await _close_prev_paged(uid)
+    kb, total, page = build_my_users_kb(uid, page=0)
+    caption = f"Ваши пользователи: {total}" if lang_for(uid) == "ru" else f"Ваші користувачі: {total}"
+    sent = await message.answer(caption, reply_markup=kb)
+    PAGED_MSG[uid] = sent.message_id
+
+@dp.message(F.text.in_({"👑 Панель суперадмина", "👤 Админы"}))
 async def admin_admins_menu(message: Message):
     uid = message.from_user.id
-    if not is_admin(uid): return  # открыть могут все админы
+    if not is_superadmin(uid):
+        await message.answer("Только суперадмин может управлять администраторами.")
+        return
     nav_push(uid, "admin.admins")
     await show_menu(message, "admin.admins")
-    if not is_superadmin(uid):
-        await message.answer("Только суперадмин может управлять администраторами.")
 
-@dp.message(F.text == "📋 Все админы")
-async def list_all_admins(message: Message):
-    uid = message.from_user.id
-    if not is_superadmin(uid):
-        await message.answer("Только суперадмин может управлять администраторами.")
-        return
-    admins = db.list_admins()
-    if not admins:
-        await message.answer("—")
-        return
-    lines = ["Список админов:"]
-    for a in admins:
-        aid = a["user_id"]
-        uname = a["username"]
-        name = (f"@{uname}" if uname else (a["first_name"] or "")) or str(aid)
-        chats_cnt = db.count_chats_by_admin(aid)
-        users_cnt = db.count_users_by_admin(aid)
-        lines.append(f"• {name} (id:{aid}) — чатов: {chats_cnt}, пользователей: {users_cnt}")
-    await message.answer("\n".join(lines))
+## (removed) list_all_admins handler and button
 
 @dp.message(F.text == "💬 Чаты")
 async def admin_chats_menu(message: Message):
@@ -430,11 +502,29 @@ async def admin_stats_menu(message: Message):
     await message.answer(t(lang_for(uid), "stats", men=men, msgs=msgs, chats=chats, females=females))
     await message.answer(t(lang_for(uid), "stats_menu"), reply_markup=kb_admin_stats(uid))
 
-@dp.message(F.text == "💾 Экспорт")
+@dp.message(F.text.in_({"💾 Экспорт", "🧩 Дополнительно"}))
 async def admin_exports_menu(message: Message):
     uid = message.from_user.id
     if not is_admin(uid): return
     nav_push(uid, "admin.exports")
+    # Доп. информация для раздела: общее число отправленных сообщений пользователем
+    total_my_msgs = db.count_messages_by_user(uid) if hasattr(db, "count_messages_by_user") else 0
+    lines = [
+        (f"Отправленных сообщений: {total_my_msgs}" if lang_for(uid) == "ru" else f"Надісланих повідомлень: {total_my_msgs}")
+    ]
+    if is_admin(uid):
+        try:
+            users_cnt = db.count_users_by_admin(uid)
+            chats_cnt = db.count_chats_by_admin(uid)
+            if lang_for(uid) == "ru":
+                lines.append(f"Моих пользователей: {users_cnt}")
+                lines.append(f"Моих чатов: {chats_cnt}")
+            else:
+                lines.append(f"Мої користувачі: {users_cnt}")
+                lines.append(f"Мої чати: {chats_cnt}")
+        except Exception:
+            pass
+    await message.answer("\n".join(lines))
     await show_menu(message, "admin.exports")
 
 # Guards: restrict certain exports to superadmin only
@@ -493,10 +583,14 @@ async def stats_my_users(message: Message):
     for r in rows[:100]:
         uname = r["username"] or r["username_lc"] or ""
         disp = f"@{uname}" if uname else f"id:{r['user_id']}"
-        lines.append(f"• {disp} (credits:{r['credits']})")
+        lines.append(f"• {disp}")
     await message.answer("\n".join(lines))
 
-@dp.message(F.text.in_({t("ru", "stats_all_chats"), t("uk", "stats_all_chats")}))
+# Срабатывает ТОЛЬКО когда пользователь в меню статистики
+@dp.message(
+    F.text.in_({t("ru", "stats_all_chats"), t("uk", "stats_all_chats")}) &
+    F.func(lambda m: NAV_STATE.get(m.from_user.id) == "admin.stats")
+)
 async def stats_all_chats(message: Message):
     uid = message.from_user.id
     if not is_superadmin(uid):
@@ -520,7 +614,10 @@ async def stats_all_chats(message: Message):
         chunks.append("\n".join(lines))
     await message.answer("\n\n".join(chunks))
 
-@dp.message(F.text.in_({t("ru", "stats_all_users"), t("uk", "stats_all_users")}))
+@dp.message(
+    F.text.in_({t("ru", "stats_all_users"), t("uk", "stats_all_users")}) &
+    F.func(lambda m: NAV_STATE.get(m.from_user.id) == "admin.stats")
+)
 async def stats_all_users(message: Message):
     uid = message.from_user.id
     if not is_superadmin(uid):
@@ -540,13 +637,172 @@ async def stats_all_users(message: Message):
         for r in rows[:60]:
             uname = r["username"] or r["username_lc"] or ""
             disp = f"@{uname}" if uname else f"id:{r['user_id']}"
-            lines.append(f"• {disp} (credits:{r['credits']})")
+        lines.append(f"• {disp}")
         chunks.append("\n".join(lines))
     await message.answer("\n\n".join(chunks))
 
 
 # ========= ADMIN ACTIONS =========
 ADM_PENDING: Dict[int, str] = {}
+PAGED_MSG: Dict[int, int] = {}
+ADMIN_PICK_MODE: Dict[int, str] = {}
+
+async def _close_prev_paged(uid: int):
+    msg_id = PAGED_MSG.pop(uid, None)
+    if msg_id:
+        try:
+            await bot.delete_message(uid, msg_id)
+        except Exception:
+            pass
+
+# ===== Helper: build inline keyboard for listing admin's users
+def build_my_users_kb(uid: int, page: int = 0, page_size: int = 10):
+    rows = db.list_users_by_admin(uid)
+    total = len(rows)
+    total_pages = max(1, (total + page_size - 1) // page_size)
+    page = min(max(0, page), total_pages - 1)
+    start = page * page_size
+    end = min(total, start + page_size)
+
+    kb = InlineKeyboardBuilder()
+    for r in rows[start:end]:
+        uname = r["username"] or r["username_lc"] or ""
+        disp = f"@{uname}" if uname else f"id:{r['user_id']}"
+        kb.button(text=disp, callback_data=f"mui:{r['user_id']}:{page}")
+    prev_page = max(0, page - 1)
+    next_page = min(total_pages - 1, page + 1)
+    kb.adjust(1)
+    nav = InlineKeyboardBuilder()
+    nav.button(text="«", callback_data=f"mup:{prev_page}")
+    nav.button(text=f"{page+1}/{total_pages}", callback_data=f"mup:{page}")
+    nav.button(text="»", callback_data=f"mup:{next_page}")
+    kb.row(*nav.buttons)
+    close = InlineKeyboardBuilder()
+    close.button(text="✖ Закрыть", callback_data="muc:close")
+    kb.row(*close.buttons)
+    return kb.as_markup(), total, page
+
+# (удалено) Пагинация для раздела удаления чатов — больше не используется
+
+# ===== Helper: build inline keyboard for listing "my chats" with message counts
+def build_my_chats_kb(uid: int, page: int = 0, page_size: int = 10):
+    rows = db.list_chats_by_admin(uid)
+    total = len(rows)
+    total_pages = max(1, (total + page_size - 1) // page_size)
+    page = min(max(0, page), total_pages - 1)
+    start = page * page_size
+    end = min(total, start + page_size)
+
+    kb = InlineKeyboardBuilder()
+    for r in rows[start:end]:
+        title = (r["title"] or "(no title)").strip()
+        fid = r["female_id"] or "?"
+        text = f"{title} • {fid}"
+        if len(text) > 64:
+            text = text[:61] + "…"
+        kb.button(text=text, callback_data=f"mci:{r['chat_id']}:{page}")
+    # Single navigation row + close
+    total_pages = max(1, (total + page_size - 1) // page_size)
+    prev_page = max(0, page - 1)
+    next_page = min(total_pages - 1, page + 1)
+    kb.adjust(1)
+    nav = InlineKeyboardBuilder()
+    nav.button(text="«", callback_data=f"mcp:{prev_page}")
+    nav.button(text=f"{page+1}/{total_pages}", callback_data=f"mcp:{page}")
+    nav.button(text="»", callback_data=f"mcp:{next_page}")
+    kb.row(*nav.buttons)
+    close = InlineKeyboardBuilder()
+    close.button(text="✖ Закрыть", callback_data="mcc:close")
+    kb.row(*close.buttons)
+    return kb.as_markup(), total, page
+
+# ===== Helper: list admins for superadmin browse
+def build_admins_list_kb(page: int = 0, page_size: int = 10, pick_prefix: str = "admi"):
+    admins = db.list_admins()
+    total = len(admins)
+    total_pages = max(1, (total + page_size - 1) // page_size)
+    page = min(max(0, page), total_pages - 1)
+    start = page * page_size
+    end = min(total, start + page_size)
+
+    kb = InlineKeyboardBuilder()
+    for a in admins[start:end]:
+        aid = a["user_id"]
+        uname = a["username"]
+        name = (f"@{uname}" if uname else (a["first_name"] or "")) or str(aid)
+        text = f"{name} — id:{aid}"
+        if len(text) > 60:
+            text = text[:57] + "…"
+        kb.button(text=text, callback_data=f"{pick_prefix}:{aid}:{page}")
+    prev_page = max(0, page - 1)
+    next_page = min(total_pages - 1, page + 1)
+    kb.adjust(1)
+    nav = InlineKeyboardBuilder()
+    nav.button(text="«", callback_data=f"admp:{prev_page}")
+    nav.button(text=f"{page+1}/{total_pages}", callback_data=f"admp:{page}")
+    nav.button(text="»", callback_data=f"admp:{next_page}")
+    kb.row(*nav.buttons)
+    close = InlineKeyboardBuilder()
+    close.button(text="✖ Закрыть", callback_data="admc:close")
+    kb.row(*close.buttons)
+    return kb.as_markup(), total, page
+
+# ===== Helper: list chats for a specific admin (superadmin view)
+def build_admin_chats_kb(admin_id: int, page: int = 0, page_size: int = 10):
+    rows = db.list_chats_by_admin(admin_id)
+    total = len(rows)
+    total_pages = max(1, (total + page_size - 1) // page_size)
+    page = min(max(0, page), total_pages - 1)
+    start = page * page_size
+    end = min(total, start + page_size)
+
+    kb = InlineKeyboardBuilder()
+    for r in rows[start:end]:
+        title = (r["title"] or "(no title)").strip()
+        fid = r["female_id"] or "?"
+        text = f"{title} • {fid}"
+        if len(text) > 64:
+            text = text[:61] + "…"
+        kb.button(text=text, callback_data=f"adci:{r['chat_id']}:{admin_id}:{page}")
+    prev_page = max(0, page - 1)
+    next_page = min(total_pages - 1, page + 1)
+    kb.adjust(1)
+    nav = InlineKeyboardBuilder()
+    nav.button(text="«", callback_data=f"adcp:{admin_id}:{prev_page}")
+    nav.button(text=f"{page+1}/{total_pages}", callback_data=f"adcp:{admin_id}:{page}")
+    nav.button(text="»", callback_data=f"adcp:{admin_id}:{next_page}")
+    kb.row(*nav.buttons)
+    close = InlineKeyboardBuilder()
+    close.button(text="✖ Закрыть", callback_data="admc:close")
+    kb.row(*close.buttons)
+    return kb.as_markup(), total, page
+
+# Users of a given admin (for superadmin view)
+def build_admin_users_kb(admin_id: int, page: int = 0, page_size: int = 10):
+    rows = db.list_users_by_admin(admin_id)
+    total = len(rows)
+    total_pages = max(1, (total + page_size - 1) // page_size)
+    page = min(max(0, page), total_pages - 1)
+    start = page * page_size
+    end = min(total, start + page_size)
+
+    kb = InlineKeyboardBuilder()
+    for r in rows[start:end]:
+        uname = r["username"] or r["username_lc"] or ""
+        disp = f"@{uname}" if uname else f"id:{r['user_id']}"
+        kb.button(text=disp, callback_data=f"adui:{r['user_id']}:{admin_id}:{page}")
+    prev_page = max(0, page - 1)
+    next_page = min(total_pages - 1, page + 1)
+    kb.adjust(1)
+    nav = InlineKeyboardBuilder()
+    nav.button(text="«", callback_data=f"adup:{admin_id}:{prev_page}")
+    nav.button(text=f"{page+1}/{total_pages}", callback_data=f"adup:{admin_id}:{page}")
+    nav.button(text="»", callback_data=f"adup:{admin_id}:{next_page}")
+    kb.row(*nav.buttons)
+    close = InlineKeyboardBuilder()
+    close.button(text="✖ Закрыть", callback_data="admc:close")
+    kb.row(*close.buttons)
+    return kb.as_markup(), total, page
 
 # --- Пользователи
 @dp.message(F.text == "➕ Добавить пользователя")
@@ -554,15 +810,9 @@ async def ask_add_user(message: Message):
     uid = message.from_user.id
     if not is_admin(uid): return
     ADM_PENDING[uid] = "add_user"
-    await message.answer(t(lang_for(uid), "prompt_user_id"))
-    await message.answer("Можете также прислать @username — добавим по нику и активируем, когда пользователь нажмёт /start.")
+    await message.answer("Введите числовой Telegram ID пользователя (только цифры).")
 
-@dp.message(F.text == "➖ Удалить пользователя")
-async def ask_del_user(message: Message):
-    uid = message.from_user.id
-    if not is_admin(uid): return
-    ADM_PENDING[uid] = "del_user"
-    await message.answer(t(lang_for(uid), "prompt_user_id"))
+## Removed: old entry point for deleting user via plain ID
 
 # --- Админы (видно всем админам; выполнять может только супер)
 @dp.message(F.text == "➕ Добавить админа")
@@ -572,7 +822,7 @@ async def ask_add_admin(message: Message):
         await message.answer("Только суперадмин может управлять администраторами.")
         return
     ADM_PENDING[uid] = "add_admin"
-    await message.answer(t(lang_for(uid), "prompt_user_id"))
+    await message.answer("Введите числовой Telegram ID администратора (только цифры).")
 
 @dp.message(F.text == "➖ Удалить админа")
 async def ask_del_admin(message: Message):
@@ -615,47 +865,50 @@ async def handle_admin_input(message: Message):
         if not is_admin(uid): return
         db.add_allowed_user(target_id, username_lc="", added_by=uid, credits=100)
         db.log_audit(uid, "add_user", target=str(target_id), details=f"by={uid}")
-        await message.answer("Пользователь добавлен (100 кредитов).")
-    elif action == "del_user":
-        if not is_admin(uid): return
-        db.remove_allowed_user(target_id)
-        db.log_audit(uid, "remove_user", target=str(target_id), details=f"by={uid}")
-        await message.answer("Пользователь удалён.")
+        await message.answer("Пользователь добавлен.")
+    # 'del_user' flow removed in favor of inline deletion in "Мои пользователи"
     else:
         await message.answer("OK")
 
-# Принять @username для add_user:
-@dp.message(F.text.regexp(r"^@[A-Za-z0-9_]{5,32}$"))
-async def handle_add_user_by_username(message: Message):
+# Принять только цифры для add_user (только когда активен режим добавления)
+@dp.message(
+    F.text.regexp(r"^\d{6,12}$") &
+    F.func(lambda m: ADM_PENDING.get(m.from_user.id) == "add_user")
+)
+async def handle_add_user_by_id_digits(message: Message):
     uid = message.from_user.id
     if not is_admin(uid):
         return
-    action = ADM_PENDING.get(uid)
-    if action != "add_user":
+    target_id_str = message.text.strip()
+    try:
+        target_id = int(target_id_str)
+    except ValueError:
+        await message.answer("Неверный ID")
         return
+    db.add_allowed_user(target_id, username_lc="", added_by=uid, credits=100)
+    db.log_audit(uid, "add_user", target=str(target_id), details=f"by={uid}")
+    ADM_PENDING.pop(uid, None)
+    await message.answer("Пользователь добавлен.")
 
-    uname_lc_with_at = message.text.strip().lower()
-    uname_clean = uname_lc_with_at.lstrip("@")
-    uname_lc = uname_clean.lower()
-
-    # 1) если пользователь уже нажимал /start ранее — он есть в таблице users
-    row = db.conn.execute(
-        "SELECT user_id FROM users WHERE lower(username)=?",
-        (uname_lc,)
-    ).fetchone()
-    if row:
-        user_id_found = row["user_id"]
-        db.add_allowed_user(user_id_found, uname_lc, added_by=uid, credits=100)
-        db.log_audit(uid, "add_user_by_username_immediate", target=f"{uname_lc}({user_id_found})", details="")
-        await message.answer("Пользователь найден по нику и добавлен (100 кредитов). Готов пользоваться поиском.")
+# Принять только цифры для add_admin (только когда активен режим добавления админа)
+@dp.message(
+    F.text.regexp(r"^\d{6,12}$") &
+    F.func(lambda m: ADM_PENDING.get(m.from_user.id) == "add_admin")
+)
+async def handle_add_admin_by_id_digits(message: Message):
+    uid = message.from_user.id
+    if not is_superadmin(uid):
         return
-
-    # 2) иначе — резервируем ник, активируем при первом /start
-    if hasattr(db, "reserve_username") and db.reserve_username(uname_lc, added_by=uid):
-        db.log_audit(uid, "reserve_username", target=uname_lc, details="")
-        await message.answer("Резерв по @username создан. Как только пользователь нажмёт /start у бота — доступ активируется и будет выдано 100 кредитов.")
-    else:
-        await message.answer("Не удалось создать резерв: возможно, уже существует или пользователь уже добавлен.")
+    target_id_str = message.text.strip()
+    try:
+        target_id = int(target_id_str)
+    except ValueError:
+        await message.answer("Неверный ID")
+        return
+    db.add_admin(target_id)
+    db.log_audit(uid, "add_admin", target=str(target_id), details="by_digits")
+    ADM_PENDING.pop(uid, None)
+    await message.answer("Админ добавлен.")
 
 
 # ========= CHATS =========
@@ -714,34 +967,569 @@ async def unauthorize_group(message: Message):
     db.log_audit(uid, "unauthorize_chat", target=str(message.chat.id), details="")
     await message.reply(t(lang, "unauthorize_ok"))
 
-# === Superadmin: delete chat by id from admin menu ===
-@dp.message(F.text == "🗑 Удалить чат")
-async def ask_del_chat(message: Message):
-    uid = message.from_user.id
-    if not is_superadmin(uid):
-        await message.answer(t(lang_for(uid), "unauthorize_only_superadmin"))
-        return
-    ADM_PENDING[uid] = "del_chat"
-    await message.answer("Отправьте chat_id в формате chat:-1001234567890")
+## (удалено) отдельный раздел удаления чатов
 
-@dp.message(F.text.regexp(r"^chat:(-?\d{6,20})$"))
-async def handle_del_chat(message: Message):
+@dp.message(F.text == "📂 Мои чаты")
+async def show_my_chats(message: Message):
     uid = message.from_user.id
-    action = ADM_PENDING.pop(uid, None)
-    if action != "del_chat":
+    if not is_admin(uid):
         return
+    await _close_prev_paged(uid)
+    kb, total, page = build_my_chats_kb(uid, page=0)
+    caption = f"Ваши чаты: {total}" if total else "У вас нет добавленных чатов."
+    sent = await message.answer(caption, reply_markup=kb)
+    PAGED_MSG[uid] = sent.message_id
+
+@dp.message(F.text.in_({"Все админы", "📚 Чаты всех админов"}))
+async def show_admins_list(message: Message):
+    uid = message.from_user.id
     if not is_superadmin(uid):
-        await message.answer(t(lang_for(uid), "unauthorize_only_superadmin"))
         return
-    chat_id_str = message.text.split(":", 1)[1]
+    await _close_prev_paged(uid)
+    kb, total, page = build_admins_list_kb(page=0)
+    caption = "Админы:" if total else "Админов нет."
+    sent = await message.answer(caption, reply_markup=kb)
+    PAGED_MSG[uid] = sent.message_id
+
+@dp.message(F.text == "Все пользователи")
+async def show_all_users_by_admin(message: Message):
+    uid = message.from_user.id
+    if not is_superadmin(uid):
+        return
+    await _close_prev_paged(uid)
+    # mark pick mode so that selecting admin opens users directly
+    ADMIN_PICK_MODE[uid] = "users"
+    kb, total, page = build_admins_list_kb(page=0, pick_prefix="admi")
+    caption = "Админы:" if total else "Админов нет."
+    sent = await message.answer(caption, reply_markup=kb)
+    PAGED_MSG[uid] = sent.message_id
+
+## (удалено) коллбеки dcp/dc/dcY/dcN — не используются
+
+@dp.callback_query(F.data.regexp(r"^mcp:(\d+)$"))
+async def cb_my_chats_page(call: CallbackQuery):
     try:
-        chat_id = int(chat_id_str)
-    except ValueError:
-        await message.answer("Неверный chat_id")
+        _, page_str = call.data.split(":", 1)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
         return
+    uid = call.from_user.id
+    if not is_admin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    kb, total, cur_page = build_my_chats_kb(uid, page=page)
+    caption = f"Ваши чаты: {total}" if total else "У вас нет добавленных чатов."
+    try:
+        await call.message.edit_text(caption, reply_markup=kb)
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb)
+        except Exception:
+            pass
+    await call.answer("")
+    PAGED_MSG[call.from_user.id] = call.message.message_id
+
+@dp.callback_query(F.data.regexp(r"^mci:(-?\d+):(\d+)$"))
+async def cb_my_chats_item(call: CallbackQuery):
+    try:
+        _, chat_id_str, page_str = call.data.split(":", 2)
+        chat_id = int(chat_id_str)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    row = db.conn.execute("SELECT title, female_id, added_by FROM allowed_chats WHERE chat_id=?", (chat_id,)).fetchone()
+    title = (row["title"] if row else "?") or "(no title)"
+    fid = (row["female_id"] if row else "?") or "?"
+    total_msgs = db.count_messages_in_chat(chat_id)
+    unique_males = db.count_unique_males_in_chat(chat_id)
+    text = f"Чат: {title} • {fid} — {chat_id}\nСообщений: {total_msgs}\nУникальных мужчин: {unique_males}"
+    kb = InlineKeyboardBuilder()
+    # Показать кнопку удаления внутри карточки чата
+    if row and row["added_by"] == uid:
+        kb.button(text="🗑 Удалить чат", callback_data=f"mcd:{chat_id}:{page}")
+    kb.button(text="⬅ Назад", callback_data=f"mcp:{page}")
+    kb.button(text="✖ Закрыть", callback_data="mcc:close")
+    kb.adjust(2, 1)
+    try:
+        await call.message.edit_text(text, reply_markup=kb.as_markup())
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb.as_markup())
+        except Exception:
+            pass
+    await call.answer("")
+    PAGED_MSG[call.from_user.id] = call.message.message_id
+
+@dp.callback_query(F.data.regexp(r"^mcd:(-?\d+):(\d+)$"))
+async def cb_my_chat_delete_confirm(call: CallbackQuery):
+    try:
+        _, chat_id_str, page_str = call.data.split(":", 2)
+        chat_id = int(chat_id_str)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    row = db.get_allowed_chat(chat_id)
+    if not row or row["added_by"] != uid:
+        await call.answer("Можно удалять только свои чаты", show_alert=True)
+        return
+    title = (row["title"] if row else "?") or "(no title)"
+    fid = (row["female_id"] if row else "?") or "?"
+    kb = InlineKeyboardBuilder()
+    kb.button(text="Да", callback_data=f"mcdY:{chat_id}:{page}")
+    kb.button(text="Нет", callback_data=f"mci:{chat_id}:{page}")
+    kb.adjust(2)
+    try:
+        await call.message.edit_text(f"Удалить чат: {title} • {fid} — {chat_id}?", reply_markup=kb.as_markup())
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb.as_markup())
+        except Exception:
+            pass
+    await call.answer("")
+    PAGED_MSG[call.from_user.id] = call.message.message_id
+
+@dp.callback_query(F.data.regexp(r"^mcdY:(-?\d+):(\d+)$"))
+async def cb_my_chat_delete_yes(call: CallbackQuery):
+    try:
+        _, chat_id_str, page_str = call.data.split(":", 2)
+        chat_id = int(chat_id_str)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    row = db.get_allowed_chat(chat_id)
+    if not row or row["added_by"] != uid:
+        await call.answer("Можно удалять только свои чаты", show_alert=True)
+        return
+    title = (row["title"] if row else "?") or "(no title)"
+    fid = (row["female_id"] if row else "?") or "?"
     db.remove_allowed_chat(chat_id)
-    db.log_audit(uid, "unauthorize_chat_by_id", target=str(chat_id), details="from_admin_menu")
-    await message.answer(t(lang_for(uid), "unauthorize_ok"))
+    db.log_audit(uid, "unauthorize_my_chat_from_card", target=str(chat_id), details="from_my_chats")
+    try:
+        await bot.send_message(uid, f"Удалён чат: {title} • {fid} — {chat_id}")
+    except Exception:
+        pass
+    # Вернуться к той же странице списка «Мои чаты»
+    kb, total, cur_page = build_my_chats_kb(uid, page=page)
+    caption = f"Ваши чаты: {total}" if total else "У вас нет добавленных чатов."
+    try:
+        await call.message.edit_text(caption, reply_markup=kb)
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb)
+        except Exception:
+            pass
+    await call.answer("Удалено")
+    PAGED_MSG[call.from_user.id] = call.message.message_id
+
+@dp.callback_query(F.data == "mcc:close")
+async def cb_my_chats_close(call: CallbackQuery):
+    try:
+        await call.message.delete()
+    except Exception:
+        pass
+    await call.answer("")
+    if PAGED_MSG.get(call.from_user.id) == call.message.message_id:
+        PAGED_MSG.pop(call.from_user.id, None)
+
+# ===== Users pagination (admin-only)
+@dp.callback_query(F.data.regexp(r"^mup:(\d+)$"))
+async def cb_my_users_page(call: CallbackQuery):
+    try:
+        _, page_str = call.data.split(":", 1)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    if not is_admin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    kb, total, cur_page = build_my_users_kb(uid, page=page)
+    caption = f"Ваши пользователи: {total}" if lang_for(uid) == "ru" else f"Ваші користувачі: {total}"
+    try:
+        await call.message.edit_text(caption, reply_markup=kb)
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb)
+        except Exception:
+            pass
+    await call.answer("")
+    PAGED_MSG[uid] = call.message.message_id
+
+@dp.callback_query(F.data.regexp(r"^mui:(\d+):(\d+)$"))
+async def cb_my_users_item(call: CallbackQuery):
+    try:
+        _, user_id_str, page_str = call.data.split(":", 2)
+        user_id = int(user_id_str)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    if not is_admin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    # Fetch user info
+    row = db.conn.execute(
+        "SELECT au.user_id, au.credits, au.added_by, u.username, u.first_name, u.last_name FROM allowed_users au LEFT JOIN users u ON u.user_id=au.user_id WHERE au.user_id=?",
+        (user_id,)
+    ).fetchone()
+    if not row:
+        await call.answer("Пользователь не найден", show_alert=True)
+        return
+    if not is_superadmin(uid) and row["added_by"] != uid:
+        await call.answer("Только свои пользователи", show_alert=True)
+        return
+    uname = row["username"] or ""
+    name = (row["first_name"] or "")
+    title = (f"@{uname}" if uname else name).strip() or f"id:{user_id}"
+    msgs = db.count_messages_by_user(user_id)
+    chats = db.list_user_chats(user_id)
+    # Build text
+    lines = [f"Пользователь: {title} (id:{user_id})", f"Сообщений: {msgs}"]
+    if chats:
+        lines.append("Чаты:")
+        for c in chats[:20]:
+            t = c["title"] or "(no title)"
+            fid = c["female_id"] or "?"
+            lines.append(f"• {t} (fid:{fid}) — {c['chat_id']}")
+        if len(chats) > 20:
+            lines.append(f"…и ещё {len(chats)-20}")
+    text = "\n".join(lines)
+    # Build keyboard
+    kb = InlineKeyboardBuilder()
+    # Allow delete only for owner admin or superadmin
+    if is_superadmin(uid) or row["added_by"] == uid:
+        kb.button(text="🗑 Удалить пользователя", callback_data=f"mud:{user_id}:{page}")
+    kb.button(text="⬅ Назад", callback_data=f"mup:{page}")
+    kb.button(text="✖ Закрыть", callback_data="muc:close")
+    kb.adjust(1, 2)
+    try:
+        await call.message.edit_text(text, reply_markup=kb.as_markup())
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb.as_markup())
+        except Exception:
+            pass
+    await call.answer("")
+    PAGED_MSG[uid] = call.message.message_id
+
+@dp.callback_query(F.data.regexp(r"^mud:(\d+):(\d+)$"))
+async def cb_my_user_delete_confirm(call: CallbackQuery):
+    try:
+        _, user_id_str, page_str = call.data.split(":", 2)
+        user_id = int(user_id_str)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    row = db.conn.execute("SELECT added_by FROM allowed_users WHERE user_id=?", (user_id,)).fetchone()
+    if not row:
+        await call.answer("Пользователь не найден", show_alert=True)
+        return
+    if not is_superadmin(uid) and row["added_by"] != uid:
+        await call.answer("Можно удалять только своих пользователей", show_alert=True)
+        return
+    kb = InlineKeyboardBuilder()
+    kb.button(text="✅ Да, удалить", callback_data=f"mudY:{user_id}:{page}")
+    kb.button(text="↩ Нет", callback_data=f"mup:{page}")
+    kb.adjust(1)
+    try:
+        await call.message.edit_text(f"Удалить пользователя id:{user_id}?", reply_markup=kb.as_markup())
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb.as_markup())
+        except Exception:
+            pass
+    await call.answer("")
+
+@dp.callback_query(F.data.regexp(r"^mudY:(\d+):(\d+)$"))
+async def cb_my_user_delete_yes(call: CallbackQuery):
+    try:
+        _, user_id_str, page_str = call.data.split(":", 2)
+        user_id = int(user_id_str)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    row = db.conn.execute("SELECT added_by FROM allowed_users WHERE user_id=?", (user_id,)).fetchone()
+    if row and (is_superadmin(uid) or row["added_by"] == uid):
+        db.remove_allowed_user(user_id)
+        db.log_audit(uid, "remove_user_from_panel", target=str(user_id), details="via_my_users")
+        try:
+            await bot.send_message(uid, f"Пользователь удалён: id:{user_id}")
+        except Exception:
+            pass
+    kb, total, cur_page = build_my_users_kb(uid, page=page)
+    caption = f"Ваши пользователи: {total}" if lang_for(uid) == "ru" else f"Ваші користувачі: {total}"
+    try:
+        await call.message.edit_text(caption, reply_markup=kb)
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb)
+        except Exception:
+            pass
+    await call.answer("Удалено")
+
+@dp.callback_query(F.data == "muc:close")
+async def cb_my_users_close(call: CallbackQuery):
+    try:
+        await call.message.delete()
+    except Exception:
+        pass
+    await call.answer("")
+    if PAGED_MSG.get(call.from_user.id) == call.message.message_id:
+        PAGED_MSG.pop(call.from_user.id, None)
+
+## (удалено) закрытие старой пагинации удаления чатов
+
+# ===== Superadmin: browse admins -> their chats -> stats/delete =====
+@dp.callback_query(F.data.regexp(r"^admp:(\d+)$"))
+async def cb_admins_page(call: CallbackQuery):
+    try:
+        _, page_str = call.data.split(":", 1)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    if not is_superadmin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    kb, total, cur_page = build_admins_list_kb(page=page)
+    caption = "Админы:" if total else "Админов нет."
+    try:
+        await call.message.edit_text(caption, reply_markup=kb)
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb)
+        except Exception:
+            pass
+    await call.answer("")
+    PAGED_MSG[uid] = call.message.message_id
+
+@dp.callback_query(F.data.regexp(r"^admi:(\d+):(\d+)$"))
+async def cb_admin_pick(call: CallbackQuery):
+    try:
+        _, admin_id_str, from_page = call.data.split(":", 2)
+        admin_id = int(admin_id_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    if not is_superadmin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    # If pick mode requests users directly, open users list; else show submenu
+    mode = ADMIN_PICK_MODE.pop(uid, None)
+    if mode == "users":
+        kb, total, page = build_admin_users_kb(admin_id=admin_id, page=0)
+        caption = f"Пользователи админа id:{admin_id}: {total}" if total else "У этого админа нет пользователей."
+        try:
+            await call.message.edit_text(caption, reply_markup=kb)
+        except Exception:
+            try:
+                await call.message.edit_reply_markup(reply_markup=kb)
+            except Exception:
+                pass
+        await call.answer("")
+        PAGED_MSG[uid] = call.message.message_id
+        return
+    else:
+        # Show submenu for the chosen admin
+        kb = InlineKeyboardBuilder()
+        kb.button(text="Чаты админа", callback_data=f"adms:chats:{admin_id}:0")
+        kb.button(text="Пользователи админа", callback_data=f"adms:users:{admin_id}:0")
+        kb.button(text="🗑 Удалить админа", callback_data=f"admd:{admin_id}:{from_page}")
+        kb.button(text="⬅ Список админов", callback_data=f"admp:{from_page}")
+        kb.button(text="✖ Закрыть", callback_data="admc:close")
+        kb.adjust(1)
+        caption = f"Админ id:{admin_id} — выберите раздел"
+        try:
+            await call.message.edit_text(caption, reply_markup=kb.as_markup())
+        except Exception:
+            try:
+                await call.message.edit_reply_markup(reply_markup=kb.as_markup())
+            except Exception:
+                pass
+        await call.answer("")
+        PAGED_MSG[uid] = call.message.message_id
+
+@dp.callback_query(F.data.regexp(r"^adms:(chats|users):(\d+):(\d+)$"))
+async def cb_admin_subsection(call: CallbackQuery):
+    try:
+        _, section, admin_id_str, page_str = call.data.split(":", 3)
+        admin_id = int(admin_id_str)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    if not is_superadmin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    if section == "chats":
+        kb, total, cur_page = build_admin_chats_kb(admin_id=admin_id, page=page)
+        caption = f"Чаты админа id:{admin_id}: {total}" if total else "У этого админа нет чатов."
+    else:
+        kb, total, cur_page = build_admin_users_kb(admin_id=admin_id, page=page)
+        caption = f"Пользователи админа id:{admin_id}: {total}" if total else "У этого админа нет пользователей."
+    try:
+        await call.message.edit_text(caption, reply_markup=kb)
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb)
+        except Exception:
+            pass
+    await call.answer("")
+    PAGED_MSG[uid] = call.message.message_id
+
+@dp.callback_query(F.data.regexp(r"^adcp:(\d+):(\d+)$"))
+async def cb_admin_chats_page(call: CallbackQuery):
+    try:
+        _, admin_id_str, page_str = call.data.split(":", 2)
+        admin_id = int(admin_id_str)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    if not is_superadmin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    kb, total, cur_page = build_admin_chats_kb(admin_id=admin_id, page=page)
+    caption = f"Чаты админа id:{admin_id}: {total}" if total else "У этого админа нет чатов."
+    try:
+        await call.message.edit_text(caption, reply_markup=kb)
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb)
+        except Exception:
+            pass
+    await call.answer("")
+    PAGED_MSG[uid] = call.message.message_id
+
+@dp.callback_query(F.data.regexp(r"^adci:(-?\d+):(\d+):(\d+)$"))
+async def cb_admin_chat_item(call: CallbackQuery):
+    try:
+        _, chat_id_str, admin_id_str, page_str = call.data.split(":", 3)
+        chat_id = int(chat_id_str)
+        admin_id = int(admin_id_str)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    if not is_superadmin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    row = db.conn.execute("SELECT title, female_id, added_by FROM allowed_chats WHERE chat_id=?", (chat_id,)).fetchone()
+    title = (row["title"] if row else "?") or "(no title)"
+    fid = (row["female_id"] if row else "?") or "?"
+    total_msgs = db.count_messages_in_chat(chat_id)
+    unique_males = db.count_unique_males_in_chat(chat_id)
+    text = f"Чат: {title} • {fid} — {chat_id}\nСообщений: {total_msgs}\nУникальных мужчин: {unique_males}"
+    kb = InlineKeyboardBuilder()
+    kb.button(text="🗑 Удалить чат", callback_data=f"adcd:{chat_id}:{admin_id}:{page}")
+    kb.button(text="⬅ Назад", callback_data=f"adcp:{admin_id}:{page}")
+    kb.button(text="✖ Закрыть", callback_data="admc:close")
+    kb.adjust(2, 1)
+    try:
+        await call.message.edit_text(text, reply_markup=kb.as_markup())
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb.as_markup())
+        except Exception:
+            pass
+    await call.answer("")
+    PAGED_MSG[uid] = call.message.message_id
+
+@dp.callback_query(F.data.regexp(r"^adcd:(-?\d+):(\d+):(\d+)$"))
+async def cb_admin_chat_delete_confirm(call: CallbackQuery):
+    try:
+        _, chat_id_str, admin_id_str, page_str = call.data.split(":", 3)
+        chat_id = int(chat_id_str)
+        admin_id = int(admin_id_str)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    if not is_superadmin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    row = db.get_allowed_chat(chat_id)
+    title = (row["title"] if row else "?") or "(no title)"
+    fid = (row["female_id"] if row else "?") or "?"
+    kb = InlineKeyboardBuilder()
+    kb.button(text="Да", callback_data=f"adcdY:{chat_id}:{admin_id}:{page}")
+    kb.button(text="Нет", callback_data=f"adci:{chat_id}:{admin_id}:{page}")
+    kb.adjust(2)
+    try:
+        await call.message.edit_text(f"Удалить чат: {title} • {fid} — {chat_id}?", reply_markup=kb.as_markup())
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb.as_markup())
+        except Exception:
+            pass
+    await call.answer("")
+    PAGED_MSG[uid] = call.message.message_id
+
+@dp.callback_query(F.data.regexp(r"^adcdY:(-?\d+):(\d+):(\d+)$"))
+async def cb_admin_chat_delete_yes(call: CallbackQuery):
+    try:
+        _, chat_id_str, admin_id_str, page_str = call.data.split(":", 3)
+        chat_id = int(chat_id_str)
+        admin_id = int(admin_id_str)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    if not is_superadmin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    info = db.get_allowed_chat(chat_id)
+    title = (info["title"] if info else "?") or "(no title)"
+    fid = (info["female_id"] if info else "?") or "?"
+    db.remove_allowed_chat(chat_id)
+    db.log_audit(uid, "unauthorize_chat_via_admin_browse", target=str(chat_id), details=f"admin_id={admin_id}")
+    try:
+        await bot.send_message(uid, f"Удалён чат: {title} • {fid} — {chat_id}")
+    except Exception:
+        pass
+    kb, total, cur_page = build_admin_chats_kb(admin_id=admin_id, page=page)
+    caption = f"Чаты админа id:{admin_id}: {total}" if total else "У этого админа нет чатов."
+    try:
+        await call.message.edit_text(caption, reply_markup=kb)
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb)
+        except Exception:
+            pass
+    await call.answer("Удалено")
+    PAGED_MSG[uid] = call.message.message_id
+
+@dp.callback_query(F.data == "admc:close")
+async def cb_admins_close(call: CallbackQuery):
+    try:
+        await call.message.delete()
+    except Exception:
+        pass
+    await call.answer("")
+    if PAGED_MSG.get(call.from_user.id) == call.message.message_id:
+        PAGED_MSG.pop(call.from_user.id, None)
+    if PAGED_MSG.get(call.from_user.id) == call.message.message_id:
+        PAGED_MSG.pop(call.from_user.id, None)
 
 
 # ========= SEARCH (10 цифр) =========
@@ -755,6 +1543,28 @@ async def handle_male_search(message: Message):
 
     lang = lang_for(uid)
 
+    # If a female ID is entered by mistake, show number of reports for that female
+    fid_candidate = message.text.strip()
+    try:
+        is_ten_digits = bool(re.fullmatch(r"\d{10}", fid_candidate))
+    except Exception:
+        is_ten_digits = False
+    if is_ten_digits:
+        row_f = db.conn.execute(
+            "SELECT 1 FROM allowed_chats WHERE female_id=? LIMIT 1",
+            (fid_candidate,)
+        ).fetchone()
+        if row_f:
+            # count reports from audit_log
+            cnt = db.conn.execute(
+                "SELECT COUNT(*) AS c FROM audit_log WHERE action='report_send' AND target=?",
+                (fid_candidate,)
+            ).fetchone()["c"]
+            # Log as female search
+            db.log_search(uid, "female", fid_candidate)
+            await message.answer(t(lang, "female_reports_count", fid=fid_candidate, count=cnt))
+            return
+
     banned_until = db.get_user_ban(uid)
     now_ts = int(time.time())
     if banned_until and now_ts < banned_until:
@@ -764,17 +1574,18 @@ async def handle_male_search(message: Message):
     if not db.rate_limit_allowed(uid, now_ts):
         await message.answer(t(lang, "rate_limited"))
         return
-    if not is_allowed_user(uid):
-        if not PUBLIC_OPEN:
-            await message.answer(t(lang, "not_authorized"))
+    # Restricted guests: allow with daily quotas
+    if not is_admin(uid) and not db.is_allowed_user(uid):
+        # limit: 50 searches per 24h
+        ts_ago_24h = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 24*3600))
+        row_q = db.conn.execute(
+            "SELECT COUNT(*) AS c FROM searches WHERE user_id=? AND query_type='male' AND created_at > ?",
+            (uid, ts_ago_24h)
+        ).fetchone()
+        if row_q and row_q["c"] is not None and row_q["c"] >= 50:
+            await message.answer(t(lang, "limited_search_quota"))
             return
-    if not is_admin(uid):
-        if not PUBLIC_OPEN:
-            credits = db.get_user_credits(uid)
-            if credits <= 0:
-                await message.answer(t(lang, "no_credits"))
-                return
-            db.reduce_credits(uid, 1)
+    # credits mechanic removed: no checks or reductions
 
     male = message.text.strip()
     db.log_search(uid, "male", male)
@@ -914,8 +1725,230 @@ async def on_group_message(message: Message):
         is_forward=is_forward,
     )
     db.link_male_ids(msg_db_id, male_ids)
-    if message.from_user and not is_admin(message.from_user.id):
-        db.add_credits(message.from_user.id, 1)
+    # credits removed
+
+@dp.callback_query(F.data.regexp(r"^adup:(\d+):(\d+)$"))
+async def cb_admin_users_page(call: CallbackQuery):
+    try:
+        _, admin_id_str, page_str = call.data.split(":", 2)
+        admin_id = int(admin_id_str)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    if not is_superadmin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    kb, total, cur_page = build_admin_users_kb(admin_id=admin_id, page=page)
+    caption = f"Пользователи админа id:{admin_id}: {total}" if total else "У этого админа нет пользователей."
+    try:
+        await call.message.edit_text(caption, reply_markup=kb)
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb)
+        except Exception:
+            pass
+    await call.answer("")
+    PAGED_MSG[uid] = call.message.message_id
+
+@dp.callback_query(F.data.regexp(r"^adui:(\d+):(\d+):(\d+)$"))
+async def cb_admin_user_item(call: CallbackQuery):
+    try:
+        _, user_id_str, admin_id_str, page_str = call.data.split(":", 3)
+        user_id = int(user_id_str)
+        admin_id = int(admin_id_str)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    if not is_superadmin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    row = db.conn.execute(
+        "SELECT au.user_id, au.added_by, u.username, u.first_name, u.last_name FROM allowed_users au LEFT JOIN users u ON u.user_id=au.user_id WHERE au.user_id=?",
+        (user_id,)
+    ).fetchone()
+    if not row:
+        await call.answer("Пользователь не найден", show_alert=True)
+        return
+    uname = row["username"] or ""
+    title = (f"@{uname}" if uname else (row["first_name"] or "")).strip() or f"id:{user_id}"
+    msgs = db.count_messages_by_user(user_id)
+    chats = db.list_user_chats(user_id)
+    lines = [f"Пользователь: {title} (id:{user_id})", f"Сообщений: {msgs}", "Чаты:"]
+    for c in chats[:20]:
+        t = c["title"] or "(no title)"
+        fid = c["female_id"] or "?"
+        lines.append(f"• {t} (fid:{fid}) — {c['chat_id']}")
+    if len(chats) > 20:
+        lines.append(f"…и ещё {len(chats)-20}")
+    text = "\n".join(lines)
+    kb = InlineKeyboardBuilder()
+    kb.button(text="🗑 Удалить пользователя", callback_data=f"adud:{user_id}:{admin_id}:{page}")
+    kb.button(text="⬅ Назад", callback_data=f"adms:users:{admin_id}:{page}")
+    kb.button(text="✖ Закрыть", callback_data="admc:close")
+    kb.adjust(1, 2)
+    try:
+        await call.message.edit_text(text, reply_markup=kb.as_markup())
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb.as_markup())
+        except Exception:
+            pass
+    await call.answer("")
+ 
+@dp.callback_query(F.data.regexp(r"^adud:(\d+):(\d+):(\d+)$"))
+async def cb_admin_user_delete_confirm(call: CallbackQuery):
+    try:
+        _, user_id_str, admin_id_str, page_str = call.data.split(":", 3)
+        user_id = int(user_id_str)
+        admin_id = int(admin_id_str)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    if not is_superadmin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    kb = InlineKeyboardBuilder()
+    kb.button(text="✅ Да, удалить", callback_data=f"adudY:{user_id}:{admin_id}:{page}")
+    kb.button(text="↩ Нет", callback_data=f"adui:{user_id}:{admin_id}:{page}")
+    kb.adjust(1)
+    try:
+        await call.message.edit_text(f"Удалить пользователя id:{user_id}?", reply_markup=kb.as_markup())
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb.as_markup())
+        except Exception:
+            pass
+    await call.answer("")
+
+@dp.callback_query(F.data.regexp(r"^adudY:(\d+):(\d+):(\d+)$"))
+async def cb_admin_user_delete_yes(call: CallbackQuery):
+    try:
+        _, user_id_str, admin_id_str, page_str = call.data.split(":", 3)
+        user_id = int(user_id_str)
+        admin_id = int(admin_id_str)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    if not is_superadmin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    db.remove_allowed_user(user_id)
+    db.log_audit(uid, "remove_user_from_all_users_panel", target=str(user_id), details=f"admin_id={admin_id}")
+    try:
+        await bot.send_message(uid, f"Пользователь удалён: id:{user_id}")
+    except Exception:
+        pass
+    kb, total, cur_page = build_admin_users_kb(admin_id=admin_id, page=page)
+    caption = f"Пользователи админа id:{admin_id}: {total}" if total else "У этого админа нет пользователей."
+    try:
+        await call.message.edit_text(caption, reply_markup=kb)
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb)
+        except Exception:
+            pass
+    await call.answer("Удалено")
+
+@dp.callback_query(F.data.regexp(r"^admd:(\d+):(\d+)$"))
+async def cb_admin_delete_confirm(call: CallbackQuery):
+    try:
+        _, admin_id_str, page_str = call.data.split(":", 2)
+        admin_id = int(admin_id_str)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    if not is_superadmin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    if admin_id == OWNER_ID:
+        await call.answer("Нельзя удалить суперадмина", show_alert=True)
+        return
+    kb = InlineKeyboardBuilder()
+    kb.button(text="✅ Да, удалить", callback_data=f"admdY:{admin_id}:{page}")
+    kb.button(text="↩ Нет", callback_data=f"admp:{page}")
+    kb.adjust(1)
+    try:
+        await call.message.edit_text(
+            f"Удалить админа id:{admin_id}? Это действие необратимо.",
+            reply_markup=kb.as_markup(),
+        )
+    except Exception:
+        # Попробуем обновить только клавиатуру; если не получится — пришлём новое сообщение
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb.as_markup())
+        except Exception:
+            try:
+                sent = await call.message.answer(
+                    f"Удалить админа id:{admin_id}? Это действие необратимо.",
+                    reply_markup=kb.as_markup(),
+                )
+                PAGED_MSG[call.from_user.id] = sent.message_id
+            except Exception:
+                pass
+    await call.answer("")
+
+# Fallback: catch any admd:* payload (in case of unexpected page value)
+@dp.callback_query(F.data.startswith("admd:"))
+async def cb_admin_delete_confirm_fallback(call: CallbackQuery):
+    try:
+        _, admin_id_str, page_str = call.data.split(":", 2)
+        int(admin_id_str)  # validate
+    except Exception:
+        await call.answer("")
+        return
+    # Delegate to main handler by reusing logic
+    return await cb_admin_delete_confirm(call)
+
+@dp.callback_query(F.data.regexp(r"^admdY:(\d+):(\d+)$"))
+async def cb_admin_delete_yes(call: CallbackQuery):
+    try:
+        _, admin_id_str, page_str = call.data.split(":", 2)
+        admin_id = int(admin_id_str)
+        page = int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    if not is_superadmin(uid) or admin_id == OWNER_ID:
+        await call.answer("Нет прав", show_alert=True)
+        return
+    db.remove_admin(admin_id)
+    db.log_audit(uid, "remove_admin_from_panel", target=str(admin_id), details="via_all_admins")
+    try:
+        await bot.send_message(uid, f"Админ удалён: id:{admin_id}")
+    except Exception:
+        pass
+    kb, total, cur_page = build_admins_list_kb(page=page)
+    caption = "Админы:" if total else "Админов нет."
+    try:
+        await call.message.edit_text(caption, reply_markup=kb)
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb)
+        except Exception:
+            pass
+    await call.answer("Удалено")
+
+# Fallback for confirm yes
+@dp.callback_query(F.data.startswith("admdY:"))
+async def cb_admin_delete_yes_fallback(call: CallbackQuery):
+    try:
+        _, admin_id_str, page_str = call.data.split(":", 2)
+        int(admin_id_str); int(page_str)
+    except Exception:
+        await call.answer("")
+        return
+    return await cb_admin_delete_yes(call)
 
 @dp.edited_message(F.chat.type.in_({ChatType.GROUP, ChatType.SUPERGROUP}))
 async def on_group_edited(message: Message):
