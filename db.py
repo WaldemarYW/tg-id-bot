@@ -38,6 +38,15 @@ class DB:
             )
             """
         )
+        # app settings key/value storage
+        self.conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS settings (
+                key   TEXT PRIMARY KEY,
+                value TEXT
+            )
+            """
+        )
         self.conn.commit()
 
     # --- Admins
@@ -217,6 +226,23 @@ class DB:
         self.conn.execute(
             "INSERT INTO audit_log(actor_id, action, target, details) VALUES(?,?,?,?)",
             (actor_id, action, target, details)
+        )
+        self.conn.commit()
+
+    # --- Settings helpers
+    def get_setting_int(self, key: str, default: int) -> int:
+        row = self.conn.execute("SELECT value FROM settings WHERE key=?", (key,)).fetchone()
+        if not row or row["value"] is None:
+            return default
+        try:
+            return int(row["value"])
+        except Exception:
+            return default
+
+    def set_setting_int(self, key: str, value: int):
+        self.conn.execute(
+            "INSERT INTO settings(key, value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+            (key, str(int(value)))
         )
         self.conn.commit()
 

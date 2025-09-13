@@ -159,7 +159,7 @@ def kb_admin_admins(uid: int):
     kb.button(text="➕ Добавить админа")
     if is_superadmin(uid):
         kb.button(text="Все админы")
-        kb.button(text="Все пользователи")
+        kb.button(text="Лимиты гостей")
     kb.button(text="⬅️ Назад")
     kb.adjust(2, 1)
     return kb.as_markup(resize_keyboard=True)
@@ -167,10 +167,9 @@ def kb_admin_admins(uid: int):
 def kb_admin_chats(uid: int):
     # Только добавить чат + назад
     kb = ReplyKeyboardBuilder()
-    kb.button(text=t(lang_for(uid), "admin_add_chat"))
     kb.button(text="📂 Мои чаты")
     kb.button(text="⬅️ Назад")
-    kb.adjust(1, 1, 1)
+    kb.adjust(1, 1)
     return kb.as_markup(resize_keyboard=True)
 
 def kb_admin_exports(uid: int):
@@ -211,7 +210,7 @@ async def show_menu(message: Message, state: str):
         if not is_superadmin(uid):
             await message.answer("Только суперадмин может управлять администраторами.")
     elif state == "admin.chats":
-        await message.answer("Управление чатами", reply_markup=kb_admin_chats(uid))
+        await message.answer("Управление чатами\nДобавьте бота в нужный чат, что бы связать чат с ботом.", reply_markup=kb_admin_chats(uid))
     elif state == "admin.exports":
         await message.answer(t(lang_for(uid), "export_menu"), reply_markup=kb_admin_exports(uid))
     elif state == "extra":
@@ -240,7 +239,7 @@ async def show_menu(message: Message, state: str):
             until_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(banned_until))
             banned_line = ("\nБлокировка до: " if lang == "ru" else "\nБлокування до: ") + until_str
         status_title = t(lang, "extra_title")
-        # Show used/left quotas (for ограниченных — 50/5 с остатком; для остальных — used и ∞)
+        # Show used/left quotas (для ограниченных — по настраиваемым лимитам; для остальных — used и ∞)
         now_ts = int(time.time())
         cutoff = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 24*3600))
         row_s = db.conn.execute(
@@ -254,7 +253,8 @@ async def show_menu(message: Message, state: str):
         ).fetchone()
         used_reports = (row_r["c"] if row_r and row_r["c"] is not None else 0)
         if not is_admin_flag and not is_allowed_flag:
-            limit_s, limit_r = 50, 5
+            limit_s = db.get_setting_int('guest_limit_search', 50)
+            limit_r = db.get_setting_int('guest_limit_report', 5)
             left_s, left_r = max(0, limit_s - used_search), max(0, limit_r - used_reports)
         else:
             limit_s = limit_r = "∞"
@@ -415,7 +415,7 @@ async def report_wait_text(message: Message):
         await message.answer("Пустой отчёт не принимаю. Напишите текст отчёта.")
         return
 
-    # Restricted guests: daily limit 5 reports
+    # Restricted guests: daily limit (configured) for reports
     if not is_admin(uid) and not db.is_allowed_user(uid):
         now_ts = int(time.time())
         ts_ago_24h = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 24*3600))
@@ -423,8 +423,9 @@ async def report_wait_text(message: Message):
             "SELECT COUNT(*) AS c FROM audit_log WHERE actor_id=? AND action='report_send' AND ts > ?",
             (uid, ts_ago_24h)
         ).fetchone()
-        if row_q and row_q["c"] is not None and row_q["c"] >= 5:
-            await message.answer(t(lang_for(uid), "limited_report_quota"))
+        lim_r = db.get_setting_int('guest_limit_report', 5)
+        if row_q and row_q["c"] is not None and row_q["c"] >= lim_r:
+            await message.answer(t(lang_for(uid), "limited_report_quota", limit=lim_r))
             REPORT_STATE.pop(uid, None)
             return
 
@@ -482,6 +483,101 @@ async def admin_admins_menu(message: Message):
         return
     nav_push(uid, "admin.admins")
     await show_menu(message, "admin.admins")
+
+@dp.message(F.text == "Лимиты гостей")
+async def guest_limits_menu(message: Message):
+    uid = message.from_user.id
+    if not is_superadmin(uid):
+        await message.answer("Только суперадмин может менять лимиты.")
+        return
+    ls = db.get_setting_int('guest_limit_search', 50)
+    lr = db.get_setting_int('guest_limit_report', 5)
+    text = (
+        "Текущие лимиты для ограниченных пользователей:\n"
+        f"• Поиск в сутки: {ls}\n"
+        f"• Отчёты в сутки: {lr}\n\n"
+        "Выберите действие кнопками ниже или отправьте:\n"
+        "поиск: 100 — для лимита поиска\n"
+        "отчёты: 10 — для лимита отчётов"
+    )
+    kb = build_guest_limits_kb(ls, lr)
+    await message.answer(text, reply_markup=kb)
+
+@dp.message(F.text.regexp(r"(?i)^\s*(поиск|отч[её]ты)\s*[:=]\s*(\d{1,4})\s*$"))
+async def guest_limits_set(message: Message):
+    uid = message.from_user.id
+    if not is_superadmin(uid):
+        return
+    m = re.match(r"(?i)^\s*(поиск|отч[её]ты)\s*[:=]\s*(\d{1,4})\s*$", message.text.strip())
+    if not m:
+        return
+    kind = m.group(1).lower()
+    val = int(m.group(2))
+    val = max(0, min(100000, val))
+    if kind.startswith("поиск"):
+        db.set_setting_int('guest_limit_search', val)
+        await message.answer(f"Лимит поиска для ограниченных установлен: {val} в сутки.")
+    else:
+        db.set_setting_int('guest_limit_report', val)
+        await message.answer(f"Лимит отчётов для ограниченных установлен: {val} в сутки.")
+
+@dp.callback_query(F.data.regexp(r"^gl([sr]):(noop|[+\-]\d+)$"))
+async def cb_guest_limits_delta(call: CallbackQuery):
+    try:
+        _, tail = call.data.split(":", 1)
+    except Exception:
+        await call.answer("")
+        return
+    kind = call.data[2]  # 's' or 'r'
+    op = tail
+    uid = call.from_user.id
+    if not is_superadmin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    key = 'guest_limit_search' if kind == 's' else 'guest_limit_report'
+    default = 50 if kind == 's' else 5
+    cur = db.get_setting_int(key, default)
+    if op == 'noop':
+        await call.answer("")
+        return
+    try:
+        delta = int(op)
+    except Exception:
+        delta = 0
+    new_val = max(0, min(100000, cur + delta))
+    db.set_setting_int(key, new_val)
+    ls = db.get_setting_int('guest_limit_search', 50)
+    lr = db.get_setting_int('guest_limit_report', 5)
+    text = (
+        "Текущие лимиты для ограниченных пользователей:\n"
+        f"• Поиск в сутки: {ls}\n"
+        f"• Отчёты в сутки: {lr}\n\n"
+        "Выберите действие кнопками ниже или отправьте:\n"
+        "поиск: 100 — для лимита поиска\n"
+        "отчёты: 10 — для лимита отчётов"
+    )
+    kb = build_guest_limits_kb(ls, lr)
+    try:
+        await call.message.edit_text(text, reply_markup=kb)
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb)
+        except Exception:
+            pass
+    await call.answer("Сохранено")
+
+@dp.callback_query(F.data == "gl:back")
+async def cb_guest_limits_back(call: CallbackQuery):
+    uid = call.from_user.id
+    if not is_superadmin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    try:
+        await call.message.delete()
+    except Exception:
+        pass
+    await call.answer("")
+    await bot.send_message(uid, "Управление администраторами", reply_markup=kb_admin_admins(uid))
 
 ## (removed) list_all_admins handler and button
 
@@ -646,6 +742,10 @@ async def stats_all_users(message: Message):
 ADM_PENDING: Dict[int, str] = {}
 PAGED_MSG: Dict[int, int] = {}
 ADMIN_PICK_MODE: Dict[int, str] = {}
+# Сохраняем страницу списка "Все админы", с которой был выбран конкретный админ,
+# чтобы уметь возвращаться из разделов админа обратно в его подменю с корректной кнопкой
+# "⬅ Список админов" (на нужную страницу).
+ADMIN_FROM_PAGE: Dict[int, Dict[int, int]] = {}
 
 async def _close_prev_paged(uid: int):
     msg_id = PAGED_MSG.pop(uid, None)
@@ -742,6 +842,11 @@ def build_admins_list_kb(page: int = 0, page_size: int = 10, pick_prefix: str = 
     nav.button(text=f"{page+1}/{total_pages}", callback_data=f"admp:{page}")
     nav.button(text="»", callback_data=f"admp:{next_page}")
     kb.row(*nav.buttons)
+    # Back to previous submenu (only for pages after the first)
+    if page > 0:
+        back = InlineKeyboardBuilder()
+        back.button(text="⬅ Назад", callback_data="admb:back")
+        kb.row(*back.buttons)
     close = InlineKeyboardBuilder()
     close.button(text="✖ Закрыть", callback_data="admc:close")
     kb.row(*close.buttons)
@@ -772,6 +877,10 @@ def build_admin_chats_kb(admin_id: int, page: int = 0, page_size: int = 10):
     nav.button(text=f"{page+1}/{total_pages}", callback_data=f"adcp:{admin_id}:{page}")
     nav.button(text="»", callback_data=f"adcp:{admin_id}:{next_page}")
     kb.row(*nav.buttons)
+    # Кнопка Назад в подменю выбранного админа
+    back = InlineKeyboardBuilder()
+    back.button(text="⬅ Назад", callback_data=f"admsb:{admin_id}")
+    kb.row(*back.buttons)
     close = InlineKeyboardBuilder()
     close.button(text="✖ Закрыть", callback_data="admc:close")
     kb.row(*close.buttons)
@@ -799,10 +908,36 @@ def build_admin_users_kb(admin_id: int, page: int = 0, page_size: int = 10):
     nav.button(text=f"{page+1}/{total_pages}", callback_data=f"adup:{admin_id}:{page}")
     nav.button(text="»", callback_data=f"adup:{admin_id}:{next_page}")
     kb.row(*nav.buttons)
+    # Кнопка Назад в подменю выбранного админа
+    back = InlineKeyboardBuilder()
+    back.button(text="⬅ Назад", callback_data=f"admsb:{admin_id}")
+    kb.row(*back.buttons)
     close = InlineKeyboardBuilder()
     close.button(text="✖ Закрыть", callback_data="admc:close")
     kb.row(*close.buttons)
     return kb.as_markup(), total, page
+
+# ===== Helper: keyboard for guest limits editing (superadmin)
+def build_guest_limits_kb(limit_search: int, limit_report: int):
+    kb = InlineKeyboardBuilder()
+    # Search limit controls
+    kb.button(text=f"Поиск: {limit_search}", callback_data="gls:noop")
+    kb.button(text="-10", callback_data="gls:-10")
+    kb.button(text="-1", callback_data="gls:-1")
+    kb.button(text="+1", callback_data="gls:+1")
+    kb.button(text="+10", callback_data="gls:+10")
+    kb.adjust(1, 4)
+    # Report limit controls
+    kb.button(text=f"Отчёты: {limit_report}", callback_data="glr:noop")
+    kb.button(text="-10", callback_data="glr:-10")
+    kb.button(text="-1", callback_data="glr:-1")
+    kb.button(text="+1", callback_data="glr:+1")
+    kb.button(text="+10", callback_data="glr:+10")
+    kb.adjust(1, 4)
+    # Back
+    kb.button(text="⬅ Назад", callback_data="gl:back")
+    kb.adjust(1)
+    return kb.as_markup()
 
 # --- Пользователи
 @dp.message(F.text == "➕ Добавить пользователя")
@@ -1317,6 +1452,26 @@ async def cb_admins_page(call: CallbackQuery):
     await call.answer("")
     PAGED_MSG[uid] = call.message.message_id
 
+@dp.callback_query(F.data == "admb:back")
+async def cb_admins_back(call: CallbackQuery):
+    # Go back to the previous submenu (admin.admins) instead of the first page
+    uid = call.from_user.id
+    if not is_superadmin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    try:
+        await call.message.delete()
+    except Exception:
+        pass
+    await call.answer("")
+    if PAGED_MSG.get(uid) == getattr(call.message, 'message_id', None):
+        PAGED_MSG.pop(uid, None)
+    # Show the "Управление администраторами" submenu
+    try:
+        await bot.send_message(uid, "Управление администраторами", reply_markup=kb_admin_admins(uid))
+    except Exception:
+        pass
+
 @dp.callback_query(F.data.regexp(r"^admi:(\d+):(\d+)$"))
 async def cb_admin_pick(call: CallbackQuery):
     try:
@@ -1329,6 +1484,14 @@ async def cb_admin_pick(call: CallbackQuery):
     if not is_superadmin(uid):
         await call.answer("Нет прав", show_alert=True)
         return
+    # Сохранить страницу списка админов, с которой выбирали этого админа
+    try:
+        fp = int(from_page)
+    except Exception:
+        fp = 0
+    d = ADMIN_FROM_PAGE.get(uid, {})
+    d[admin_id] = fp
+    ADMIN_FROM_PAGE[uid] = d
     # If pick mode requests users directly, open users list; else show submenu
     mode = ADMIN_PICK_MODE.pop(uid, None)
     if mode == "users":
@@ -1388,6 +1551,38 @@ async def cb_admin_subsection(call: CallbackQuery):
     except Exception:
         try:
             await call.message.edit_reply_markup(reply_markup=kb)
+        except Exception:
+            pass
+    await call.answer("")
+    PAGED_MSG[uid] = call.message.message_id
+
+@dp.callback_query(F.data.regexp(r"^admsb:(\d+)$"))
+async def cb_admin_submenu_back(call: CallbackQuery):
+    # Вернуться в подменю выбранного админа
+    try:
+        _, admin_id_str = call.data.split(":", 1)
+        admin_id = int(admin_id_str)
+    except Exception:
+        await call.answer("")
+        return
+    uid = call.from_user.id
+    if not is_superadmin(uid):
+        await call.answer("Нет прав", show_alert=True)
+        return
+    from_page = ADMIN_FROM_PAGE.get(uid, {}).get(admin_id, 0)
+    kb = InlineKeyboardBuilder()
+    kb.button(text="Чаты админа", callback_data=f"adms:chats:{admin_id}:0")
+    kb.button(text="Пользователи админа", callback_data=f"adms:users:{admin_id}:0")
+    kb.button(text="🗑 Удалить админа", callback_data=f"admd:{admin_id}:{from_page}")
+    kb.button(text="⬅ Список админов", callback_data=f"admp:{from_page}")
+    kb.button(text="✖ Закрыть", callback_data="admc:close")
+    kb.adjust(1)
+    caption = f"Админ id:{admin_id} — выберите раздел"
+    try:
+        await call.message.edit_text(caption, reply_markup=kb.as_markup())
+    except Exception:
+        try:
+            await call.message.edit_reply_markup(reply_markup=kb.as_markup())
         except Exception:
             pass
     await call.answer("")
@@ -1576,14 +1771,15 @@ async def handle_male_search(message: Message):
         return
     # Restricted guests: allow with daily quotas
     if not is_admin(uid) and not db.is_allowed_user(uid):
-        # limit: 50 searches per 24h
+        # limit: configured searches per 24h
         ts_ago_24h = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 24*3600))
         row_q = db.conn.execute(
             "SELECT COUNT(*) AS c FROM searches WHERE user_id=? AND query_type='male' AND created_at > ?",
             (uid, ts_ago_24h)
         ).fetchone()
-        if row_q and row_q["c"] is not None and row_q["c"] >= 50:
-            await message.answer(t(lang, "limited_search_quota"))
+        lim_s = db.get_setting_int('guest_limit_search', 50)
+        if row_q and row_q["c"] is not None and row_q["c"] >= lim_s:
+            await message.answer(t(lang, "limited_search_quota", limit=lim_s))
             return
     # credits mechanic removed: no checks or reductions
 
