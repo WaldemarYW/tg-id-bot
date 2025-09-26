@@ -16,7 +16,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ChatType
 from aiogram.filters import Command, CommandStart
 from aiogram.filters.command import CommandObject
-from aiogram.types import Message, CallbackQuery, ChatMemberUpdated
+from aiogram.types import Message, CallbackQuery, ChatMemberUpdated, ReplyKeyboardRemove
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 from db import DB
@@ -110,6 +110,12 @@ REPORT_STATE: Dict[int, Dict] = {}
 
 
 # ========= KEYBOARDS =========
+def private_reply_markup(message: Message, markup):
+    """Return reply keyboard only in private chats; remove it elsewhere."""
+    if message.chat.type == ChatType.PRIVATE:
+        return markup
+    return ReplyKeyboardRemove()
+
 def kb_main(uid: int):
     # Поиск → Добавить отчёт → Админ → Мои запросы → Язык
     lang = lang_for(uid)
@@ -200,19 +206,37 @@ def kb_admin_stats(uid: int):
 async def show_menu(message: Message, state: str):
     uid = message.from_user.id
     if state == "root":
-        await message.answer(t(lang_for(uid), "start"), reply_markup=kb_main(uid))
+        await message.answer(
+            t(lang_for(uid), "start"),
+            reply_markup=private_reply_markup(message, kb_main(uid)),
+        )
     elif state == "admin":
-        await message.answer(t(lang_for(uid), "admin_menu"), reply_markup=kb_admin(uid))
+        await message.answer(
+            t(lang_for(uid), "admin_menu"),
+            reply_markup=private_reply_markup(message, kb_admin(uid)),
+        )
     elif state == "admin.users":
-        await message.answer("Управление пользователями", reply_markup=kb_admin_users(uid))
+        await message.answer(
+            "Управление пользователями",
+            reply_markup=private_reply_markup(message, kb_admin_users(uid)),
+        )
     elif state == "admin.admins":
-        await message.answer("Управление администраторами", reply_markup=kb_admin_admins(uid))
+        await message.answer(
+            "Управление администраторами",
+            reply_markup=private_reply_markup(message, kb_admin_admins(uid)),
+        )
         if not is_superadmin(uid):
             await message.answer("Только суперадмин может управлять администраторами.")
     elif state == "admin.chats":
-        await message.answer("Управление чатами\nДобавьте бота в нужный чат, что бы связать чат с ботом.", reply_markup=kb_admin_chats(uid))
+        await message.answer(
+            "Управление чатами\nДобавьте бота в нужный чат, что бы связать чат с ботом.",
+            reply_markup=private_reply_markup(message, kb_admin_chats(uid)),
+        )
     elif state == "admin.exports":
-        await message.answer(t(lang_for(uid), "export_menu"), reply_markup=kb_admin_exports(uid))
+        await message.answer(
+            t(lang_for(uid), "export_menu"),
+            reply_markup=private_reply_markup(message, kb_admin_exports(uid)),
+        )
     elif state == "extra":
         # Build and show user status inside the extra menu
         lang = lang_for(uid)
@@ -265,9 +289,12 @@ async def show_menu(message: Message, state: str):
         )
         id_line = "\n" + t(lang, "extra_your_id", id=uid)
         status = f"{status_title}\nСтатус: {role}\nДоступ: {access}{banned_line}{quota_lines}{id_line}"
-        await message.answer(status, reply_markup=kb_extra(uid))
+        await message.answer(status, reply_markup=private_reply_markup(message, kb_extra(uid)))
     else:
-        await message.answer(t(lang_for(uid), "start"), reply_markup=kb_main(uid))
+        await message.answer(
+            t(lang_for(uid), "start"),
+            reply_markup=private_reply_markup(message, kb_main(uid)),
+        )
 
 
 # ========= START / LANGUAGE =========
@@ -303,7 +330,10 @@ async def start(message: Message, command: CommandObject):
             db.log_audit(uid, "accept_reserved_username", target=uname_lc, details="")
 
     nav_set(uid, "root")
-    await message.answer(t(lang_for(uid), "start"), reply_markup=kb_main(uid))
+    await message.answer(
+        t(lang_for(uid), "start"),
+        reply_markup=private_reply_markup(message, kb_main(uid)),
+    )
 
 @dp.message(F.text.in_({t("ru", "menu_admin_panel"), t("uk", "menu_admin_panel")}))
 @dp.message(Command("admin"))
@@ -330,7 +360,10 @@ async def switch_lang(message: Message):
         (uid, new)
     )
     db.conn.commit()
-    await message.answer(t(new, "menu_lang_set"), reply_markup=kb_main(uid))
+    await message.answer(
+        t(new, "menu_lang_set"),
+        reply_markup=private_reply_markup(message, kb_main(uid)),
+    )
 
 
 # ========= MAIN MENU ACTIONS =========
@@ -596,7 +629,10 @@ async def admin_stats_menu(message: Message):
     nav_push(uid, "admin.stats")
     men, msgs, chats, females = db.count_stats()
     await message.answer(t(lang_for(uid), "stats", men=men, msgs=msgs, chats=chats, females=females))
-    await message.answer(t(lang_for(uid), "stats_menu"), reply_markup=kb_admin_stats(uid))
+    await message.answer(
+        t(lang_for(uid), "stats_menu"),
+        reply_markup=private_reply_markup(message, kb_admin_stats(uid)),
+    )
 
 @dp.message(F.text.in_({"💾 Экспорт", "🧩 Дополнительно"}))
 async def admin_exports_menu(message: Message):
