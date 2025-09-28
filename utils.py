@@ -57,10 +57,32 @@ def valid_id(val: str) -> bool:
 
 
 def highlight_id(text: str, male_id: str) -> str:
-    """Return HTML-safe text where every occurrence of `male_id` is wrapped in <b>..</b>.
-    Only the exact 10-digit `male_id` is highlighted; other numbers remain unchanged.
-    """
+    """Return HTML-safe text where every occurrence of `male_id` is wrapped in <code>..</code>
+    and lines that contain the ID are prefixed with the 🤖➡️ marker."""
     if not text:
         return ""
-    escaped = html.escape(text)
-    return escaped.replace(male_id, f"<code>{male_id}</code>")
+
+    normalized = text.replace("\r\n", "\n").replace("\r", "\n")
+    highlighted_lines = []
+
+    for line in normalized.split("\n"):
+        contains_id = male_id in line
+        parts = line.split(male_id)
+
+        if len(parts) == 1:
+            escaped_line = html.escape(line)
+        else:
+            escaped_parts = [html.escape(part) for part in parts]
+            pieces = []
+            for idx, part_html in enumerate(escaped_parts):
+                pieces.append(part_html)
+                if idx < len(escaped_parts) - 1:
+                    pieces.append(f"<code>{male_id}</code>")
+            escaped_line = "".join(pieces)
+
+        if contains_id:
+            escaped_line = f"🤖➡️ {escaped_line}" if escaped_line else "🤖➡️ "
+
+        highlighted_lines.append(escaped_line)
+
+    return "\n".join(highlighted_lines)
