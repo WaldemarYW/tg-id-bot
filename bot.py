@@ -143,7 +143,12 @@ def time_filter_label(lang: str, time_filter: str) -> str:
     return mapping.get(time_filter, mapping["all"])
 
 def female_filter_label(lang: str, female_id: Optional[str]) -> str:
-    return female_id or t(lang, "filter_female_all")
+    if not female_id:
+        return t(lang, "filter_female_all")
+    title = db.get_female_title(female_id) or ""
+    if title:
+        return f"{title} ({female_id})"
+    return female_id
 
 def time_filter_since(time_filter: str) -> Optional[float]:
     seconds = TIME_FILTER_SECONDS.get(time_filter)

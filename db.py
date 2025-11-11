@@ -421,6 +421,20 @@ class DB:
         ).fetchall()
         return [r["female_id"] for r in rows]
 
+    def get_female_title(self, female_id: str) -> Optional[str]:
+        row = self.conn.execute(
+            """
+            SELECT title FROM allowed_chats
+            WHERE female_id=?
+            ORDER BY added_at DESC
+            LIMIT 1
+            """,
+            (female_id,)
+        ).fetchone()
+        if row and row["title"]:
+            return row["title"]
+        return None
+
     def count_reports_by_female(self, female_id: str, since_ts: float) -> int:
         row = self.conn.execute(
             """
