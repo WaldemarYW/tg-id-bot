@@ -30,6 +30,7 @@ load_dotenv()
 
 BOT_TOKEN    = os.getenv("BOT_TOKEN")
 OWNER_ID     = int(os.getenv("OWNER_ID", "0"))
+BOT_USERNAME = os.getenv("BOT_USERNAME", "")
 LANG_DEFAULT = os.getenv("LANG", "ru")
 DB_PATH      = os.getenv("DB_PATH", "./bot.db")
 
@@ -128,11 +129,22 @@ LEGEND_HASHTAG = "#легенда"
 # ========= USER LEGEND VIEW =========
 LEGEND_VIEW_STATE: Dict[int, Dict] = {}
 
-def format_legend_text(body: str) -> str:
+def legend_deep_link(female_id: str) -> Optional[str]:
+    if not female_id or not BOT_USERNAME:
+        return None
+    return f"https://t.me/{BOT_USERNAME}?start=legend_{female_id}"
+
+def format_legend_text(body: str, female_id: Optional[str] = None, lang: Optional[str] = None) -> str:
     clean = (body or "").strip()
-    if clean.lower().startswith(LEGEND_HASHTAG):
-        return clean
-    return f"{LEGEND_HASHTAG}\n{clean}" if clean else LEGEND_HASHTAG
+    if not clean.lower().startswith(LEGEND_HASHTAG):
+        clean = f"{LEGEND_HASHTAG}\n{clean}" if clean else LEGEND_HASHTAG
+    link = legend_deep_link(female_id)
+    if link:
+        link_text = t(lang or LANG_DEFAULT, "legend_view_link")
+        anchor = f'<a href="{link}">{link_text}</a>'
+        if anchor not in clean:
+            clean = f"{clean}\n\n{anchor}"
+    return clean
 
 def time_filter_label(lang: str, time_filter: str) -> str:
     mapping = {
@@ -405,6 +417,16 @@ async def start(message: Message, command: CommandObject):
         t(lang_for(uid), "start"),
         reply_markup=private_reply_markup(message, kb_main(uid)),
     )
+    payload = (command.args or "").strip() if command else ""
+    if payload:
+        await handle_start_payload(message, payload)
+
+async def handle_start_payload(message: Message, payload: str):
+    payload = (payload or "").strip()
+    if payload.lower().startswith("legend_"):
+        female_id = payload.split("_", 1)[1] if "_" in payload else ""
+        if re.fullmatch(r"\d{10}", female_id):
+            await send_report_lookup_results(message.chat.id, message.from_user.id, female_id, 0)
 
 @dp.message(F.text.in_({t("ru", "menu_admin_panel"), t("uk", "menu_admin_panel")}))
 @dp.message(Command("admin"))
@@ -564,7 +586,7 @@ async def legend_view_wait_female(message: Message):
     ).fetchone()
     title = (row["title"] if row else "") or female_id
     db.log_search(uid, "legend_view", female_id)
-    text = format_legend_text(legend["content"])
+    text = format_legend_text(legend["content"], female_id, lang)
     LEGEND_VIEW_STATE.pop(uid, None)
     await message.answer(f"{t(lang, 'legend_view_title', title=title)}\n\n{text}")
 
@@ -768,7 +790,7 @@ async def legend_wait_text(message: Message):
     if mode == "edit" and body == previous_content:
         await message.answer("Текст не изменился. Введите другой вариант или нажмите «⬅️ Назад».")
         return
-    prepared_text = format_legend_text(body)
+    prepared_text = format_legend_text(body, female_id, lang_for(uid))
     try:
         sent = await bot.send_message(chat_id=chat_id, text=prepared_text, disable_web_page_preview=True)
     except Exception as exc:
