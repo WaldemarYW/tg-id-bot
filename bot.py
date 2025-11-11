@@ -2267,8 +2267,7 @@ async def show_filter_menu(uid: int, male_id: str, female_token: str, time_filte
     current_time = state.get("time_filter", "all")
     female_label = t(lang, "filter_choose_female", value=female_filter_label(lang, current_female))
     kb.button(text=female_label, callback_data=f"mffmenu:{male_id}")
-    kb.button(text=t(lang, "filter_choose_period"), callback_data="mfnoop")
-    kb.adjust(1, 1)
+    kb.adjust(1)
     for code in TIME_FILTER_CHOICES:
         prefix = "✅ " if current_time == code else ""
         kb.button(text=prefix + time_filter_label(lang, code), callback_data=f"mftime:{male_id}:{code}")
