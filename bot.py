@@ -111,11 +111,9 @@ REPORT_STATE: Dict[int, Dict] = {}
 
 # ========= MALE SEARCH FILTER STATE =========
 MALE_SEARCH_STATE: Dict[int, Dict] = {}
-TIME_FILTER_CHOICES = ["all", "24h", "7d", "30d"]
+TIME_FILTER_CHOICES = ["all", "24h"]
 TIME_FILTER_SECONDS = {
     "24h": 24 * 3600,
-    "7d": 7 * 24 * 3600,
-    "30d": 30 * 24 * 3600,
 }
 
 # ========= REPORT LOOKUP FLOW (поиск отчётов по female) =========
@@ -140,8 +138,6 @@ def time_filter_label(lang: str, time_filter: str) -> str:
     mapping = {
         "all": t(lang, "filter_period_all"),
         "24h": t(lang, "filter_period_24h"),
-        "7d": t(lang, "filter_period_7d"),
-        "30d": t(lang, "filter_period_30d"),
     }
     return mapping.get(time_filter, mapping["all"])
 
@@ -172,14 +168,12 @@ def kb_main(uid: int):
     lang = lang_for(uid)
     kb = ReplyKeyboardBuilder()
     limited_user = (not is_admin(uid)) and (not db.is_allowed_user(uid))
-    can_legend = is_admin(uid) or db.is_allowed_user(uid)
     if limited_user:
         kb.button(text=t(lang, "menu_report_search"))
     else:
         kb.button(text=t(lang, "menu_search"))
     kb.button(text="➕ Добавить отчёт")
-    if can_legend:
-        kb.button(text=t(lang, "menu_legend_view"))
+    kb.button(text=t(lang, "menu_legend_view"))
     kb.button(text=t(lang, "menu_extra"))
     # Кнопка поддержки видна только ограниченным пользователям
     if limited_user:
@@ -461,9 +455,6 @@ async def report_lookup_start(message: Message):
 @dp.message(F.text.in_({t("ru", "menu_legend_view"), t("uk", "menu_legend_view")}))
 async def legend_view_start(message: Message):
     uid = message.from_user.id
-    if not (is_admin(uid) or db.is_allowed_user(uid)):
-        await message.answer(t(lang_for(uid), "legend_view_no_access"))
-        return
     LEGEND_VIEW_STATE[uid] = {"stage": "wait_female"}
     await message.answer(t(lang_for(uid), "legend_view_prompt"))
 
@@ -549,11 +540,19 @@ async def report_lookup_wait_female(message: Message):
 async def legend_view_wait_female(message: Message):
     uid = message.from_user.id
     lang = lang_for(uid)
-    if not (is_admin(uid) or db.is_allowed_user(uid)):
-        LEGEND_VIEW_STATE.pop(uid, None)
-        await message.answer(t(lang, "legend_view_no_access"))
-        return
     female_id = message.text.strip()
+    now_ts = int(time.time())
+    if not is_admin(uid) and not db.is_allowed_user(uid):
+        ts_ago_24h = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 24*3600))
+        row_q = db.conn.execute(
+            "SELECT COUNT(*) AS c FROM searches WHERE user_id=? AND query_type='legend_view' AND created_at > ?",
+            (uid, ts_ago_24h)
+        ).fetchone()
+        lim_leg = db.get_setting_int('guest_limit_legend', 10)
+        if row_q and row_q["c"] is not None and row_q["c"] >= lim_leg:
+            LEGEND_VIEW_STATE.pop(uid, None)
+            await message.answer(t(lang, "legend_view_limit", limit=lim_leg))
+            return
     legend = db.get_female_legend(female_id)
     if not legend:
         LEGEND_VIEW_STATE.pop(uid, None)
@@ -564,6 +563,7 @@ async def legend_view_wait_female(message: Message):
         (female_id,)
     ).fetchone()
     title = (row["title"] if row else "") or female_id
+    db.log_search(uid, "legend_view", female_id)
     text = format_legend_text(legend["content"])
     LEGEND_VIEW_STATE.pop(uid, None)
     await message.answer(f"{t(lang, 'legend_view_title', title=title)}\n\n{text}")
@@ -823,23 +823,26 @@ async def guest_limits_menu(message: Message):
         return
     ls = db.get_setting_int('guest_limit_search', 50)
     lr = db.get_setting_int('guest_limit_report', 5)
+    ll = db.get_setting_int('guest_limit_legend', 10)
     text = (
         "Текущие лимиты для ограниченных пользователей:\n"
         f"• Поиск в сутки: {ls}\n"
-        f"• Отчёты в сутки: {lr}\n\n"
+        f"• Отчёты в сутки: {lr}\n"
+        f"• Легенды в сутки: {ll}\n\n"
         "Выберите действие кнопками ниже или отправьте:\n"
         "поиск: 100 — для лимита поиска\n"
-        "отчёты: 10 — для лимита отчётов"
+        "отчёты: 10 — для лимита отчётов\n"
+        "легенды: 10 — для лимита легенд"
     )
-    kb = build_guest_limits_kb(ls, lr)
+    kb = build_guest_limits_kb(ls, lr, ll)
     await message.answer(text, reply_markup=kb)
 
-@dp.message(F.text.regexp(r"(?i)^\s*(поиск|отч[её]ты)\s*[:=]\s*(\d{1,4})\s*$"))
+@dp.message(F.text.regexp(r"(?i)^\s*(поиск|отч[её]ты|легенд[аы])\s*[:=]\s*(\d{1,4})\s*$"))
 async def guest_limits_set(message: Message):
     uid = message.from_user.id
     if not is_superadmin(uid):
         return
-    m = re.match(r"(?i)^\s*(поиск|отч[её]ты)\s*[:=]\s*(\d{1,4})\s*$", message.text.strip())
+    m = re.match(r"(?i)^\s*(поиск|отч[её]ты|легенд[аы])\s*[:=]\s*(\d{1,4})\s*$", message.text.strip())
     if not m:
         return
     kind = m.group(1).lower()
@@ -848,25 +851,35 @@ async def guest_limits_set(message: Message):
     if kind.startswith("поиск"):
         db.set_setting_int('guest_limit_search', val)
         await message.answer(f"Лимит поиска для ограниченных установлен: {val} в сутки.")
-    else:
+    elif kind.startswith("отч"):
         db.set_setting_int('guest_limit_report', val)
         await message.answer(f"Лимит отчётов для ограниченных установлен: {val} в сутки.")
+    else:
+        db.set_setting_int('guest_limit_legend', val)
+        await message.answer(f"Лимит легенд для ограниченных установлен: {val} в сутки.")
 
-@dp.callback_query(F.data.regexp(r"^gl([sr]):(noop|[+\-]\d+)$"))
+@dp.callback_query(F.data.regexp(r"^gl([srl]):(noop|[+\-]\d+)$"))
 async def cb_guest_limits_delta(call: CallbackQuery):
     try:
         _, tail = call.data.split(":", 1)
     except Exception:
         await call.answer("")
         return
-    kind = call.data[2]  # 's' or 'r'
+    kind = call.data[2]  # 's', 'r', or 'l'
     op = tail
     uid = call.from_user.id
     if not is_superadmin(uid):
         await call.answer("Нет прав", show_alert=True)
         return
-    key = 'guest_limit_search' if kind == 's' else 'guest_limit_report'
-    default = 50 if kind == 's' else 5
+    if kind == 's':
+        key = 'guest_limit_search'
+        default = 50
+    elif kind == 'r':
+        key = 'guest_limit_report'
+        default = 5
+    else:
+        key = 'guest_limit_legend'
+        default = 10
     cur = db.get_setting_int(key, default)
     if op == 'noop':
         await call.answer("")
@@ -879,15 +892,18 @@ async def cb_guest_limits_delta(call: CallbackQuery):
     db.set_setting_int(key, new_val)
     ls = db.get_setting_int('guest_limit_search', 50)
     lr = db.get_setting_int('guest_limit_report', 5)
+    ll = db.get_setting_int('guest_limit_legend', 10)
     text = (
         "Текущие лимиты для ограниченных пользователей:\n"
         f"• Поиск в сутки: {ls}\n"
-        f"• Отчёты в сутки: {lr}\n\n"
+        f"• Отчёты в сутки: {lr}\n"
+        f"• Легенды в сутки: {ll}\n\n"
         "Выберите действие кнопками ниже или отправьте:\n"
         "поиск: 100 — для лимита поиска\n"
-        "отчёты: 10 — для лимита отчётов"
+        "отчёты: 10 — для лимита отчётов\n"
+        "легенды: 10 — для лимита легенд"
     )
-    kb = build_guest_limits_kb(ls, lr)
+    kb = build_guest_limits_kb(ls, lr, ll)
     try:
         await call.message.edit_text(text, reply_markup=kb)
     except Exception:
@@ -1252,7 +1268,7 @@ def build_admin_users_kb(admin_id: int, page: int = 0, page_size: int = 10):
     return kb.as_markup(), total, page
 
 # ===== Helper: keyboard for guest limits editing (superadmin)
-def build_guest_limits_kb(limit_search: int, limit_report: int):
+def build_guest_limits_kb(limit_search: int, limit_report: int, limit_legend: int):
     kb = InlineKeyboardBuilder()
     # Search limit controls
     kb.button(text=f"Поиск: {limit_search}", callback_data="gls:noop")
@@ -1267,6 +1283,13 @@ def build_guest_limits_kb(limit_search: int, limit_report: int):
     kb.button(text="-1", callback_data="glr:-1")
     kb.button(text="+1", callback_data="glr:+1")
     kb.button(text="+10", callback_data="glr:+10")
+    kb.adjust(1, 4)
+    # Legend limit controls
+    kb.button(text=f"Легенды: {limit_legend}", callback_data="gll:noop")
+    kb.button(text="-10", callback_data="gll:-10")
+    kb.button(text="-1", callback_data="gll:-1")
+    kb.button(text="+1", callback_data="gll:+1")
+    kb.button(text="+10", callback_data="gll:+10")
     kb.adjust(1, 4)
     # Back
     kb.button(text="⬅ Назад", callback_data="gl:back")
@@ -2152,6 +2175,8 @@ async def send_results(message: Message, male_id: str, offset: int, user_id: Opt
     chat_id = message.chat.id
     uid = user_id or (message.from_user.id if message.from_user else chat_id)
     lang = lang_for(uid)
+    if time_filter not in TIME_FILTER_CHOICES:
+        time_filter = "all"
     since_ts = time_filter_since(time_filter)
     total = db.count_by_male(male_id, female_id=female_filter, since_ts=since_ts)
     if total == 0:
@@ -2183,7 +2208,7 @@ async def send_results(message: Message, male_id: str, offset: int, user_id: Opt
         female_tag = row["female_id"] or ""
         header = f"🗓 <b>{ts_fmt}</b>"
         if female_tag:
-            header += f"\n🆔 {female_tag}"
+            header += f" • {female_tag}"
         formatted = highlight_id(text, male_id)
         body = header + "\n" + (formatted or (text or "(no text)"))
         try:
@@ -2258,7 +2283,7 @@ async def send_report_lookup_results(chat_id: int, user_id: int, female_id: str,
             ts_fmt = time.strftime("%Y-%m-%d %H:%M", time.localtime(ts_val))
         except Exception:
             ts_fmt = "—"
-        header = f"🗓 <b>{ts_fmt}</b>\n🆔 {female_id}"
+        header = f"🗓 <b>{ts_fmt}</b> • {female_id}"
         body = f"{header}\n{formatted}"
         await bot.send_message(chat_id, body)
     new_offset = offset + len(rows)
@@ -2308,8 +2333,10 @@ async def show_filter_menu(uid: int, male_id: str, female_token: str, time_filte
     state["male_id"] = male_id
     if "female_filter" not in state:
         state["female_filter"] = None if female_token == "-" else female_token
+    if time_filter not in TIME_FILTER_CHOICES:
+        time_filter = "all"
     if "time_filter" not in state:
-        state["time_filter"] = time_filter if time_filter in TIME_FILTER_CHOICES else "all"
+        state["time_filter"] = time_filter
     if "female_options" not in state:
         state["female_options"] = db.list_females_for_male(male_id)
     options = state.get("female_options") or []
@@ -2413,6 +2440,8 @@ async def cb_filter_back(call: CallbackQuery):
     if state:
         female_token = state.get("female_filter") or "-"
         time_filter = state.get("time_filter", "all")
+        if time_filter not in TIME_FILTER_CHOICES:
+            time_filter = "all"
     await show_filter_menu(uid, male_id, female_token, time_filter)
     await call.answer("")
 @dp.callback_query(F.data == "mfclose")
