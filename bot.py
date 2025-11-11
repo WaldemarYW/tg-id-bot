@@ -127,6 +127,9 @@ REPORT_LOOKUP_PAGE = 5
 LEGEND_STATE: Dict[int, Dict] = {}
 LEGEND_HASHTAG = "#легенда"
 
+# ========= USER LEGEND VIEW =========
+LEGEND_VIEW_STATE: Dict[int, Dict] = {}
+
 def format_legend_text(body: str) -> str:
     clean = (body or "").strip()
     if clean.lower().startswith(LEGEND_HASHTAG):
@@ -169,18 +172,21 @@ def kb_main(uid: int):
     lang = lang_for(uid)
     kb = ReplyKeyboardBuilder()
     limited_user = (not is_admin(uid)) and (not db.is_allowed_user(uid))
+    can_legend = is_admin(uid) or db.is_allowed_user(uid)
     if limited_user:
         kb.button(text=t(lang, "menu_report_search"))
     else:
         kb.button(text=t(lang, "menu_search"))
     kb.button(text="➕ Добавить отчёт")
-    if is_admin(uid):
-        kb.button(text=t(lang, "menu_admin_panel"))
+    if can_legend:
+        kb.button(text=t(lang, "menu_legend_view"))
     kb.button(text=t(lang, "menu_extra"))
     # Кнопка поддержки видна только ограниченным пользователям
     if limited_user:
         kb.button(text=t(lang, "menu_support"))
-    kb.adjust(2, 2, 1)
+    if is_admin(uid):
+        kb.button(text=t(lang, "menu_admin_panel"))
+    kb.adjust(2, 2, 1, 1)
     return kb.as_markup(resize_keyboard=True)
 
 def kb_extra(uid: int):
@@ -452,6 +458,15 @@ async def report_lookup_start(message: Message):
     REPORT_LOOKUP_STATE[uid] = {"stage": "wait_female"}
     await message.answer(t(lang_for(uid), "report_search_prompt"))
 
+@dp.message(F.text.in_({t("ru", "menu_legend_view"), t("uk", "menu_legend_view")}))
+async def legend_view_start(message: Message):
+    uid = message.from_user.id
+    if not (is_admin(uid) or db.is_allowed_user(uid)):
+        await message.answer(t(lang_for(uid), "legend_view_no_access"))
+        return
+    LEGEND_VIEW_STATE[uid] = {"stage": "wait_female"}
+    await message.answer(t(lang_for(uid), "legend_view_prompt"))
+
 @dp.message(F.text.in_({t("ru", "menu_support"), t("uk", "menu_support")}))
 async def support_info(message: Message):
     await message.answer(t(lang_for(message.from_user.id), "support_text"))
@@ -527,6 +542,32 @@ async def report_lookup_wait_female(message: Message):
     await send_report_lookup_results(message.chat.id, uid, female_id, 0)
     REPORT_LOOKUP_STATE.pop(uid, None)
 
+@dp.message(
+    F.text.regexp(r"^\d{10}$") &
+    F.func(lambda m: LEGEND_VIEW_STATE.get(m.from_user.id, {}).get("stage") == "wait_female")
+)
+async def legend_view_wait_female(message: Message):
+    uid = message.from_user.id
+    lang = lang_for(uid)
+    if not (is_admin(uid) or db.is_allowed_user(uid)):
+        LEGEND_VIEW_STATE.pop(uid, None)
+        await message.answer(t(lang, "legend_view_no_access"))
+        return
+    female_id = message.text.strip()
+    legend = db.get_female_legend(female_id)
+    if not legend:
+        LEGEND_VIEW_STATE.pop(uid, None)
+        await message.answer(t(lang, "legend_view_not_found", fid=female_id))
+        return
+    row = db.conn.execute(
+        "SELECT title FROM allowed_chats WHERE female_id=? ORDER BY added_at DESC LIMIT 1",
+        (female_id,)
+    ).fetchone()
+    title = (row["title"] if row else "") or female_id
+    text = format_legend_text(legend["content"])
+    LEGEND_VIEW_STATE.pop(uid, None)
+    await message.answer(f"{t(lang, 'legend_view_title', title=title)}\n\n{text}")
+
 @dp.message(F.text == "⬅️ Назад")
 async def back_button(message: Message):
     uid = message.from_user.id
@@ -534,6 +575,7 @@ async def back_button(message: Message):
     REPORT_STATE.pop(uid, None)
     REPORT_LOOKUP_STATE.pop(uid, None)
     LEGEND_STATE.pop(uid, None)
+    LEGEND_VIEW_STATE.pop(uid, None)
     MALE_SEARCH_STATE.pop(uid, None)
     state = nav_back(uid)
     await show_menu(message, state)
@@ -2030,6 +2072,9 @@ async def handle_male_search(message: Message):
     lookup_st = REPORT_LOOKUP_STATE.get(uid)
     if lookup_st and lookup_st.get("stage") == "wait_female":
         return
+    legend_view_st = LEGEND_VIEW_STATE.get(uid)
+    if legend_view_st and legend_view_st.get("stage") == "wait_female":
+        return
 
     lang = lang_for(uid)
 
@@ -2136,9 +2181,9 @@ async def send_results(message: Message, male_id: str, offset: int, user_id: Opt
         except Exception:
             ts_fmt = "—"
         female_tag = row["female_id"] or ""
-        header = f"<b>{ts_fmt}</b>"
+        header = f"🗓 <b>{ts_fmt}</b>"
         if female_tag:
-            header += f" • {female_tag}"
+            header += f"\n🆔 {female_tag}"
         formatted = highlight_id(text, male_id)
         body = header + "\n" + (formatted or (text or "(no text)"))
         try:
@@ -2213,7 +2258,8 @@ async def send_report_lookup_results(chat_id: int, user_id: int, female_id: str,
             ts_fmt = time.strftime("%Y-%m-%d %H:%M", time.localtime(ts_val))
         except Exception:
             ts_fmt = "—"
-        body = f"<b>{ts_fmt}</b>\n{formatted}"
+        header = f"🗓 <b>{ts_fmt}</b>\n🆔 {female_id}"
+        body = f"{header}\n{formatted}"
         await bot.send_message(chat_id, body)
     new_offset = offset + len(rows)
     if new_offset < total:
