@@ -359,28 +359,67 @@ class DB:
             (user_id, limit)
         ).fetchall()
 
-    def search_by_male(self, male_id: str, limit: int = 5, offset: int = 0) -> List[sqlite3.Row]:
+    def search_by_male(self, male_id: str, limit: int = 5, offset: int = 0,
+                       female_id: Optional[str] = None, since_ts: Optional[float] = None) -> List[sqlite3.Row]:
+        params = [male_id]
+        extra = ""
+        if female_id:
+            extra += " AND ac.female_id = ?"
+            params.append(female_id)
+        if since_ts:
+            extra += " AND m.date >= ?"
+            params.append(since_ts)
+        params.extend([limit, offset])
         return self.conn.execute(
-            """
-            SELECT m.*, mm.male_id FROM messages m
+            f"""
+            SELECT m.*, mm.male_id, ac.female_id AS female_id
+            FROM messages m
             JOIN message_male_ids mm ON mm.message_id_ref = m.id
-            WHERE mm.male_id = ?
+            LEFT JOIN allowed_chats ac ON ac.chat_id = m.chat_id
+            WHERE mm.male_id = ? {extra}
             ORDER BY m.date DESC
             LIMIT ? OFFSET ?
             """,
-            (male_id, limit, offset)
+            params
         ).fetchall()
 
-    def count_by_male(self, male_id: str) -> int:
+    def count_by_male(self, male_id: str, female_id: Optional[str] = None,
+                      since_ts: Optional[float] = None) -> int:
+        params = [male_id]
+        extra = ""
+        if female_id:
+            extra += " AND ac.female_id = ?"
+            params.append(female_id)
+        if since_ts:
+            extra += " AND m.date >= ?"
+            params.append(since_ts)
         row = self.conn.execute(
-            """
-            SELECT COUNT(*) AS c FROM messages m
+            f"""
+            SELECT COUNT(*) AS c
+            FROM messages m
             JOIN message_male_ids mm ON mm.message_id_ref = m.id
-            WHERE mm.male_id = ?
+            LEFT JOIN allowed_chats ac ON ac.chat_id = m.chat_id
+            WHERE mm.male_id = ? {extra}
             """,
-            (male_id,)
+            params
         ).fetchone()
         return row["c"] if row else 0
+
+    def list_females_for_male(self, male_id: str) -> List[str]:
+        rows = self.conn.execute(
+            """
+            SELECT DISTINCT ac.female_id
+            FROM messages m
+            JOIN message_male_ids mm ON mm.message_id_ref = m.id
+            LEFT JOIN allowed_chats ac ON ac.chat_id = m.chat_id
+            WHERE mm.male_id = ?
+              AND ac.female_id IS NOT NULL
+              AND ac.female_id <> ''
+            ORDER BY ac.female_id
+            """,
+            (male_id,)
+        ).fetchall()
+        return [r["female_id"] for r in rows]
 
     def count_reports_by_female(self, female_id: str, since_ts: float) -> int:
         row = self.conn.execute(
