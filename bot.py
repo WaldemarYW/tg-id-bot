@@ -120,6 +120,16 @@ def nav_back(uid: int) -> str:
 # stage: None | "wait_female" | "wait_text"
 REPORT_STATE: Dict[int, Dict] = {}
 
+# ========= LEGEND FLOW =========
+LEGEND_STATE: Dict[int, Dict] = {}
+LEGEND_HASHTAG = "#легенда"
+
+def format_legend_text(body: str) -> str:
+    clean = (body or "").strip()
+    if clean.lower().startswith(LEGEND_HASHTAG):
+        return clean
+    return f"{LEGEND_HASHTAG}\n{clean}" if clean else LEGEND_HASHTAG
+
 
 # ========= KEYBOARDS =========
 def private_reply_markup(message: Message, markup):
@@ -159,9 +169,18 @@ def kb_admin(uid: int):
     if is_superadmin(uid):
         kb.button(text=t(lang_for(uid), "menu_superadmin_panel"))
     kb.button(text="💬 Чаты")
+    kb.button(text="Легенда")
     # Убрали «Статистика» и «Дополнительно»
     kb.button(text="⬅️ Назад")
-    kb.adjust(2, 1)
+    kb.adjust(2, 1, 1)
+    return kb.as_markup(resize_keyboard=True)
+
+def kb_admin_legend(uid: int):
+    kb = ReplyKeyboardBuilder()
+    kb.button(text="➕ Добавить легенду")
+    kb.button(text="✏️ Редактировать легенду")
+    kb.button(text="⬅️ Назад")
+    kb.adjust(1, 1, 1)
     return kb.as_markup(resize_keyboard=True)
 
 def kb_admin_users(uid: int):
@@ -243,6 +262,11 @@ async def show_menu(message: Message, state: str):
         await message.answer(
             "Управление чатами\nДобавьте бота в нужный чат, что бы связать чат с ботом.",
             reply_markup=private_reply_markup(message, kb_admin_chats(uid)),
+        )
+    elif state == "admin.legend":
+        await message.answer(
+            "Легенда: выберите действие.",
+            reply_markup=private_reply_markup(message, kb_admin_legend(uid)),
         )
     elif state == "admin.exports":
         await message.answer(
@@ -414,8 +438,8 @@ async def report_start(message: Message):
 async def back_button(message: Message):
     uid = message.from_user.id
     # сбрасываем возможный режим отчёта
-    if uid in REPORT_STATE:
-        REPORT_STATE.pop(uid, None)
+    REPORT_STATE.pop(uid, None)
+    LEGEND_STATE.pop(uid, None)
     state = nav_back(uid)
     await show_menu(message, state)
 
@@ -500,6 +524,146 @@ async def report_wait_text(message: Message):
     await message.answer(f"Отчёт отправлен в «{title}». Спасибо!")
 
 # ========= ADMIN MENUS =========
+@dp.message(F.text == "Легенда")
+async def admin_legend_menu(message: Message):
+    uid = message.from_user.id
+    if not is_admin(uid):
+        return
+    LEGEND_STATE.pop(uid, None)
+    nav_push(uid, "admin.legend")
+    await show_menu(message, "admin.legend")
+
+@dp.message(F.text == "➕ Добавить легенду")
+async def legend_add_prompt(message: Message):
+    uid = message.from_user.id
+    if not is_admin(uid):
+        return
+    LEGEND_STATE[uid] = {"mode": "add", "stage": "wait_female"}
+    await message.answer(
+        "Введите 10-значный женский ID, для которого нужно добавить легенду.",
+        reply_markup=private_reply_markup(message, kb_admin_legend(uid)),
+    )
+
+@dp.message(F.text == "✏️ Редактировать легенду")
+async def legend_edit_prompt(message: Message):
+    uid = message.from_user.id
+    if not is_admin(uid):
+        return
+    LEGEND_STATE[uid] = {"mode": "edit", "stage": "wait_female"}
+    await message.answer(
+        "Введите 10-значный женский ID, чтобы редактировать легенду.",
+        reply_markup=private_reply_markup(message, kb_admin_legend(uid)),
+    )
+
+@dp.message(
+    F.text.regexp(r"^\d{10}$") &
+    F.func(lambda m: LEGEND_STATE.get(m.from_user.id, {}).get("stage") == "wait_female")
+)
+async def legend_wait_female(message: Message):
+    uid = message.from_user.id
+    if not is_admin(uid):
+        return
+    st = LEGEND_STATE.get(uid) or {}
+    mode = st.get("mode")
+    female_id = message.text.strip()
+    if not mode:
+        LEGEND_STATE.pop(uid, None)
+        await message.answer("Состояние не определено. Нажмите «Легенда» ещё раз.")
+        return
+    chat_row = db.conn.execute(
+        "SELECT chat_id, title FROM allowed_chats WHERE female_id=? ORDER BY added_at DESC LIMIT 1",
+        (female_id,)
+    ).fetchone()
+    if not chat_row:
+        await message.answer("Для этой девушки не найден авторизованный чат. Добавьте чат и попробуйте снова.")
+        return
+    legend_row = db.get_female_legend(female_id)
+    if mode == "add" and legend_row:
+        await message.answer("Легенда для этой девушки уже существует. Используйте режим редактирования.")
+        return
+    if mode == "edit" and not legend_row:
+        await message.answer("Легенда ещё не создана. Сначала добавьте её через режим добавления.")
+        return
+    LEGEND_STATE[uid] = {
+        "mode": mode,
+        "stage": "wait_text",
+        "female_id": female_id,
+        "chat_id": chat_row["chat_id"],
+        "chat_title": chat_row["title"] or "",
+        "prev_message_id": (legend_row["message_id"] if legend_row else None),
+        "previous_content": (legend_row["content"] if legend_row else ""),
+    }
+    title = chat_row["title"] or f"id:{chat_row['chat_id']}"
+    if mode == "edit" and legend_row:
+        preview = (legend_row["content"] or "").strip()
+        if len(preview) > 1500:
+            preview = preview[:1500] + "…"
+        await message.answer(
+            f"Текущий текст легенды для {female_id}:\n\n{preview or '(пусто)'}\n\nОтправьте новый текст одним сообщением.",
+            reply_markup=private_reply_markup(message, kb_admin_legend(uid)),
+        )
+    else:
+        await message.answer(
+            f"Чат «{title}» найден. Отправьте текст легенды одним сообщением.",
+            reply_markup=private_reply_markup(message, kb_admin_legend(uid)),
+        )
+
+@dp.message(
+    F.text &
+    F.func(lambda m: LEGEND_STATE.get(m.from_user.id, {}).get("stage") == "wait_text")
+)
+async def legend_wait_text(message: Message):
+    uid = message.from_user.id
+    if not is_admin(uid):
+        return
+    st = LEGEND_STATE.get(uid) or {}
+    body = (message.text or "").strip()
+    if not body:
+        await message.answer("Пустой текст легенды не принимаю. Отправьте содержимое ещё раз.")
+        return
+    chat_id = st.get("chat_id")
+    female_id = st.get("female_id")
+    mode = st.get("mode")
+    if not chat_id or not female_id:
+        LEGEND_STATE.pop(uid, None)
+        await message.answer("Не удалось определить чат. Начните заново через «Легенда».")
+        return
+    previous_content = (st.get("previous_content") or "").strip()
+    if mode == "edit" and body == previous_content:
+        await message.answer("Текст не изменился. Введите другой вариант или нажмите «⬅️ Назад».")
+        return
+    prev_message_id = st.get("prev_message_id")
+    if prev_message_id:
+        try:
+            await bot.unpin_chat_message(chat_id=chat_id, message_id=prev_message_id)
+        except Exception as exc:
+            logger.warning("Не удалось снять старое закрепление легенды %s/%s: %s", chat_id, prev_message_id, exc)
+    prepared_text = format_legend_text(body)
+    try:
+        sent = await bot.send_message(chat_id=chat_id, text=prepared_text, disable_web_page_preview=True)
+    except Exception as exc:
+        logger.exception("Не удалось отправить легенду для %s: %s", female_id, exc)
+        await message.answer("Не удалось отправить сообщение в группу. Проверьте, что бот админ и не заблокирован.")
+        return
+    pin_ok = True
+    try:
+        await bot.pin_chat_message(chat_id=chat_id, message_id=sent.message_id, disable_notification=True)
+    except Exception as exc:
+        pin_ok = False
+        logger.warning("Не удалось закрепить легенду %s в чате %s: %s", female_id, chat_id, exc)
+    db.upsert_female_legend(female_id, chat_id, body, sent.message_id)
+    db.log_audit(uid, "legend_add" if mode == "add" else "legend_edit", target=female_id, details=f"chat_id={chat_id}")
+    LEGEND_STATE.pop(uid, None)
+    title = st.get("chat_title") or f"id:{chat_id}"
+    status = "добавлена" if mode == "add" else "обновлена"
+    response_text = f"Легенда для {female_id} {status} и отправлена в «{title}»."
+    if not pin_ok:
+        response_text += "\n⚠️ Не удалось закрепить сообщение — проверьте права бота."
+    await message.answer(
+        response_text,
+        reply_markup=private_reply_markup(message, kb_admin_legend(uid)),
+    )
+
 @dp.message(F.text == "👥 Пользователи")
 async def admin_users_menu(message: Message):
     uid = message.from_user.id

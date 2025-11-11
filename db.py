@@ -323,6 +323,28 @@ class DB:
         m = re.search(r"(?:^|[^0-9])([0-9]{10})(?:[^0-9]|$)", title)
         return m.group(1) if m else None
 
+    # --- Female legends
+    def get_female_legend(self, female_id: str) -> Optional[sqlite3.Row]:
+        return self.conn.execute(
+            "SELECT female_id, chat_id, content, message_id, updated_at FROM female_legends WHERE female_id=?",
+            (female_id,)
+        ).fetchone()
+
+    def upsert_female_legend(self, female_id: str, chat_id: int, content: str, message_id: Optional[int]):
+        self.conn.execute(
+            """
+            INSERT INTO female_legends(female_id, chat_id, content, message_id)
+            VALUES(?,?,?,?)
+            ON CONFLICT(female_id) DO UPDATE SET
+                chat_id=excluded.chat_id,
+                content=excluded.content,
+                message_id=excluded.message_id,
+                updated_at=CURRENT_TIMESTAMP
+            """,
+            (female_id, chat_id, content, message_id)
+        )
+        self.conn.commit()
+
     # --- Searches and stats
     def log_search(self, user_id: int, query_type: str, query_value: str):
         self.conn.execute(
