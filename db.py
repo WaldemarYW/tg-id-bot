@@ -382,6 +382,43 @@ class DB:
         ).fetchone()
         return row["c"] if row else 0
 
+    def count_reports_by_female(self, female_id: str, since_ts: float) -> int:
+        row = self.conn.execute(
+            """
+            SELECT COUNT(DISTINCT m.id) AS c
+            FROM messages m
+            JOIN allowed_chats ac ON ac.chat_id = m.chat_id
+            JOIN message_male_ids mm ON mm.message_id_ref = m.id
+            WHERE ac.female_id = ?
+              AND m.date >= ?
+              AND (m.media_type IS NULL OR m.media_type = '' OR m.media_type = 'text')
+            """,
+            (female_id, since_ts)
+        ).fetchone()
+        return row["c"] if row else 0
+
+    def get_reports_by_female(self, female_id: str, since_ts: float, limit: int, offset: int) -> List[sqlite3.Row]:
+        return self.conn.execute(
+            """
+            SELECT m.id,
+                   m.chat_id,
+                   m.message_id,
+                   m.text,
+                   m.date,
+                   GROUP_CONCAT(DISTINCT mm.male_id) AS male_ids
+            FROM messages m
+            JOIN allowed_chats ac ON ac.chat_id = m.chat_id
+            JOIN message_male_ids mm ON mm.message_id_ref = m.id
+            WHERE ac.female_id = ?
+              AND m.date >= ?
+              AND (m.media_type IS NULL OR m.media_type = '' OR m.media_type = 'text')
+            GROUP BY m.id
+            ORDER BY m.date DESC
+            LIMIT ? OFFSET ?
+            """,
+            (female_id, since_ts, limit, offset)
+        ).fetchall()
+
     def count_stats(self) -> Tuple[int, int, int, int]:
         """Return statistics: unique male IDs, total messages, allowed chats, unique female IDs."""
         men = self.conn.execute("SELECT COUNT(DISTINCT male_id) AS c FROM message_male_ids").fetchone()["c"]

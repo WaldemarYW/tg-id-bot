@@ -6,6 +6,7 @@ import hashlib
 import secrets
 import logging
 import re
+import html
 from logging.handlers import RotatingFileHandler
 from typing import Dict
 
@@ -108,6 +109,11 @@ def nav_back(uid: int) -> str:
 # stage: None | "wait_female" | "wait_text"
 REPORT_STATE: Dict[int, Dict] = {}
 
+# ========= REPORT LOOKUP FLOW (поиск отчётов по female) =========
+REPORT_LOOKUP_STATE: Dict[int, Dict] = {}
+REPORT_LOOKUP_WINDOW = 24 * 3600
+REPORT_LOOKUP_PAGE = 5
+
 # ========= LEGEND FLOW =========
 LEGEND_STATE: Dict[int, Dict] = {}
 LEGEND_HASHTAG = "#легенда"
@@ -130,13 +136,17 @@ def kb_main(uid: int):
     # Поиск → Добавить отчёт → Админ → Мои запросы → Язык
     lang = lang_for(uid)
     kb = ReplyKeyboardBuilder()
-    kb.button(text=t(lang, "menu_search"))
+    limited_user = (not is_admin(uid)) and (not db.is_allowed_user(uid))
+    if limited_user:
+        kb.button(text=t(lang, "menu_report_search"))
+    else:
+        kb.button(text=t(lang, "menu_search"))
     kb.button(text="➕ Добавить отчёт")
     if is_admin(uid):
         kb.button(text=t(lang, "menu_admin_panel"))
     kb.button(text=t(lang, "menu_extra"))
     # Кнопка поддержки видна только ограниченным пользователям
-    if not is_admin(uid) and not db.is_allowed_user(uid):
+    if limited_user:
         kb.button(text=t(lang, "menu_support"))
     kb.adjust(2, 2, 1)
     return kb.as_markup(resize_keyboard=True)
@@ -398,6 +408,12 @@ async def action_search_prompt(message: Message):
         REPORT_STATE.pop(uid, None)
     await message.answer(t(lang_for(uid), "search_enter_id"))
 
+@dp.message(F.text.in_({t("ru", "menu_report_search"), t("uk", "menu_report_search")}))
+async def report_lookup_start(message: Message):
+    uid = message.from_user.id
+    REPORT_LOOKUP_STATE[uid] = {"stage": "wait_female"}
+    await message.answer(t(lang_for(uid), "report_search_prompt"))
+
 @dp.message(F.text.in_({t("ru", "menu_support"), t("uk", "menu_support")}))
 async def support_info(message: Message):
     await message.answer(t(lang_for(message.from_user.id), "support_text"))
@@ -421,11 +437,64 @@ async def report_start(message: Message):
     REPORT_STATE[uid] = {"stage": "wait_female"}
     await message.answer("Введите 10-значный идентификатор девушки (из названия группы).")
 
+@dp.message(
+    F.text.regexp(r"^\d{10}$") &
+    F.func(lambda m: REPORT_LOOKUP_STATE.get(m.from_user.id, {}).get("stage") == "wait_female")
+)
+async def report_lookup_wait_female(message: Message):
+    uid = message.from_user.id
+    lang = lang_for(uid)
+    female_id = message.text.strip()
+    row = db.conn.execute(
+        "SELECT 1 FROM allowed_chats WHERE female_id=? LIMIT 1",
+        (female_id,)
+    ).fetchone()
+    if not row:
+        await message.answer(t(lang, "report_search_no_chat"))
+        return
+    banned_until = db.get_user_ban(uid)
+    now_ts = int(time.time())
+    if banned_until and now_ts < banned_until:
+        until_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(banned_until))
+        await message.answer(t(lang, "banned", until=until_str))
+        return
+    if not db.rate_limit_allowed(uid, now_ts):
+        await message.answer(t(lang, "rate_limited"))
+        return
+    if not is_admin(uid) and not db.is_allowed_user(uid):
+        ts_ago_24h = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 24*3600))
+        row_q = db.conn.execute(
+            "SELECT COUNT(*) AS c FROM searches WHERE user_id=? AND query_type='report_female' AND created_at > ?",
+            (uid, ts_ago_24h)
+        ).fetchone()
+        lim_s = db.get_setting_int('guest_limit_search', 50)
+        if row_q and row_q["c"] is not None and row_q["c"] >= lim_s:
+            REPORT_LOOKUP_STATE.pop(uid, None)
+            await message.answer(t(lang, "limited_search_quota", limit=lim_s))
+            return
+    db.log_search(uid, "report_female", female_id)
+    if not is_admin(uid):
+        ts_ago = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 60))
+        row_fast = db.conn.execute(
+            "SELECT COUNT(*) AS c FROM searches WHERE user_id=? AND query_type='report_female' AND created_at > ?",
+            (uid, ts_ago)
+        ).fetchone()
+        if row_fast and row_fast["c"] is not None and row_fast["c"] >= 30:
+            banned_until_ts = now_ts + 900
+            db.set_user_ban(uid, banned_until_ts)
+            until_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(banned_until_ts))
+            REPORT_LOOKUP_STATE.pop(uid, None)
+            await message.answer(t(lang, "banned", until=until_str))
+            return
+    await send_report_lookup_results(message.chat.id, uid, female_id, 0)
+    REPORT_LOOKUP_STATE.pop(uid, None)
+
 @dp.message(F.text == "⬅️ Назад")
 async def back_button(message: Message):
     uid = message.from_user.id
     # сбрасываем возможный режим отчёта
     REPORT_STATE.pop(uid, None)
+    REPORT_LOOKUP_STATE.pop(uid, None)
     LEGEND_STATE.pop(uid, None)
     state = nav_back(uid)
     await show_menu(message, state)
@@ -1919,6 +1988,9 @@ async def handle_male_search(message: Message):
     st = REPORT_STATE.get(uid)
     if st and st.get("stage") in {"wait_female", "wait_text"}:
         return
+    lookup_st = REPORT_LOOKUP_STATE.get(uid)
+    if lookup_st and lookup_st.get("stage") == "wait_female":
+        return
 
     lang = lang_for(uid)
 
@@ -2023,6 +2095,50 @@ async def send_results(message: Message, male_id: str, offset: int):
     else:
         await message.answer(f"{total}/{total}")
 
+async def send_report_lookup_results(chat_id: int, user_id: int, female_id: str, offset: int):
+    lang = lang_for(user_id)
+    since_ts = time.time() - REPORT_LOOKUP_WINDOW
+    total = db.count_reports_by_female(female_id, since_ts)
+    if total == 0:
+        if offset == 0:
+            await bot.send_message(chat_id, t(lang, "report_search_empty", fid=female_id))
+        else:
+            await bot.send_message(chat_id, t(lang, "report_search_no_more"))
+        return
+    if offset >= total:
+        await bot.send_message(chat_id, t(lang, "report_search_no_more"))
+        return
+    rows = db.get_reports_by_female(female_id, since_ts, REPORT_LOOKUP_PAGE, offset)
+    if not rows:
+        await bot.send_message(chat_id, t(lang, "report_search_no_more"))
+        return
+    for row in rows:
+        text = (row["text"] or "").strip()
+        base_text = text or "(no text)"
+        male_ids = []
+        if row["male_ids"]:
+            raw_ids = [mid for mid in row["male_ids"].split(",") if mid]
+            male_ids = list(dict.fromkeys(raw_ids))
+        if male_ids:
+            formatted = highlight_id(base_text, male_ids[0])
+        else:
+            formatted = html.escape(base_text)
+        ts_raw = row["date"]
+        ts_val = float(ts_raw) if isinstance(ts_raw, (int, float)) else float(ts_raw or 0)
+        try:
+            ts_fmt = time.strftime("%Y-%m-%d %H:%M", time.localtime(ts_val))
+        except Exception:
+            ts_fmt = "—"
+        body = f"<b>{ts_fmt}</b>\n{formatted}"
+        await bot.send_message(chat_id, body)
+    new_offset = offset + len(rows)
+    if new_offset < total:
+        kb = InlineKeyboardBuilder()
+        kb.button(text=t(lang, "more"), callback_data=f"rep_more:{female_id}:{new_offset}")
+        await bot.send_message(chat_id, f"{min(new_offset, total)}/{total}", reply_markup=kb.as_markup())
+    else:
+        await bot.send_message(chat_id, f"{total}/{total}")
+
 # ========= COUNT-ONLY QUICK CHECK =========
 # Triggers on: /count 1234567890, "count 1234567890", "проверить 1234567890", "перевірити 1234567890"
 @dp.message(F.text.regexp(r"^(?:/count|count|проверить|перевірити)\s+(\d{10})$", flags=re.IGNORECASE))
@@ -2047,6 +2163,19 @@ async def cb_more(call: CallbackQuery):
         await send_results(call.message, male_id, int(off))
     finally:
         await call.answer("")
+
+@dp.callback_query(F.data.regexp(r"^rep_more:(\d{10}):(\d+)$"))
+async def cb_rep_more(call: CallbackQuery):
+    data = call.data or ""
+    match = re.match(r"^rep_more:(\d{10}):(\d+)$", data)
+    if not match:
+        await call.answer("")
+        return
+    female_id = match.group(1)
+    offset = int(match.group(2))
+    chat_id = call.message.chat.id if call.message else call.from_user.id
+    await send_report_lookup_results(chat_id, call.from_user.id, female_id, offset)
+    await call.answer("")
 
 
 # ========= GROUP LISTENERS =========
