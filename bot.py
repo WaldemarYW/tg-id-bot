@@ -300,7 +300,13 @@ async def show_menu(message: Message, state: str):
         now_ts = int(time.time())
         cutoff = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 24*3600))
         row_s = db.conn.execute(
-            "SELECT COUNT(*) AS c FROM searches WHERE user_id=? AND query_type='male' AND created_at > ?",
+            """
+            SELECT COUNT(*) AS c
+            FROM searches
+            WHERE user_id=?
+              AND query_type IN ('male', 'report_female')
+              AND created_at > ?
+            """,
             (uid, cutoff)
         ).fetchone()
         used_search = (row_s["c"] if row_s and row_s["c"] is not None else 0)
