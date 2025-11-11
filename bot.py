@@ -2069,24 +2069,31 @@ async def send_results(message: Message, male_id: str, offset: int):
         text = row["text"] or ""
         media_type = row["media_type"] or None
         file_id = row["file_id"] or None
+        ts_raw = row["date"]
+        ts_val = float(ts_raw) if isinstance(ts_raw, (int, float)) else float(ts_raw or 0)
+        try:
+            ts_fmt = time.strftime("%Y-%m-%d %H:%M", time.localtime(ts_val))
+        except Exception:
+            ts_fmt = "—"
         formatted = highlight_id(text, male_id)
+        header = f"<b>{ts_fmt}</b>\n"
         try:
             if media_type == "photo" and file_id:
-                await bot.send_photo(chat_id=uid, photo=file_id, caption=formatted or None)
+                await bot.send_photo(chat_id=uid, photo=file_id, caption=header + (formatted or ""))
             elif media_type == "video" and file_id:
-                await bot.send_video(chat_id=uid, video=file_id, caption=formatted or None)
+                await bot.send_video(chat_id=uid, video=file_id, caption=header + (formatted or ""))
             elif media_type == "audio" and file_id:
-                await bot.send_audio(chat_id=uid, audio=file_id, caption=formatted or None)
+                await bot.send_audio(chat_id=uid, audio=file_id, caption=header + (formatted or ""))
             elif media_type == "voice" and file_id:
-                await bot.send_voice(chat_id=uid, voice=file_id, caption=formatted or None)
+                await bot.send_voice(chat_id=uid, voice=file_id, caption=header + (formatted or ""))
             elif media_type == "document" and file_id:
-                await bot.send_document(chat_id=uid, document=file_id, caption=formatted or None)
+                await bot.send_document(chat_id=uid, document=file_id, caption=header + (formatted or ""))
             else:
                 # text-only or unknown media: send as plain message
-                await bot.send_message(chat_id=uid, text=formatted or (text or "(no text)"))
+                await bot.send_message(chat_id=uid, text=header + (formatted or (text or "(no text)")))
         except Exception:
             # Fallback to text only
-            await message.answer(formatted or (text or "(no text)"))
+            await message.answer(header + (formatted or (text or "(no text)")))
     new_offset = offset + 5
     if new_offset < total:
         kb = InlineKeyboardBuilder()
