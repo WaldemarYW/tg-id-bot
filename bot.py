@@ -822,10 +822,7 @@ async def male_search_wait_female_filter(message: Message):
         return
     text = (message.text or "").strip()
     female_filter = None
-    if text:
-        if not re.fullmatch(r"\d{10}", text):
-            await message.answer(t(lang, "male_filter_invalid_female"))
-            return
+    if text and re.fullmatch(r"\d{10}", text):
         female_filter = text
     state["female_filter"] = female_filter
     if stage == "wait_female_filter":
