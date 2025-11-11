@@ -16,7 +16,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ChatType
 from aiogram.filters import Command, CommandStart
 from aiogram.filters.command import CommandObject
-from aiogram.types import Message, CallbackQuery, ChatMemberUpdated, ReplyKeyboardRemove
+from aiogram.types import Message, CallbackQuery, ChatMemberUpdated, ReplyKeyboardRemove, KeyboardButton
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 from db import DB
@@ -150,17 +150,15 @@ def kb_extra(uid: int):
     return kb.as_markup(resize_keyboard=True)
 
 def kb_admin(uid: int):
-    # как в core-2: «👤 Админы» видно всем админам
     kb = ReplyKeyboardBuilder()
-    # Кнопка пользователей всегда доступна в панели админа
-    kb.button(text="👥 Пользователи")
+    kb.row(KeyboardButton(text="👥 Пользователи"))
     if is_superadmin(uid):
-        kb.button(text=t(lang_for(uid), "menu_superadmin_panel"))
-    kb.button(text="💬 Чаты")
-    kb.button(text="Легенда")
-    # Убрали «Статистика» и «Дополнительно»
-    kb.button(text="⬅️ Назад")
-    kb.adjust(2, 1, 1)
+        kb.row(KeyboardButton(text=t(lang_for(uid), "menu_superadmin_panel")))
+    kb.row(
+        KeyboardButton(text="💬 Чаты"),
+        KeyboardButton(text="Легенда"),
+    )
+    kb.row(KeyboardButton(text="⬅️ Назад"))
     return kb.as_markup(resize_keyboard=True)
 
 def kb_admin_legend(uid: int):
@@ -371,7 +369,7 @@ async def admin_entry(message: Message):
 
 ## (removed) separate superadmin panel entry via main menu button
 
-@dp.message(F.text.func(lambda s: isinstance(s, str) and ("Язык" in s or "Мова" in s)))
+@dp.message(F.text.in_({t("ru", "menu_lang"), t("uk", "menu_lang")}))
 async def switch_lang(message: Message):
     uid = message.from_user.id
     cur = lang_for(uid)
@@ -578,7 +576,6 @@ async def legend_wait_female(message: Message):
         "female_id": female_id,
         "chat_id": chat_row["chat_id"],
         "chat_title": chat_row["title"] or "",
-        "prev_message_id": (legend_row["message_id"] if legend_row else None),
         "previous_content": (legend_row["content"] if legend_row else ""),
     }
     title = chat_row["title"] or f"id:{chat_row['chat_id']}"
@@ -620,12 +617,6 @@ async def legend_wait_text(message: Message):
     if mode == "edit" and body == previous_content:
         await message.answer("Текст не изменился. Введите другой вариант или нажмите «⬅️ Назад».")
         return
-    prev_message_id = st.get("prev_message_id")
-    if prev_message_id:
-        try:
-            await bot.unpin_chat_message(chat_id=chat_id, message_id=prev_message_id)
-        except Exception as exc:
-            logger.warning("Не удалось снять старое закрепление легенды %s/%s: %s", chat_id, prev_message_id, exc)
     prepared_text = format_legend_text(body)
     try:
         sent = await bot.send_message(chat_id=chat_id, text=prepared_text, disable_web_page_preview=True)
@@ -633,20 +624,12 @@ async def legend_wait_text(message: Message):
         logger.exception("Не удалось отправить легенду для %s: %s", female_id, exc)
         await message.answer("Не удалось отправить сообщение в группу. Проверьте, что бот админ и не заблокирован.")
         return
-    pin_ok = True
-    try:
-        await bot.pin_chat_message(chat_id=chat_id, message_id=sent.message_id, disable_notification=True)
-    except Exception as exc:
-        pin_ok = False
-        logger.warning("Не удалось закрепить легенду %s в чате %s: %s", female_id, chat_id, exc)
     db.upsert_female_legend(female_id, chat_id, body, sent.message_id)
     db.log_audit(uid, "legend_add" if mode == "add" else "legend_edit", target=female_id, details=f"chat_id={chat_id}")
     LEGEND_STATE.pop(uid, None)
     title = st.get("chat_title") or f"id:{chat_id}"
     status = "добавлена" if mode == "add" else "обновлена"
     response_text = f"Легенда для {female_id} {status} и отправлена в «{title}»."
-    if not pin_ok:
-        response_text += "\n⚠️ Не удалось закрепить сообщение — проверьте права бота."
     await message.answer(
         response_text,
         reply_markup=private_reply_markup(message, kb_admin_legend(uid)),
