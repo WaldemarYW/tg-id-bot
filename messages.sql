@@ -26,6 +26,16 @@ CREATE TABLE IF NOT EXISTS allowed_chats (
     added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Per-female legend entries that the bot can post/pin inside chats.
+CREATE TABLE IF NOT EXISTS female_legends (
+    female_id TEXT PRIMARY KEY,
+    chat_id INTEGER NOT NULL,
+    content TEXT NOT NULL,
+    message_id INTEGER,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(chat_id) REFERENCES allowed_chats(chat_id) ON DELETE CASCADE
+);
+
 -- Registered bot users.  A user must be in this table in order to issue
 -- searches.  Credits represent the number of ID searches the user can
 -- perform; credits are decremented on every search and incremented when
