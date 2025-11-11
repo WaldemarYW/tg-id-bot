@@ -808,6 +808,34 @@ async def legend_wait_text(message: Message):
         reply_markup=private_reply_markup(message, kb_admin_legend(uid)),
     )
 
+@dp.message(
+    F.func(lambda m: MALE_SEARCH_STATE.get(m.from_user.id, {}).get("stage") in {"wait_female_filter", "wait_female_manual"})
+)
+async def male_search_wait_female_filter(message: Message):
+    uid = message.from_user.id
+    lang = lang_for(uid)
+    state = MALE_SEARCH_STATE.get(uid)
+    if not state:
+        return
+    stage = state.get("stage")
+    if stage not in {"wait_female_filter", "wait_female_manual"}:
+        return
+    text = (message.text or "").strip()
+    female_filter = None
+    if text:
+        if not re.fullmatch(r"\d{10}", text):
+            await message.answer(t(lang, "male_filter_invalid_female"))
+            return
+        female_filter = text
+    state["female_filter"] = female_filter
+    if stage == "wait_female_filter":
+        state["stage"] = "wait_period_filter"
+        await message.answer(t(lang, "male_filter_prompt_period"), reply_markup=build_period_prompt_kb(state["male_id"], lang))
+    else:
+        state["stage"] = None
+        time_filter = state.get("time_filter", "all")
+        await send_results(message, state["male_id"], 0, user_id=uid, female_filter=female_filter, time_filter=time_filter)
+
 @dp.message(F.text == "👥 Пользователи")
 async def admin_users_menu(message: Message):
     uid = message.from_user.id
@@ -1315,6 +1343,13 @@ def build_guest_limits_kb(limit_search: int, limit_report: int, limit_legend: in
     kb.adjust(1, 4)
     # Back
     kb.button(text="⬅ Назад", callback_data="gl:back")
+    kb.adjust(1)
+    return kb.as_markup()
+
+def build_period_prompt_kb(male_id: str, lang: str):
+    kb = InlineKeyboardBuilder()
+    for code in TIME_FILTER_CHOICES:
+        kb.button(text=time_filter_label(lang, code), callback_data=f"mftime:{male_id}:{code}:init")
     kb.adjust(1)
     return kb.as_markup()
 
@@ -2174,8 +2209,9 @@ async def handle_male_search(message: Message):
         "male_id": male,
         "female_filter": None,
         "time_filter": "all",
-        "female_options": db.list_females_for_male(male),
+        "stage": "wait_female_filter",
     }
+    await message.answer(t(lang, "male_filter_prompt_female"))
 
     # автобан (не для админов)
     ts_ago = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 60))
@@ -2190,7 +2226,7 @@ async def handle_male_search(message: Message):
         await message.answer(t(lang, "banned", until=until_str))
         return
 
-    await send_results(message, male, 0, user_id=uid, female_filter=None, time_filter="all")
+    # Wait for filters before returning results
 
 async def send_results(message: Message, male_id: str, offset: int, user_id: Optional[int] = None,
                        female_filter: Optional[str] = None, time_filter: str = "all"):
@@ -2207,16 +2243,11 @@ async def send_results(message: Message, male_id: str, offset: int, user_id: Opt
     if offset >= total:
         offset = 0
     rows  = db.search_by_male(male_id, limit=5, offset=offset, female_id=female_filter, since_ts=since_ts)
-    state = MALE_SEARCH_STATE.setdefault(uid, {
-        "male_id": male_id,
-        "female_filter": female_filter,
-        "time_filter": time_filter,
-    })
+    state = MALE_SEARCH_STATE.setdefault(uid, {})
     state["male_id"] = male_id
     state["female_filter"] = female_filter
     state["time_filter"] = time_filter
-    if "female_options" not in state:
-        state["female_options"] = db.list_females_for_male(male_id)
+    state["stage"] = None
     for row in rows:
         text = row["text"] or ""
         media_type = row["media_type"] or None
@@ -2359,9 +2390,6 @@ async def show_filter_menu(uid: int, male_id: str, female_token: str, time_filte
         time_filter = "all"
     if "time_filter" not in state:
         state["time_filter"] = time_filter
-    if "female_options" not in state:
-        state["female_options"] = db.list_females_for_male(male_id)
-    options = state.get("female_options") or []
     kb = InlineKeyboardBuilder()
     current_female = state.get("female_filter")
     current_time = state.get("time_filter", "all")
@@ -2374,21 +2402,12 @@ async def show_filter_menu(uid: int, male_id: str, female_token: str, time_filte
     kb.button(text=t(lang, "filter_close"), callback_data="mfclose")
     kb.adjust(1)
     text = t(lang, "filter_menu_title", male=male_id)
-    if not options:
-        text += "\n" + t(lang, "filter_menu_no_female")
     old_menu_id = state.get("filter_menu_id")
     if old_menu_id:
         try:
             await bot.delete_message(uid, old_menu_id)
         except Exception:
             pass
-    female_menu_id = state.get("female_menu_id")
-    if female_menu_id:
-        try:
-            await bot.delete_message(uid, female_menu_id)
-        except Exception:
-            pass
-        state.pop("female_menu_id", None)
     sent = await bot.send_message(uid, text, reply_markup=kb.as_markup())
     state["filter_menu_id"] = sent.message_id
 
@@ -2402,10 +2421,6 @@ async def cb_filter_menu(call: CallbackQuery):
     await show_filter_menu(call.from_user.id, male_id, female_token, time_filter)
     await call.answer("")
 
-@dp.callback_query(F.data == "mfnoop")
-async def cb_filter_noop(call: CallbackQuery):
-    await call.answer("")
-
 @dp.callback_query(F.data.regexp(r"^mffmenu:(\d{10})$"))
 async def cb_filter_female_menu(call: CallbackQuery):
     match = re.match(r"^mffmenu:(\d{10})$", call.data or "")
@@ -2417,97 +2432,28 @@ async def cb_filter_female_menu(call: CallbackQuery):
     lang = lang_for(uid)
     state = MALE_SEARCH_STATE.setdefault(uid, {"male_id": male_id})
     state["male_id"] = male_id
-    options = state.get("female_options")
-    if options is None:
-        options = db.list_females_for_male(male_id)
-        state["female_options"] = options
-    current_female = state.get("female_filter")
-    kb = InlineKeyboardBuilder()
-    prefix = "✅ " if current_female is None else ""
-    kb.button(text=prefix + t(lang, "filter_female_all"), callback_data=f"mfself:{male_id}:-")
-    for fid in options:
-        mark = "✅ " if current_female == fid else ""
-        kb.button(text=mark + fid, callback_data=f"mfself:{male_id}:{fid}")
-    kb.button(text=t(lang, "filter_back"), callback_data=f"mffback:{male_id}")
-    kb.button(text=t(lang, "filter_close"), callback_data="mfclose")
-    kb.adjust(1)
-    text = t(lang, "filter_female_menu_title", male=male_id)
-    old_menu_id = state.get("female_menu_id")
-    if old_menu_id:
-        try:
-            await bot.delete_message(uid, old_menu_id)
-        except Exception:
-            pass
-    sent = await bot.send_message(uid, text, reply_markup=kb.as_markup())
-    state["female_menu_id"] = sent.message_id
+    state["stage"] = "wait_female_manual"
     await call.answer("")
-
-@dp.callback_query(F.data.regexp(r"^mffback:(\d{10})$"))
-async def cb_filter_back(call: CallbackQuery):
-    match = re.match(r"^mffback:(\d{10})$", call.data or "")
-    if not match:
-        await call.answer("")
-        return
-    male_id = match.group(1)
-    uid = call.from_user.id
-    state = MALE_SEARCH_STATE.get(uid)
-    if state:
-        state.pop("female_menu_id", None)
-    try:
-        await call.message.delete()
-    except Exception:
-        pass
-    female_token = "-"
-    time_filter = "all"
-    if state:
-        female_token = state.get("female_filter") or "-"
-        time_filter = state.get("time_filter", "all")
-        if time_filter not in TIME_FILTER_CHOICES:
-            time_filter = "all"
-    await show_filter_menu(uid, male_id, female_token, time_filter)
-    await call.answer("")
+    await bot.send_message(uid, t(lang, "male_filter_prompt_female"))
 @dp.callback_query(F.data == "mfclose")
 async def cb_filter_close(call: CallbackQuery):
     uid = call.from_user.id
     state = MALE_SEARCH_STATE.get(uid)
     if state:
         state.pop("filter_menu_id", None)
-        state.pop("female_menu_id", None)
     try:
         await call.message.delete()
     except Exception:
         pass
     await call.answer("")
 
-@dp.callback_query(F.data.regexp(r"^mfself:(\d{10}):([0-9-]+)$"))
-async def cb_filter_set_female(call: CallbackQuery):
-    match = re.match(r"^mfself:(\d{10}):([0-9-]+)$", call.data or "")
-    if not match:
-        await call.answer("")
-        return
-    male_id, token = match.groups()
-    uid = call.from_user.id
-    new_female = None if token == "-" else token
-    state = MALE_SEARCH_STATE.setdefault(uid, {"male_id": male_id})
-    state["male_id"] = male_id
-    state["female_filter"] = new_female
-    time_filter = state.get("time_filter", "all")
-    try:
-        await call.message.delete()
-    except Exception:
-        pass
-    state.pop("filter_menu_id", None)
-    state.pop("female_menu_id", None)
-    await send_results(call.message, male_id, 0, user_id=uid, female_filter=new_female, time_filter=time_filter)
-    await call.answer("")
-
-@dp.callback_query(F.data.regexp(r"^mftime:(\d{10}):([a-z0-9]+)$"))
+@dp.callback_query(F.data.regexp(r"^mftime:(\d{10}):([a-z0-9]+)(?::(init))?$"))
 async def cb_filter_set_time(call: CallbackQuery):
-    match = re.match(r"^mftime:(\d{10}):([a-z0-9]+)$", call.data or "")
+    match = re.match(r"^mftime:(\d{10}):([a-z0-9]+)(?::(init))?$", call.data or "")
     if not match:
         await call.answer("")
         return
-    male_id, time_filter = match.groups()
+    male_id, time_filter, init_flag = match.groups()
     uid = call.from_user.id
     if time_filter not in TIME_FILTER_CHOICES:
         time_filter = "all"
@@ -2515,12 +2461,21 @@ async def cb_filter_set_time(call: CallbackQuery):
     state["male_id"] = male_id
     state["time_filter"] = time_filter
     female_filter = state.get("female_filter")
-    try:
-        await call.message.delete()
-    except Exception:
-        pass
-    state.pop("filter_menu_id", None)
-    await send_results(call.message, male_id, 0, user_id=uid, female_filter=female_filter, time_filter=time_filter)
+    stage = state.get("stage")
+    if stage == "wait_period_filter":
+        state["stage"] = None
+        try:
+            await call.message.delete()
+        except Exception:
+            pass
+        await send_results(call.message, male_id, 0, user_id=uid, female_filter=female_filter, time_filter=time_filter)
+    else:
+        try:
+            await call.message.delete()
+        except Exception:
+            pass
+        state.pop("filter_menu_id", None)
+        await send_results(call.message, male_id, 0, user_id=uid, female_filter=female_filter, time_filter=time_filter)
     await call.answer("")
 
 @dp.callback_query(F.data.regexp(r"^rep_more:(\d{10}):(\d+)$"))
