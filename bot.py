@@ -2251,14 +2251,7 @@ async def cb_more(call: CallbackQuery):
     finally:
         await call.answer("")
 
-@dp.callback_query(F.data.regexp(r"^mfilt:(\d{10}):([^:]+):([a-z0-9]+)$"))
-async def cb_filter_menu(call: CallbackQuery):
-    match = re.match(r"^mfilt:(\d{10}):([^:]+):([a-z0-9]+)$", call.data or "")
-    if not match:
-        await call.answer("")
-        return
-    male_id, female_token, time_filter = match.groups()
-    uid = call.from_user.id
+async def show_filter_menu(uid: int, male_id: str, female_token: str, time_filter: str):
     lang = lang_for(uid)
     state = MALE_SEARCH_STATE.setdefault(uid, {})
     state["male_id"] = male_id
@@ -2268,31 +2261,19 @@ async def cb_filter_menu(call: CallbackQuery):
         state["time_filter"] = time_filter if time_filter in TIME_FILTER_CHOICES else "all"
     if "female_options" not in state:
         state["female_options"] = db.list_females_for_male(male_id)
-    options = (state.get("female_options") or [])[:10]
+    options = state.get("female_options") or []
     kb = InlineKeyboardBuilder()
     current_female = state.get("female_filter")
     current_time = state.get("time_filter", "all")
-    if options:
-        label_all = ("✅ " if current_female is None else "") + t(lang, "filter_female_all")
-        kb.button(text=label_all, callback_data=f"mfself:{male_id}:-")
-        for fid in options:
-            prefix = "✅ " if current_female == fid else ""
-            kb.button(text=f"{prefix}{fid}", callback_data=f"mfself:{male_id}:{fid}")
-        kb.adjust(2)
-    else:
-        text = t(lang, "filter_menu_no_female")
-        kb.button(text=t(lang, "filter_female_all"), callback_data=f"mfself:{male_id}:-")
-        kb.adjust(1)
-    # time filter row
-    row_btns = []
+    female_label = t(lang, "filter_choose_female", value=female_filter_label(lang, current_female))
+    kb.button(text=female_label, callback_data=f"mffmenu:{male_id}")
+    kb.button(text=t(lang, "filter_choose_period"), callback_data="mfnoop")
+    kb.adjust(1, 1)
     for code in TIME_FILTER_CHOICES:
         prefix = "✅ " if current_time == code else ""
-        row_btns.append((prefix + time_filter_label(lang, code), f"mftime:{male_id}:{code}"))
-    time_row = InlineKeyboardBuilder()
-    for text_btn, data_btn in row_btns:
-        time_row.button(text=text_btn, callback_data=data_btn)
-    kb.row(*time_row.buttons)
+        kb.button(text=prefix + time_filter_label(lang, code), callback_data=f"mftime:{male_id}:{code}")
     kb.button(text=t(lang, "filter_close"), callback_data="mfclose")
+    kb.adjust(1)
     text = t(lang, "filter_menu_title", male=male_id)
     if not options:
         text += "\n" + t(lang, "filter_menu_no_female")
@@ -2302,16 +2283,95 @@ async def cb_filter_menu(call: CallbackQuery):
             await bot.delete_message(uid, old_menu_id)
         except Exception:
             pass
+    female_menu_id = state.get("female_menu_id")
+    if female_menu_id:
+        try:
+            await bot.delete_message(uid, female_menu_id)
+        except Exception:
+            pass
+        state.pop("female_menu_id", None)
     sent = await bot.send_message(uid, text, reply_markup=kb.as_markup())
     state["filter_menu_id"] = sent.message_id
+
+@dp.callback_query(F.data.regexp(r"^mfilt:(\d{10}):([^:]+):([a-z0-9]+)$"))
+async def cb_filter_menu(call: CallbackQuery):
+    match = re.match(r"^mfilt:(\d{10}):([^:]+):([a-z0-9]+)$", call.data or "")
+    if not match:
+        await call.answer("")
+        return
+    male_id, female_token, time_filter = match.groups()
+    await show_filter_menu(call.from_user.id, male_id, female_token, time_filter)
     await call.answer("")
 
+@dp.callback_query(F.data == "mfnoop")
+async def cb_filter_noop(call: CallbackQuery):
+    await call.answer("")
+
+@dp.callback_query(F.data.regexp(r"^mffmenu:(\d{10})$"))
+async def cb_filter_female_menu(call: CallbackQuery):
+    match = re.match(r"^mffmenu:(\d{10})$", call.data or "")
+    if not match:
+        await call.answer("")
+        return
+    male_id = match.group(1)
+    uid = call.from_user.id
+    lang = lang_for(uid)
+    state = MALE_SEARCH_STATE.setdefault(uid, {"male_id": male_id})
+    state["male_id"] = male_id
+    options = state.get("female_options")
+    if options is None:
+        options = db.list_females_for_male(male_id)
+        state["female_options"] = options
+    current_female = state.get("female_filter")
+    kb = InlineKeyboardBuilder()
+    prefix = "✅ " if current_female is None else ""
+    kb.button(text=prefix + t(lang, "filter_female_all"), callback_data=f"mfself:{male_id}:-")
+    for fid in options:
+        mark = "✅ " if current_female == fid else ""
+        kb.button(text=mark + fid, callback_data=f"mfself:{male_id}:{fid}")
+    kb.button(text=t(lang, "filter_back"), callback_data=f"mffback:{male_id}")
+    kb.button(text=t(lang, "filter_close"), callback_data="mfclose")
+    kb.adjust(1)
+    text = t(lang, "filter_female_menu_title", male=male_id)
+    old_menu_id = state.get("female_menu_id")
+    if old_menu_id:
+        try:
+            await bot.delete_message(uid, old_menu_id)
+        except Exception:
+            pass
+    sent = await bot.send_message(uid, text, reply_markup=kb.as_markup())
+    state["female_menu_id"] = sent.message_id
+    await call.answer("")
+
+@dp.callback_query(F.data.regexp(r"^mffback:(\d{10})$"))
+async def cb_filter_back(call: CallbackQuery):
+    match = re.match(r"^mffback:(\d{10})$", call.data or "")
+    if not match:
+        await call.answer("")
+        return
+    male_id = match.group(1)
+    uid = call.from_user.id
+    state = MALE_SEARCH_STATE.get(uid)
+    if state:
+        state.pop("female_menu_id", None)
+    try:
+        await call.message.delete()
+    except Exception:
+        pass
+    female_token = "-"
+    time_filter = "all"
+    if state:
+        female_token = state.get("female_filter") or "-"
+        time_filter = state.get("time_filter", "all")
+    await show_filter_menu(uid, male_id, female_token, time_filter)
+    await call.answer("")
 @dp.callback_query(F.data == "mfclose")
 async def cb_filter_close(call: CallbackQuery):
     uid = call.from_user.id
     state = MALE_SEARCH_STATE.get(uid)
     if state:
         state.pop("filter_menu_id", None)
+        state.pop("female_menu_id", None)
     try:
         await call.message.delete()
     except Exception:
@@ -2336,6 +2396,7 @@ async def cb_filter_set_female(call: CallbackQuery):
     except Exception:
         pass
     state.pop("filter_menu_id", None)
+    state.pop("female_menu_id", None)
     await send_results(call.message, male_id, 0, user_id=uid, female_filter=new_female, time_filter=time_filter)
     await call.answer("")
 
