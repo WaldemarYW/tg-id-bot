@@ -29,15 +29,6 @@ load_dotenv()
 
 BOT_TOKEN    = os.getenv("BOT_TOKEN")
 OWNER_ID     = int(os.getenv("OWNER_ID", "0"))
-OWNER_IDS_ENV = os.getenv("OWNER_IDS", "").replace(" ", "")
-OWNER_IDS = set()
-if OWNER_IDS_ENV:
-    try:
-        OWNER_IDS = {int(x) for x in OWNER_IDS_ENV.split(",") if x}
-    except ValueError:
-        OWNER_IDS = set()
-if OWNER_ID:
-    OWNER_IDS.add(OWNER_ID)
 LANG_DEFAULT = os.getenv("LANG", "ru")
 DB_PATH      = os.getenv("DB_PATH", "./bot.db")
 
@@ -62,12 +53,9 @@ logger = logging.getLogger(__name__)
 
 # ========= DB & BOT =========
 db = DB(DB_PATH)
-for _sid in OWNER_IDS:
-    try:
-        db.add_admin(_sid)
-        db.add_allowed_user(_sid, username_lc="owner", added_by=_sid, credits=10**9)
-    except Exception as e:
-        logger.warning(f"Cannot bootstrap superadmin {_sid}: {e}")
+if OWNER_ID:
+    db.add_admin(OWNER_ID)
+    db.add_allowed_user(OWNER_ID, username_lc="owner", added_by=OWNER_ID, credits=10**9)
 
 bot = Bot(BOT_TOKEN, default=DefaultBotProperties(parse_mode="HTML"))
 dp  = Dispatcher()
@@ -75,7 +63,7 @@ dp  = Dispatcher()
 
 # ========= ACCESS HELPERS =========
 def is_superadmin(user_id: int) -> bool:
-    return user_id in OWNER_IDS
+    return user_id == OWNER_ID
 
 def is_admin(user_id: int) -> bool:
     return is_superadmin(user_id) or db.is_admin(user_id)
@@ -163,9 +151,10 @@ def kb_extra(uid: int):
 
 def kb_admin(uid: int):
     kb = ReplyKeyboardBuilder()
-    kb.row(KeyboardButton(text="👥 Пользователи"))
+    row = [KeyboardButton(text="👥 Пользователи")]
     if is_superadmin(uid):
-        kb.row(KeyboardButton(text=t(lang_for(uid), "menu_superadmin_panel")))
+        row.append(KeyboardButton(text=t(lang_for(uid), "menu_superadmin_panel")))
+    kb.row(*row)
     kb.row(
         KeyboardButton(text="💬 Чаты"),
         KeyboardButton(text="Легенда"),
@@ -667,7 +656,7 @@ async def show_my_users(message: Message):
     sent = await message.answer(caption, reply_markup=kb)
     PAGED_MSG[uid] = sent.message_id
 
-@dp.message(F.text.in_({"👑 Панель суперадмина", "👤 Админы"}))
+@dp.message(F.text.in_({"👑 Панель суперадмина", "👤 Админы", "👑 Панель суперадміна"}))
 async def admin_admins_menu(message: Message):
     uid = message.from_user.id
     if not is_superadmin(uid):
