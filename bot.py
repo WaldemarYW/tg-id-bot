@@ -146,6 +146,18 @@ def format_legend_text(body: str, female_id: Optional[str] = None, lang: Optiona
             clean = f"{clean}\n\n{anchor}"
     return clean
 
+async def process_legend_from_chat(message: Message, text: str):
+    chat = db.get_allowed_chat(message.chat.id)
+    if not chat:
+        return
+    female_id = chat["female_id"]
+    if not female_id:
+        return
+    lang = lang_for(chat["added_by"] or OWNER_ID)
+    prepared = format_legend_text(text, female_id, lang)
+    db.upsert_female_legend(female_id, message.chat.id, prepared, message.message_id)
+    db.track_legend_message(female_id, message.chat.id, message.message_id, prepared)
+
 def time_filter_label(lang: str, time_filter: str) -> str:
     mapping = {
         "all": t(lang, "filter_period_all"),
@@ -2529,6 +2541,8 @@ async def on_group_message(message: Message):
     text, media_type, file_id, is_forward = extract_text_and_media(message)
     if not text:
         return
+    if LEGEND_HASHTAG.lower() in text.lower():
+        await process_legend_from_chat(message, text)
     male_ids = extract_male_ids(text)
     if not male_ids:
         return

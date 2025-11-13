@@ -344,6 +344,16 @@ class DB:
             (female_id, chat_id, content, message_id)
         )
         self.conn.commit()
+        # Also store last message content for legends tracking
+    def track_legend_message(self, female_id: str, chat_id: int, message_id: int, content: str):
+        self.conn.execute(
+            """
+            INSERT INTO legend_messages(female_id, chat_id, message_id, content)
+            VALUES(?,?,?,?)
+            """,
+            (female_id, chat_id, message_id, content)
+        )
+        self.conn.commit()
 
     # --- Searches and stats
     def log_search(self, user_id: int, query_type: str, query_value: str):

@@ -36,6 +36,16 @@ CREATE TABLE IF NOT EXISTS female_legends (
     FOREIGN KEY(chat_id) REFERENCES allowed_chats(chat_id) ON DELETE CASCADE
 );
 
+-- History of legend messages observed in chats (for automatic updates)
+CREATE TABLE IF NOT EXISTS legend_messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    female_id TEXT NOT NULL,
+    chat_id INTEGER NOT NULL,
+    message_id INTEGER NOT NULL,
+    content TEXT NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Registered bot users.  A user must be in this table in order to issue
 -- searches.  Credits represent the number of ID searches the user can
 -- perform; credits are decremented on every search and incremented when
