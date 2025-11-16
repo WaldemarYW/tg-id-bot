@@ -2323,8 +2323,9 @@ async def handle_male_search(message: Message):
     if not db.rate_limit_allowed(uid, now_ts):
         await message.answer(t(lang, "rate_limited"))
         return
+    limited_user = (not is_admin(uid)) and (not db.is_allowed_user(uid))
     # Restricted guests: allow with daily quotas
-    if not is_admin(uid) and not db.is_allowed_user(uid):
+    if limited_user:
         # limit: configured searches per 24h
         ts_ago_24h = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 24*3600))
         row_q = db.conn.execute(
@@ -2339,17 +2340,6 @@ async def handle_male_search(message: Message):
 
     male = message.text.strip()
     db.log_search(uid, "male", male)
-    MALE_SEARCH_STATE[uid] = {
-        "male_id": male,
-        "female_filter": None,
-        "time_filter": "all",
-        "stage": "wait_female_filter",
-    }
-    await message.answer(
-        t(lang, "male_filter_prompt_female"),
-        reply_markup=build_female_prompt_kb(male, lang)
-    )
-
     # автобан (не для админов)
     ts_ago = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 60))
     row = db.conn.execute(
@@ -2362,6 +2352,20 @@ async def handle_male_search(message: Message):
         until_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(banned_until_ts))
         await message.answer(t(lang, "banned", until=until_str))
         return
+
+    if limited_user:
+        await send_results(message, male, 0, user_id=uid, female_filter=None, time_filter="all", allow_filters=False)
+        return
+    MALE_SEARCH_STATE[uid] = {
+        "male_id": male,
+        "female_filter": None,
+        "time_filter": "all",
+        "stage": "wait_female_filter",
+    }
+    await message.answer(
+        t(lang, "male_filter_prompt_female"),
+        reply_markup=build_female_prompt_kb(male, lang)
+    )
 
     # Wait for filters before returning results
 
