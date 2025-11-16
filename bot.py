@@ -156,16 +156,23 @@ def legend_deep_link(female_id: str) -> Optional[str]:
         return None
     return f"https://t.me/{BOT_USERNAME}?start=legend_{female_id}"
 
-def format_legend_text(body: str, female_id: Optional[str] = None, lang: Optional[str] = None) -> str:
+def format_legend_text(
+    body: str,
+    female_id: Optional[str] = None,
+    lang: Optional[str] = None,
+    include_link: bool = True,
+) -> str:
     clean = (body or "").strip()
     if not clean.lower().startswith(LEGEND_HASHTAG):
         clean = f"{LEGEND_HASHTAG}\n{clean}" if clean else LEGEND_HASHTAG
     link = legend_deep_link(female_id)
     if link:
+        pattern = re.compile(rf"(?:\s*\n)*<a href=\"{re.escape(link)}\">.*?</a>", re.IGNORECASE)
+        clean = pattern.sub("", clean).strip()
+    if link and include_link:
         link_text = t(lang or LANG_DEFAULT, "legend_view_link")
         anchor = f'<a href="{link}">{link_text}</a>'
-        if anchor not in clean:
-            clean = f"{clean}\n\n{anchor}"
+        clean = f"{clean}\n\n{anchor}" if clean else anchor
     return clean
 
 async def process_legend_from_chat(message: Message, text: str):
@@ -536,7 +543,8 @@ async def legend_view_wait_female(message: Message):
     lang = lang_for(uid)
     female_id = message.text.strip()
     now_ts = int(time.time())
-    if not is_admin(uid) and not db.is_allowed_user(uid):
+    has_report_access = is_admin(uid) or db.is_allowed_user(uid)
+    if not has_report_access:
         ts_ago_24h = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 24*3600))
         row_q = db.conn.execute(
             "SELECT COUNT(*) AS c FROM searches WHERE user_id=? AND query_type='legend_view' AND created_at > ?",
@@ -558,7 +566,7 @@ async def legend_view_wait_female(message: Message):
     ).fetchone()
     title = (row["title"] if row else "") or female_id
     db.log_search(uid, "legend_view", female_id)
-    text = format_legend_text(legend["content"], female_id, lang)
+    text = format_legend_text(legend["content"], female_id, lang, include_link=has_report_access)
     LEGEND_VIEW_STATE.pop(uid, None)
     await message.answer(f"{t(lang, 'legend_view_title', title=title)}\n\n{text}")
 
@@ -2556,14 +2564,6 @@ async def on_bot_added(event: ChatMemberUpdated):
         # Added if transitioned from left/kicked to member/administrator
         if old_status in {"left", "kicked", None} and new_status in {"member", "administrator"}:
             inviter_id = event.from_user.id if event.from_user else 0
-            # Only bot admins may authorize chats automatically
-            if not is_admin(inviter_id):
-                try:
-                    await bot.send_message(event.chat.id, t(lang_for(inviter_id or OWNER_ID), "chat_not_authorized"))
-                except Exception:
-                    pass
-                db.log_audit(inviter_id, "auto_authorize_denied_non_admin", target=str(event.chat.id), details="")
-                return
             title = event.chat.title or ""
             female_id = db.get_female_id_from_title(title) or "НЕИЗВЕСТНО"
             db.add_allowed_chat(event.chat.id, title, female_id, inviter_id)
