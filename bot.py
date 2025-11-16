@@ -905,9 +905,12 @@ async def male_search_wait_female_filter(message: Message):
     if text and re.fullmatch(r"\d{10}", text):
         female_filter = text
     state["female_filter"] = female_filter
-    if stage == "wait_female_filter":
+    if stage in {"wait_female_filter", "wait_female_manual"}:
         state["stage"] = "wait_period_filter"
-        await message.answer(t(lang, "male_filter_prompt_period"), reply_markup=build_period_prompt_kb(state["male_id"], lang))
+        await message.answer(
+            t(lang, "male_filter_prompt_period"),
+            reply_markup=build_period_prompt_kb(state["male_id"], lang)
+        )
     else:
         state["stage"] = None
         time_filter = state.get("time_filter", "all")
@@ -2425,7 +2428,12 @@ async def send_results(message: Message, male_id: str, offset: int, user_id: Opt
     kb = InlineKeyboardBuilder()
     buttons = []
     if new_offset < total:
-        buttons.append(("more", f"more:{male_id}:{new_offset}:{filt_token}:{time_filter}", t(lang, "more")))
+        allow_flag = "1" if allow_filters else "0"
+        buttons.append((
+            "more",
+            f"more:{male_id}:{new_offset}:{filt_token}:{time_filter}:{allow_flag}",
+            t(lang, "more"),
+        ))
     if allow_filters:
         buttons.append(("filter", f"mfilt:{male_id}:{filt_token}:{time_filter}", t(lang, "filter_button")))
     if buttons:
@@ -2511,11 +2519,16 @@ async def cb_more(call: CallbackQuery):
         offset = int(parts[2])
         female_filter = None
         time_filter = "all"
-        if len(parts) >= 5:
+        allow_filters = True
+        if len(parts) >= 6:
+            female_filter = None if parts[3] == "-" else parts[3]
+            time_filter = parts[4]
+            allow_filters = parts[5] != "0"
+        elif len(parts) >= 5:
             female_filter = None if parts[3] == "-" else parts[3]
             time_filter = parts[4]
         await send_results(call.message, male_id, offset, user_id=call.from_user.id,
-                           female_filter=female_filter, time_filter=time_filter)
+                           female_filter=female_filter, time_filter=time_filter, allow_filters=allow_filters)
     finally:
         await call.answer("")
 
@@ -2597,7 +2610,7 @@ async def cb_filter_female_all(call: CallbackQuery):
     except Exception:
         pass
     state.pop("filter_menu_id", None)
-    if stage == "wait_female_filter":
+    if stage in {"wait_female_filter", "wait_female_manual"}:
         state["stage"] = "wait_period_filter"
         await bot.send_message(uid, t(lang, "male_filter_prompt_period"), reply_markup=build_period_prompt_kb(male_id, lang))
     else:
