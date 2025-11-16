@@ -151,6 +151,9 @@ LEGEND_HASHTAG = "#легенда"
 # ========= USER LEGEND VIEW =========
 LEGEND_VIEW_STATE: Dict[int, Dict] = {}
 
+# ========= GUEST REPORT SEARCH =========
+GUEST_REPORT_STATE: Dict[int, Dict] = {}
+
 def legend_deep_link(female_id: str) -> Optional[str]:
     if not female_id or not BOT_USERNAME:
         return None
@@ -220,8 +223,11 @@ def kb_main(uid: int):
     # Поиск → Добавить отчёт → Админ → Мои запросы → Язык
     lang = lang_for(uid)
     kb = ReplyKeyboardBuilder()
-    if is_admin(uid) or db.is_allowed_user(uid):
+    has_access = is_admin(uid) or db.is_allowed_user(uid)
+    if has_access:
         kb.button(text=t(lang, "menu_search"))
+    else:
+        kb.button(text=t(lang, "menu_guest_pair_search"))
     kb.button(text="➕ Добавить отчёт")
     kb.button(text=t(lang, "menu_legend_view"))
     kb.button(text=t(lang, "menu_extra"))
@@ -385,7 +391,7 @@ async def show_menu(message: Message, state: str):
             SELECT COUNT(*) AS c
             FROM searches
             WHERE user_id=?
-              AND query_type IN ('male', 'report_female')
+              AND query_type IN ('male', 'guest_pair', 'report_female')
               AND created_at > ?
             """,
             (uid, cutoff)
@@ -505,11 +511,96 @@ async def action_search_prompt(message: Message):
         REPORT_STATE.pop(uid, None)
     await message.answer(t(lang_for(uid), "search_enter_id"))
 
+@dp.message(F.text.in_({t("ru", "menu_guest_pair_search"), t("uk", "menu_guest_pair_search")}))
+async def guest_pair_search_start(message: Message):
+    uid = message.from_user.id
+    if is_admin(uid) or db.is_allowed_user(uid):
+        return
+    # сбрасываем другие режимы
+    REPORT_STATE.pop(uid, None)
+    LEGEND_STATE.pop(uid, None)
+    LEGEND_VIEW_STATE.pop(uid, None)
+    MALE_SEARCH_STATE.pop(uid, None)
+    GUEST_REPORT_STATE[uid] = {"stage": "wait_female"}
+    await message.answer(t(lang_for(uid), "enter_female_id"))
+
 @dp.message(F.text.in_({t("ru", "menu_legend_view"), t("uk", "menu_legend_view")}))
 async def legend_view_start(message: Message):
     uid = message.from_user.id
+    GUEST_REPORT_STATE.pop(uid, None)
     LEGEND_VIEW_STATE[uid] = {"stage": "wait_female"}
     await message.answer(t(lang_for(uid), "legend_view_prompt"))
+
+@dp.message(F.func(lambda m: GUEST_REPORT_STATE.get(m.from_user.id, {}).get("stage") == "wait_female"))
+async def guest_pair_wait_female(message: Message):
+    uid = message.from_user.id
+    if is_admin(uid) or db.is_allowed_user(uid):
+        GUEST_REPORT_STATE.pop(uid, None)
+        return
+    text = (message.text or "").strip()
+    lang = lang_for(uid)
+    if not re.fullmatch(r"\d{10}", text):
+        await message.answer(t(lang, "bad_id"))
+        return
+    GUEST_REPORT_STATE[uid] = {"stage": "wait_male", "female_id": text}
+    await message.answer(t(lang, "enter_male_id"))
+
+@dp.message(F.func(lambda m: GUEST_REPORT_STATE.get(m.from_user.id, {}).get("stage") == "wait_male"))
+async def guest_pair_wait_male(message: Message):
+    uid = message.from_user.id
+    if is_admin(uid) or db.is_allowed_user(uid):
+        GUEST_REPORT_STATE.pop(uid, None)
+        return
+    state = GUEST_REPORT_STATE.get(uid) or {}
+    female_id = state.get("female_id")
+    lang = lang_for(uid)
+    text = (message.text or "").strip()
+    if not female_id:
+        GUEST_REPORT_STATE.pop(uid, None)
+        await message.answer(t(lang, "enter_female_id"))
+        return
+    if not re.fullmatch(r"\d{10}", text):
+        await message.answer(t(lang, "bad_id"))
+        return
+    now_ts = int(time.time())
+    banned_until = db.get_user_ban(uid)
+    if banned_until and now_ts < banned_until:
+        GUEST_REPORT_STATE.pop(uid, None)
+        until_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(banned_until))
+        await message.answer(t(lang, "banned", until=until_str))
+        return
+    if not db.rate_limit_allowed(uid, now_ts):
+        await message.answer(t(lang, "rate_limited"))
+        return
+    limited_user = (not is_admin(uid)) and (not db.is_allowed_user(uid))
+    if limited_user:
+        ts_ago_24h = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 24*3600))
+        row_q = db.conn.execute(
+            "SELECT COUNT(*) AS c FROM searches WHERE user_id=? AND query_type IN ('male','guest_pair') AND created_at > ?",
+            (uid, ts_ago_24h)
+        ).fetchone()
+        lim_s = db.get_setting_int('guest_limit_search', 50)
+        if row_q and row_q["c"] is not None and row_q["c"] >= lim_s:
+            GUEST_REPORT_STATE.pop(uid, None)
+            await message.answer(t(lang, "limited_search_quota", limit=lim_s))
+            return
+    male_id = text
+    db.log_search(uid, "guest_pair", f"{female_id}:{male_id}")
+    if limited_user:
+        ts_ago = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 60))
+        row = db.conn.execute(
+            "SELECT COUNT(*) AS c FROM searches WHERE user_id=? AND query_type IN ('male','guest_pair') AND created_at > ?",
+            (uid, ts_ago)
+        ).fetchone()
+        if row and row["c"] is not None and row["c"] >= 30:
+            banned_until_ts = now_ts + 900
+            db.set_user_ban(uid, banned_until_ts)
+            GUEST_REPORT_STATE.pop(uid, None)
+            until_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(banned_until_ts))
+            await message.answer(t(lang, "banned", until=until_str))
+            return
+    GUEST_REPORT_STATE.pop(uid, None)
+    await send_results(message, male_id, 0, user_id=uid, female_filter=female_id, time_filter="all")
 
 @dp.message(F.text.in_({t("ru", "menu_support"), t("uk", "menu_support")}))
 async def support_info(message: Message):
@@ -531,6 +622,7 @@ async def extra_menu(message: Message):
 async def report_start(message: Message):
     uid = message.from_user.id
     # Разрешаем запуск отчёта всем: для ограниченных лимит проверяется в следующем шаге
+    GUEST_REPORT_STATE.pop(uid, None)
     REPORT_STATE[uid] = {"stage": "wait_female"}
     await message.answer("Введите 10-значный идентификатор девушки (из названия группы).")
 
@@ -578,6 +670,7 @@ async def back_button(message: Message):
     LEGEND_STATE.pop(uid, None)
     LEGEND_VIEW_STATE.pop(uid, None)
     MALE_SEARCH_STATE.pop(uid, None)
+    GUEST_REPORT_STATE.pop(uid, None)
     state = nav_back(uid)
     await show_menu(message, state)
 
@@ -2172,7 +2265,10 @@ async def cb_admins_close(call: CallbackQuery):
 
 
 # ========= SEARCH (10 цифр) =========
-@dp.message(F.text.regexp(r"^\d{10}$"))
+@dp.message(
+    F.text.regexp(r"^\d{10}$") &
+    F.func(lambda m: not GUEST_REPORT_STATE.get(m.from_user.id))
+)
 async def handle_male_search(message: Message):
     uid = message.from_user.id
     # если в режиме отчёта — не обрабатываем как поиск
@@ -2221,7 +2317,7 @@ async def handle_male_search(message: Message):
         # limit: configured searches per 24h
         ts_ago_24h = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 24*3600))
         row_q = db.conn.execute(
-            "SELECT COUNT(*) AS c FROM searches WHERE user_id=? AND query_type='male' AND created_at > ?",
+            "SELECT COUNT(*) AS c FROM searches WHERE user_id=? AND query_type IN ('male','guest_pair') AND created_at > ?",
             (uid, ts_ago_24h)
         ).fetchone()
         lim_s = db.get_setting_int('guest_limit_search', 50)
@@ -2246,7 +2342,7 @@ async def handle_male_search(message: Message):
     # автобан (не для админов)
     ts_ago = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 60))
     row = db.conn.execute(
-        "SELECT COUNT(*) AS c FROM searches WHERE user_id=? AND query_type='male' AND created_at > ?",
+        "SELECT COUNT(*) AS c FROM searches WHERE user_id=? AND query_type IN ('male','guest_pair') AND created_at > ?",
         (uid, ts_ago)
     ).fetchone()
     if row and row["c"] is not None and row["c"] >= 30 and not is_admin(uid):
