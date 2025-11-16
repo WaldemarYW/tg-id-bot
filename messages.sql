@@ -14,6 +14,12 @@ CREATE TABLE IF NOT EXISTS admins (
     added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS superadmins (
+    user_id INTEGER PRIMARY KEY,
+    added_by INTEGER,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Chats that are allowed for indexing.  Only chats in this table will have
 -- messages recorded.  Each chat holds a 10‑digit "female" identifier which
 -- is parsed from the chat title.  The added_by column records which admin

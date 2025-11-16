@@ -30,6 +30,21 @@ load_dotenv()
 
 BOT_TOKEN    = os.getenv("BOT_TOKEN")
 OWNER_ID     = int(os.getenv("OWNER_ID", "0"))
+OWNER_IDS_RAW = os.getenv("OWNER_IDS", "")
+ENV_SUPERADMINS = set()
+if OWNER_ID:
+    ENV_SUPERADMINS.add(OWNER_ID)
+for token in OWNER_IDS_RAW.split(","):
+    token = token.strip()
+    if not token:
+        continue
+    try:
+        sid = int(token)
+    except ValueError:
+        continue
+    if sid:
+        ENV_SUPERADMINS.add(sid)
+SUPERADMINS = set()
 BOT_USERNAME = os.getenv("BOT_USERNAME", "")
 LANG_DEFAULT = os.getenv("LANG", "ru")
 DB_PATH      = os.getenv("DB_PATH", "./bot.db")
@@ -55,9 +70,18 @@ logger = logging.getLogger(__name__)
 
 # ========= DB & BOT =========
 db = DB(DB_PATH)
-if OWNER_ID:
-    db.add_admin(OWNER_ID)
-    db.add_allowed_user(OWNER_ID, username_lc="owner", added_by=OWNER_ID, credits=10**9)
+for sid in ENV_SUPERADMINS:
+    db.add_superadmin(sid, added_by=OWNER_ID or sid)
+    username_label = f"owner_{sid}"
+    db.add_allowed_user(sid, username_lc=username_label, added_by=sid, credits=10**9)
+
+def refresh_superadmins():
+    global SUPERADMINS
+    SUPERADMINS.clear()
+    for sid in db.list_superadmins():
+        SUPERADMINS.add(sid)
+
+refresh_superadmins()
 
 bot = Bot(BOT_TOKEN, default=DefaultBotProperties(parse_mode="HTML"))
 dp  = Dispatcher()
@@ -65,7 +89,7 @@ dp  = Dispatcher()
 
 # ========= ACCESS HELPERS =========
 def is_superadmin(user_id: int) -> bool:
-    return user_id == OWNER_ID
+    return user_id in SUPERADMINS
 
 def is_admin(user_id: int) -> bool:
     return is_superadmin(user_id) or db.is_admin(user_id)
@@ -117,8 +141,6 @@ TIME_FILTER_SECONDS = {
     "24h": 24 * 3600,
 }
 
-# ========= REPORT LOOKUP FLOW (поиск отчётов по female) =========
-REPORT_LOOKUP_STATE: Dict[int, Dict] = {}
 REPORT_LOOKUP_WINDOW = 24 * 3600
 REPORT_LOOKUP_PAGE = 5
 
@@ -191,17 +213,10 @@ def kb_main(uid: int):
     # Поиск → Добавить отчёт → Админ → Мои запросы → Язык
     lang = lang_for(uid)
     kb = ReplyKeyboardBuilder()
-    limited_user = (not is_admin(uid)) and (not db.is_allowed_user(uid))
-    if limited_user:
-        kb.button(text=t(lang, "menu_report_search"))
-    else:
-        kb.button(text=t(lang, "menu_search"))
+    kb.button(text=t(lang, "menu_search"))
     kb.button(text="➕ Добавить отчёт")
     kb.button(text=t(lang, "menu_legend_view"))
     kb.button(text=t(lang, "menu_extra"))
-    # Кнопка поддержки видна только ограниченным пользователям
-    if limited_user:
-        kb.button(text=t(lang, "menu_support"))
     if is_admin(uid):
         kb.button(text=t(lang, "menu_admin_panel"))
     kb.adjust(2, 2, 1, 1)
@@ -209,10 +224,13 @@ def kb_main(uid: int):
 
 def kb_extra(uid: int):
     lang = lang_for(uid)
+    limited_user = (not is_admin(uid)) and (not db.is_allowed_user(uid))
     kb = ReplyKeyboardBuilder()
     kb.button(text=t(lang, "menu_lang"))
+    if limited_user:
+        kb.button(text=t(lang, "menu_support"))
     kb.button(text="⬅️ Назад")
-    kb.adjust(1, 1)
+    kb.adjust(1, 1, 1)
     return kb.as_markup(resize_keyboard=True)
 
 def kb_admin(uid: int):
@@ -221,10 +239,7 @@ def kb_admin(uid: int):
     if is_superadmin(uid):
         row.append(KeyboardButton(text=t(lang_for(uid), "menu_superadmin_panel")))
     kb.row(*row)
-    kb.row(
-        KeyboardButton(text="💬 Чаты"),
-        KeyboardButton(text="Легенда"),
-    )
+    kb.row(KeyboardButton(text="💬 Чаты"))
     kb.row(KeyboardButton(text="⬅️ Назад"))
     return kb.as_markup(resize_keyboard=True)
 
@@ -250,8 +265,11 @@ def kb_admin_admins(uid: int):
     if is_superadmin(uid):
         kb.button(text="Все админы")
         kb.button(text="Лимиты гостей")
+    if uid == OWNER_ID:
+        kb.button(text="➕ Добавить суперадмина")
+        kb.button(text="➖ Удалить суперадмина")
     kb.button(text="⬅️ Назад")
-    kb.adjust(2, 1)
+    kb.adjust(2, 1, 2)
     return kb.as_markup(resize_keyboard=True)
 
 def kb_admin_chats(uid: int):
@@ -480,12 +498,6 @@ async def action_search_prompt(message: Message):
         REPORT_STATE.pop(uid, None)
     await message.answer(t(lang_for(uid), "search_enter_id"))
 
-@dp.message(F.text.in_({t("ru", "menu_report_search"), t("uk", "menu_report_search")}))
-async def report_lookup_start(message: Message):
-    uid = message.from_user.id
-    REPORT_LOOKUP_STATE[uid] = {"stage": "wait_female"}
-    await message.answer(t(lang_for(uid), "report_search_prompt"))
-
 @dp.message(F.text.in_({t("ru", "menu_legend_view"), t("uk", "menu_legend_view")}))
 async def legend_view_start(message: Message):
     uid = message.from_user.id
@@ -514,58 +526,6 @@ async def report_start(message: Message):
     # Разрешаем запуск отчёта всем: для ограниченных лимит проверяется в следующем шаге
     REPORT_STATE[uid] = {"stage": "wait_female"}
     await message.answer("Введите 10-значный идентификатор девушки (из названия группы).")
-
-@dp.message(
-    F.text.regexp(r"^\d{10}$") &
-    F.func(lambda m: REPORT_LOOKUP_STATE.get(m.from_user.id, {}).get("stage") == "wait_female")
-)
-async def report_lookup_wait_female(message: Message):
-    uid = message.from_user.id
-    lang = lang_for(uid)
-    female_id = message.text.strip()
-    row = db.conn.execute(
-        "SELECT 1 FROM allowed_chats WHERE female_id=? LIMIT 1",
-        (female_id,)
-    ).fetchone()
-    if not row:
-        await message.answer(t(lang, "report_search_no_chat"))
-        return
-    banned_until = db.get_user_ban(uid)
-    now_ts = int(time.time())
-    if banned_until and now_ts < banned_until:
-        until_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(banned_until))
-        await message.answer(t(lang, "banned", until=until_str))
-        return
-    if not db.rate_limit_allowed(uid, now_ts):
-        await message.answer(t(lang, "rate_limited"))
-        return
-    if not is_admin(uid) and not db.is_allowed_user(uid):
-        ts_ago_24h = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 24*3600))
-        row_q = db.conn.execute(
-            "SELECT COUNT(*) AS c FROM searches WHERE user_id=? AND query_type='report_female' AND created_at > ?",
-            (uid, ts_ago_24h)
-        ).fetchone()
-        lim_s = db.get_setting_int('guest_limit_search', 50)
-        if row_q and row_q["c"] is not None and row_q["c"] >= lim_s:
-            REPORT_LOOKUP_STATE.pop(uid, None)
-            await message.answer(t(lang, "limited_search_quota", limit=lim_s))
-            return
-    db.log_search(uid, "report_female", female_id)
-    if not is_admin(uid):
-        ts_ago = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 60))
-        row_fast = db.conn.execute(
-            "SELECT COUNT(*) AS c FROM searches WHERE user_id=? AND query_type='report_female' AND created_at > ?",
-            (uid, ts_ago)
-        ).fetchone()
-        if row_fast and row_fast["c"] is not None and row_fast["c"] >= 30:
-            banned_until_ts = now_ts + 900
-            db.set_user_ban(uid, banned_until_ts)
-            until_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(banned_until_ts))
-            REPORT_LOOKUP_STATE.pop(uid, None)
-            await message.answer(t(lang, "banned", until=until_str))
-            return
-    await send_report_lookup_results(message.chat.id, uid, female_id, 0)
-    REPORT_LOOKUP_STATE.pop(uid, None)
 
 @dp.message(
     F.text.regexp(r"^\d{10}$") &
@@ -607,7 +567,6 @@ async def back_button(message: Message):
     uid = message.from_user.id
     # сбрасываем возможный режим отчёта
     REPORT_STATE.pop(uid, None)
-    REPORT_LOOKUP_STATE.pop(uid, None)
     LEGEND_STATE.pop(uid, None)
     LEGEND_VIEW_STATE.pop(uid, None)
     MALE_SEARCH_STATE.pop(uid, None)
@@ -1391,6 +1350,24 @@ async def ask_del_admin(message: Message):
     ADM_PENDING[uid] = "del_admin"
     await message.answer(t(lang_for(uid), "prompt_user_id"))
 
+@dp.message(F.text == "➕ Добавить суперадмина")
+async def ask_add_superadmin(message: Message):
+    uid = message.from_user.id
+    if uid != OWNER_ID:
+        await message.answer("Добавлять суперадмина может только владелец.")
+        return
+    ADM_PENDING[uid] = "add_superadmin"
+    await message.answer("Введите id:123456789 пользователя для ролей суперадмина.")
+
+@dp.message(F.text == "➖ Удалить суперадмина")
+async def ask_remove_superadmin(message: Message):
+    uid = message.from_user.id
+    if uid != OWNER_ID:
+        await message.answer("Удалять суперадминов может только владелец.")
+        return
+    ADM_PENDING[uid] = "del_superadmin"
+    await message.answer("Отправьте id:123456789 суперадмина, которого нужно убрать.")
+
 # Принять id:123...
 @dp.message(F.text.regexp(r"^id:(\d{6,12})$"))
 async def handle_admin_input(message: Message):
@@ -1424,6 +1401,27 @@ async def handle_admin_input(message: Message):
         db.add_allowed_user(target_id, username_lc="", added_by=uid, credits=100)
         db.log_audit(uid, "add_user", target=str(target_id), details=f"by={uid}")
         await message.answer("Пользователь добавлен.")
+    elif action == "add_superadmin":
+        if uid != OWNER_ID:
+            await message.answer("Только владелец может управлять суперадминами.")
+            return
+        db.add_superadmin(target_id, added_by=uid)
+        db.add_allowed_user(target_id, username_lc="", added_by=uid, credits=10**9)
+        refresh_superadmins()
+        await message.answer("Суперадмин добавлен.")
+    elif action == "del_superadmin":
+        if uid != OWNER_ID:
+            await message.answer("Только владелец может управлять суперадминами.")
+            return
+        if target_id == OWNER_ID:
+            await message.answer("Нельзя удалить владельца.")
+            return
+        if target_id not in SUPERADMINS:
+            await message.answer("Этот пользователь не является суперадмином.")
+            return
+        db.remove_superadmin(target_id)
+        refresh_superadmins()
+        await message.answer("Суперадмин удалён.")
     # 'del_user' flow removed in favor of inline deletion in "Мои пользователи"
     else:
         await message.answer("OK")
@@ -1451,11 +1449,16 @@ async def handle_add_user_by_id_digits(message: Message):
 # Принять только цифры для add_admin (только когда активен режим добавления админа)
 @dp.message(
     F.text.regexp(r"^\d{6,12}$") &
-    F.func(lambda m: ADM_PENDING.get(m.from_user.id) == "add_admin")
+    F.func(lambda m: ADM_PENDING.get(m.from_user.id) in {"add_admin", "add_superadmin"})
 )
 async def handle_add_admin_by_id_digits(message: Message):
     uid = message.from_user.id
-    if not is_superadmin(uid):
+    action = ADM_PENDING.get(uid)
+    if action not in {"add_admin", "add_superadmin"}:
+        return
+    if action == "add_admin" and not is_superadmin(uid):
+        return
+    if action == "add_superadmin" and uid != OWNER_ID:
         return
     target_id_str = message.text.strip()
     try:
@@ -1463,10 +1466,16 @@ async def handle_add_admin_by_id_digits(message: Message):
     except ValueError:
         await message.answer("Неверный ID")
         return
-    db.add_admin(target_id)
-    db.log_audit(uid, "add_admin", target=str(target_id), details="by_digits")
+    if action == "add_admin":
+        db.add_admin(target_id)
+        db.log_audit(uid, "add_admin", target=str(target_id), details="by_digits")
+        await message.answer("Админ добавлен.")
+    else:
+        db.add_superadmin(target_id, added_by=uid)
+        db.add_allowed_user(target_id, username_lc="", added_by=uid, credits=10**9)
+        refresh_superadmins()
+        await message.answer("Суперадмин добавлен.")
     ADM_PENDING.pop(uid, None)
-    await message.answer("Админ добавлен.")
 
 
 # ========= CHATS =========
@@ -2158,9 +2167,6 @@ async def handle_male_search(message: Message):
     st = REPORT_STATE.get(uid)
     if st and st.get("stage") in {"wait_female", "wait_text"}:
         return
-    lookup_st = REPORT_LOOKUP_STATE.get(uid)
-    if lookup_st and lookup_st.get("stage") == "wait_female":
-        return
     legend_view_st = LEGEND_VIEW_STATE.get(uid)
     if legend_view_st and legend_view_st.get("stage") == "wait_female":
         return
@@ -2704,7 +2710,7 @@ async def cb_admin_delete_confirm(call: CallbackQuery):
     if not is_superadmin(uid):
         await call.answer("Нет прав", show_alert=True)
         return
-    if admin_id == OWNER_ID:
+    if admin_id in SUPERADMINS:
         await call.answer("Нельзя удалить суперадмина", show_alert=True)
         return
     kb = InlineKeyboardBuilder()
@@ -2753,7 +2759,7 @@ async def cb_admin_delete_yes(call: CallbackQuery):
         await call.answer("")
         return
     uid = call.from_user.id
-    if not is_superadmin(uid) or admin_id == OWNER_ID:
+    if not is_superadmin(uid) or admin_id in SUPERADMINS:
         await call.answer("Нет прав", show_alert=True)
         return
     db.remove_admin(admin_id)

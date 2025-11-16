@@ -55,6 +55,22 @@ class DB:
         self.conn.execute("INSERT OR IGNORE INTO admins(user_id) VALUES (?)", (user_id,))
         self.conn.commit()
 
+    def add_superadmin(self, user_id: int, added_by: int):
+        self.conn.execute(
+            "INSERT OR IGNORE INTO superadmins(user_id, added_by) VALUES(?,?)",
+            (user_id, added_by)
+        )
+        self.conn.commit()
+        self.add_admin(user_id)
+
+    def remove_superadmin(self, user_id: int):
+        self.conn.execute("DELETE FROM superadmins WHERE user_id=?", (user_id,))
+        self.conn.commit()
+
+    def list_superadmins(self) -> List[int]:
+        rows = self.conn.execute("SELECT user_id FROM superadmins").fetchall()
+        return [r["user_id"] for r in rows]
+
     def remove_admin(self, user_id: int):
         self.conn.execute("DELETE FROM admins WHERE user_id=?", (user_id,))
         self.conn.commit()
