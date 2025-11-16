@@ -213,7 +213,8 @@ def kb_main(uid: int):
     # Поиск → Добавить отчёт → Админ → Мои запросы → Язык
     lang = lang_for(uid)
     kb = ReplyKeyboardBuilder()
-    kb.button(text=t(lang, "menu_search"))
+    if is_admin(uid) or db.is_allowed_user(uid):
+        kb.button(text=t(lang, "menu_search"))
     kb.button(text="➕ Добавить отчёт")
     kb.button(text=t(lang, "menu_legend_view"))
     kb.button(text=t(lang, "menu_extra"))
@@ -266,10 +267,9 @@ def kb_admin_admins(uid: int):
         kb.button(text="Все админы")
         kb.button(text="Лимиты гостей")
     if uid == OWNER_ID:
-        kb.button(text="➕ Добавить суперадмина")
-        kb.button(text="➖ Удалить суперадмина")
+        kb.button(text="⚙️ Суперадмины")
     kb.button(text="⬅️ Назад")
-    kb.adjust(2, 1, 2)
+    kb.adjust(2, 1, 1)
     return kb.as_markup(resize_keyboard=True)
 
 def kb_admin_chats(uid: int):
@@ -1321,6 +1321,13 @@ def build_period_prompt_kb(male_id: str, lang: str):
     kb.adjust(1)
     return kb.as_markup()
 
+def build_female_prompt_kb(male_id: str, lang: str):
+    kb = InlineKeyboardBuilder()
+    kb.button(text=t(lang, "male_filter_enter_button"), callback_data=f"mffask:{male_id}")
+    kb.button(text=t(lang, "male_filter_all_button"), callback_data=f"mfself:{male_id}:-")
+    kb.adjust(1)
+    return kb.as_markup()
+
 # --- Пользователи
 @dp.message(F.text == "➕ Добавить пользователя")
 async def ask_add_user(message: Message):
@@ -1350,23 +1357,20 @@ async def ask_del_admin(message: Message):
     ADM_PENDING[uid] = "del_admin"
     await message.answer(t(lang_for(uid), "prompt_user_id"))
 
-@dp.message(F.text == "➕ Добавить суперадмина")
-async def ask_add_superadmin(message: Message):
+@dp.message(F.text == "⚙️ Суперадмины")
+async def superadmin_manage_menu(message: Message):
     uid = message.from_user.id
     if uid != OWNER_ID:
-        await message.answer("Добавлять суперадмина может только владелец.")
+        await message.answer("Только владелец может управлять суперадминами.")
         return
-    ADM_PENDING[uid] = "add_superadmin"
-    await message.answer("Введите id:123456789 пользователя для ролей суперадмина.")
-
-@dp.message(F.text == "➖ Удалить суперадмина")
-async def ask_remove_superadmin(message: Message):
-    uid = message.from_user.id
-    if uid != OWNER_ID:
-        await message.answer("Удалять суперадминов может только владелец.")
-        return
-    ADM_PENDING[uid] = "del_superadmin"
-    await message.answer("Отправьте id:123456789 суперадмина, которого нужно убрать.")
+    sms = db.list_superadmins()
+    lines = ["Текущие суперадмины:"]
+    for sid in sms:
+        mark = "👑 " if sid == OWNER_ID else ""
+        lines.append(f"{mark}id:{sid}")
+    lines.append("\nКоманды:\n• \"add id:123\" — добавить\n• \"del id:123\" — удалить")
+    await message.answer("\n".join(lines))
+    ADM_PENDING[uid] = "superadmin_select"
 
 # Принять id:123...
 @dp.message(F.text.regexp(r"^id:(\d{6,12})$"))
@@ -2226,7 +2230,10 @@ async def handle_male_search(message: Message):
         "time_filter": "all",
         "stage": "wait_female_filter",
     }
-    await message.answer(t(lang, "male_filter_prompt_female"))
+    await message.answer(
+        t(lang, "male_filter_prompt_female"),
+        reply_markup=build_female_prompt_kb(male, lang)
+    )
 
     # автобан (не для админов)
     ts_ago = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(now_ts - 60))
@@ -2406,11 +2413,10 @@ async def show_filter_menu(uid: int, male_id: str, female_token: str, time_filte
     if "time_filter" not in state:
         state["time_filter"] = time_filter
     kb = InlineKeyboardBuilder()
-    current_female = state.get("female_filter")
     current_time = state.get("time_filter", "all")
-    female_label = t(lang, "filter_choose_female", value=female_filter_label(lang, current_female))
-    kb.button(text=female_label, callback_data=f"mffmenu:{male_id}")
-    kb.adjust(1)
+    kb.button(text=t(lang, "male_filter_enter_button"), callback_data=f"mffask:{male_id}")
+    kb.button(text=t(lang, "male_filter_all_button"), callback_data=f"mfself:{male_id}:-")
+    kb.adjust(1, 1)
     for code in TIME_FILTER_CHOICES:
         prefix = "✅ " if current_time == code else ""
         kb.button(text=prefix + time_filter_label(lang, code), callback_data=f"mftime:{male_id}:{code}")
@@ -2436,9 +2442,9 @@ async def cb_filter_menu(call: CallbackQuery):
     await show_filter_menu(call.from_user.id, male_id, female_token, time_filter)
     await call.answer("")
 
-@dp.callback_query(F.data.regexp(r"^mffmenu:(\d{10})$"))
-async def cb_filter_female_menu(call: CallbackQuery):
-    match = re.match(r"^mffmenu:(\d{10})$", call.data or "")
+@dp.callback_query(F.data.regexp(r"^mffask:(\d{10})$"))
+async def cb_filter_female_prompt(call: CallbackQuery):
+    match = re.match(r"^mffask:(\d{10})$", call.data or "")
     if not match:
         await call.answer("")
         return
@@ -2448,8 +2454,39 @@ async def cb_filter_female_menu(call: CallbackQuery):
     state = MALE_SEARCH_STATE.setdefault(uid, {"male_id": male_id})
     state["male_id"] = male_id
     state["stage"] = "wait_female_manual"
-    await call.answer("")
+    try:
+        await call.message.delete()
+    except Exception:
+        pass
+    state.pop("filter_menu_id", None)
     await bot.send_message(uid, t(lang, "male_filter_prompt_female"))
+    await call.answer("")
+
+@dp.callback_query(F.data.regexp(r"^mfself:(\d{10}):(-)$"))
+async def cb_filter_female_all(call: CallbackQuery):
+    match = re.match(r"^mfself:(\d{10}):(-)$", call.data or "")
+    if not match:
+        await call.answer("")
+        return
+    male_id = match.group(1)
+    uid = call.from_user.id
+    lang = lang_for(uid)
+    state = MALE_SEARCH_STATE.setdefault(uid, {"male_id": male_id})
+    state["male_id"] = male_id
+    state["female_filter"] = None
+    stage = state.get("stage")
+    try:
+        await call.message.delete()
+    except Exception:
+        pass
+    state.pop("filter_menu_id", None)
+    if stage == "wait_female_filter":
+        state["stage"] = "wait_period_filter"
+        await bot.send_message(uid, t(lang, "male_filter_prompt_period"), reply_markup=build_period_prompt_kb(male_id, lang))
+    else:
+        state["stage"] = None
+        await send_results(call.message, male_id, 0, user_id=uid, female_filter=None, time_filter=state.get("time_filter", "all"))
+    await call.answer("")
 @dp.callback_query(F.data == "mfclose")
 async def cb_filter_close(call: CallbackQuery):
     uid = call.from_user.id
