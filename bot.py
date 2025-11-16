@@ -600,7 +600,15 @@ async def guest_pair_wait_male(message: Message):
             await message.answer(t(lang, "banned", until=until_str))
             return
     GUEST_REPORT_STATE.pop(uid, None)
-    await send_results(message, male_id, 0, user_id=uid, female_filter=female_id, time_filter="all")
+    await send_results(
+        message,
+        male_id,
+        0,
+        user_id=uid,
+        female_filter=female_id,
+        time_filter="all",
+        allow_filters=False,
+    )
 
 @dp.message(F.text.in_({t("ru", "menu_support"), t("uk", "menu_support")}))
 async def support_info(message: Message):
@@ -2355,7 +2363,8 @@ async def handle_male_search(message: Message):
     # Wait for filters before returning results
 
 async def send_results(message: Message, male_id: str, offset: int, user_id: Optional[int] = None,
-                       female_filter: Optional[str] = None, time_filter: str = "all"):
+                       female_filter: Optional[str] = None, time_filter: str = "all",
+                       allow_filters: bool = True):
     chat_id = message.chat.id
     uid = user_id or (message.from_user.id if message.from_user else chat_id)
     lang = lang_for(uid)
@@ -2406,15 +2415,19 @@ async def send_results(message: Message, male_id: str, offset: int, user_id: Opt
         except Exception:
             await bot.send_message(chat_id=chat_id, text=body)
     new_offset = offset + len(rows)
-    female_label = female_filter_label(lang, female_filter)
-    time_label = time_filter_label(lang, time_filter)
-    summary = f"{min(new_offset, total)}/{total}\n" + t(lang, "filter_summary", female=female_label, period=time_label)
+    if allow_filters:
+        female_label = female_filter_label(lang, female_filter)
+        time_label = time_filter_label(lang, time_filter)
+        summary = f"{min(new_offset, total)}/{total}\n" + t(lang, "filter_summary", female=female_label, period=time_label)
+    else:
+        summary = f"{min(new_offset, total)}/{total}"
     filt_token = female_filter or "-"
     kb = InlineKeyboardBuilder()
     buttons = []
     if new_offset < total:
         buttons.append(("more", f"more:{male_id}:{new_offset}:{filt_token}:{time_filter}", t(lang, "more")))
-    buttons.append(("filter", f"mfilt:{male_id}:{filt_token}:{time_filter}", t(lang, "filter_button")))
+    if allow_filters:
+        buttons.append(("filter", f"mfilt:{male_id}:{filt_token}:{time_filter}", t(lang, "filter_button")))
     if buttons:
         if len(buttons) == 2:
             kb.button(text=buttons[0][2], callback_data=buttons[0][1])
